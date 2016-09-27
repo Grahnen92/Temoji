@@ -9,3 +9,7 @@
 2.2判断最近圈内目标
 2.3转向最近圈内目标，发射炮弹
 2.4循环2.1-2.3直至无进圈目标
+
+a. How to rotate smoothly towards aimed object?
+b. Should be cannon lookat not the whole tower, need to be careful when building models, direction and rotation base line.
+c. Update works every frame, how to instantiate bullet every seconds, so that it could should automatically every second?
