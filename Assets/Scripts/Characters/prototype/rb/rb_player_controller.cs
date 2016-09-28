@@ -28,7 +28,7 @@ public class rb_player_controller : MonoBehaviour {
 	private double hight_derivative;
 	private double hight_adjustment;
 	private const double max_hight_adjustment = 1000.0;
-	private const double wanted_hight = 4;
+	private double wanted_hight = 4;
 
 	//rotational variables
 	private float current_mouse_angle;
@@ -178,12 +178,33 @@ public class rb_player_controller : MonoBehaviour {
 
 
 		//grip===============================================================================
-		if (Input.GetButton ("Fire3") ){
-			rwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 100);
-			lwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 100);
-			fwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 100);
-			bwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 100);
-		} 
+		if (Input.GetButtonDown ("OpenWings")) {
+			rwing.GetComponent<HingeJoint> ().useMotor = true;
+			JointMotor tmp_mot = rwing.GetComponent<HingeJoint> ().motor;
+			tmp_mot.targetVelocity = -100;
+			tmp_mot.force = 1000;
+			rwing.GetComponent<HingeJoint> ().motor = tmp_mot;
+
+			lwing.GetComponent<HingeJoint> ().useMotor = true;
+			lwing.GetComponent<HingeJoint> ().motor = tmp_mot;
+
+			fwing.GetComponent<HingeJoint> ().useMotor = true;
+			fwing.GetComponent<HingeJoint> ().motor = tmp_mot;
+
+			bwing.GetComponent<HingeJoint> ().useMotor = true;
+			bwing.GetComponent<HingeJoint> ().motor = tmp_mot;
+
+		} else if (Input.GetButtonUp ("OpenWings")) {
+
+			rwing.GetComponent<HingeJoint> ().useMotor = false;
+			lwing.GetComponent<HingeJoint> ().useMotor = false;
+			fwing.GetComponent<HingeJoint> ().useMotor = false;
+			bwing.GetComponent<HingeJoint> ().useMotor = false;
+		}
+
+		//Hover Hight
+		wanted_hight += Input.mouseScrollDelta.x;
+		wanted_hight += Input.mouseScrollDelta.y;
 		 
 	}
 
