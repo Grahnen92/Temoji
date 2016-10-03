@@ -10,7 +10,7 @@ public class towerShoot_Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (transform.position.x < -1) {
+        if (transform.position.x < 10) {
             transform.Translate(transform.TransformVector(1, 0, 0) * enemySpeed * Time.deltaTime);
         }
         
