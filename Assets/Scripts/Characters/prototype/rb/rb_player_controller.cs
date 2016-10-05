@@ -28,7 +28,7 @@ public class rb_player_controller : MonoBehaviour {
 	private double hight_derivative;
 	private double hight_adjustment;
 	private const double max_hight_adjustment = 1000.0;
-	private double wanted_hight = 4;
+	private double wanted_hight = 2.3;
 
 	//rotational variables
 	private float current_mouse_angle;
@@ -95,7 +95,6 @@ public class rb_player_controller : MonoBehaviour {
 				wing_projectile.GetComponent<Rigidbody> ().AddForce (tmp_vec * 7000);
 			}
 		} else if (Input.GetButtonUp ("Fire2")) {
-			print ("hejdå fire2");
 			rwing.transform.localEulerAngles = new Vector3 (0, 90, 0);
 			rwing.transform.localPosition = new Vector3 (0.66f, -0.131f, 0.0f);
 			Rigidbody tmp_rb = rwing.AddComponent<Rigidbody> ();
