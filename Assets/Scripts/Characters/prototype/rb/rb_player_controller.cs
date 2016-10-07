@@ -21,6 +21,10 @@ public class rb_player_controller : MonoBehaviour {
 	private float curr_speed;
 	private Vector3 planar_velocity;
 
+    private Vector3 curr_mouse_dir;
+    private Vector3 curr_mouse_dir_noy;
+    private Vector3 curr_mouse_hit;
+
 	//hovering variables
 	private double previous_hight_error = 0.0;
 	private double hight_error;
@@ -28,10 +32,9 @@ public class rb_player_controller : MonoBehaviour {
 	private double hight_derivative;
 	private double hight_adjustment;
 	private const double max_hight_adjustment = 1000.0;
-	private double wanted_hight = 2.3;
+	private double wanted_hight = 2.4;
 
 	//rotational variables
-	private float current_mouse_angle;
 
 	private double prev_head_rot_error = 0.0;
 	private double head_rot_error;
@@ -61,20 +64,6 @@ public class rb_player_controller : MonoBehaviour {
 
 		wing_projectile_prefab = Resources.Load ("final_prototype_wing_projectile") as GameObject;
 	}
-	/*
-	void OnCollisionEnter(Collision collision)
-	{
-		isColliding = true;
-	}
-	void OnCollisionStay(Collision collision)
-	{
-		isColliding = true;
-	}
-	void OnCollisionExit(Collision collision)
-	{
-		isColliding = false;
-	}
-	*/
 
 	void Update(){
 
@@ -90,8 +79,10 @@ public class rb_player_controller : MonoBehaviour {
 				GameObject wing_projectile = Instantiate (wing_projectile_prefab) as GameObject;
 				wing_projectile.transform.position = rwing.transform.position;
 				wing_projectile.transform.rotation = rwing.transform.rotation;
-				Vector3 tmp_vec = neck.transform.forward;
-				tmp_vec.y = 0;
+                //Vector3 tmp_vec = neck.transform.forward;
+                Vector3 tmp_vec = curr_mouse_hit - rwing.transform.position;
+                //tmp_vec.y = 0;
+                tmp_vec.Normalize();
 				wing_projectile.GetComponent<Rigidbody> ().AddForce (tmp_vec * 7000);
 			}
 		} else if (Input.GetButtonUp ("Fire2")) {
@@ -108,30 +99,50 @@ public class rb_player_controller : MonoBehaviour {
 			tmp_hj.limits = tmp_lim;
 			tmp_hj.useSpring = true;
 			JointSpring tmp_spring = tmp_hj.spring;
-			tmp_spring.spring = 100;
+			tmp_spring.spring = 50;
 			tmp_hj.spring = tmp_spring;
 		} else {
 			if (Input.GetButtonDown ("Fire1")) {
 				Destroy (rwing.GetComponent<HingeJoint> ());
-				Destroy (rwing.GetComponent<Rigidbody> ());
+				//Destroy (rwing.GetComponent<Rigidbody> ());
 				rwing.transform.localEulerAngles = new Vector3 (0, 50, 0);
 				rwing.transform.localPosition = new Vector3 (0.9f, 0.6f, 0.48f);
+               // Rigidbody tmp_rb = rwing.AddComponent<Rigidbody>();
+               // tmp_rb.angularDrag = 30;
+                FixedJoint tmp_hj = rwing.AddComponent<FixedJoint>();
+                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+                tmp_hj.autoConfigureConnectedAnchor = true;
+                
 
-				Destroy (lwing.GetComponent<HingeJoint> ());
-				Destroy (lwing.GetComponent<Rigidbody> ());
+                Destroy (lwing.GetComponent<HingeJoint> ());
+				//Destroy (lwing.GetComponent<Rigidbody> ());
 				lwing.transform.localEulerAngles = new Vector3 (0, -50, 0);
 				lwing.transform.localPosition = new Vector3 (-0.9f, 0.6f, 0.48f);
+                // tmp_rb = rwing.AddComponent<Rigidbody>();
+                // tmp_rb.angularDrag = 30;
+                tmp_hj = lwing.AddComponent<FixedJoint>();
+                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+                tmp_hj.autoConfigureConnectedAnchor = true;
 
-				Destroy (fwing.GetComponent<HingeJoint> ());
-				Destroy (fwing.GetComponent<Rigidbody> ());
+                Destroy (fwing.GetComponent<HingeJoint> ());
+				//Destroy (fwing.GetComponent<Rigidbody> ());
 				fwing.transform.localEulerAngles = new Vector3 (0, 0, 0);
 				fwing.transform.localPosition = new Vector3 (0, 0.6f, 0.9f);
-			} else if (Input.GetButtonUp ("Fire1")) {
-				
-				rwing.transform.localEulerAngles = new Vector3 (0, 90, 0);
+                // tmp_rb = rwing.AddComponent<Rigidbody>();
+                // tmp_rb.angularDrag = 30;
+                tmp_hj = fwing.AddComponent<FixedJoint>();
+                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+                tmp_hj.autoConfigureConnectedAnchor = true;
+
+                bwing.GetComponent<Rigidbody>().mass = 3;
+
+            } else if (Input.GetButtonUp ("Fire1")) {
+
+                Destroy(rwing.GetComponent<FixedJoint>());
+                rwing.transform.localEulerAngles = new Vector3 (0, 90, 0);
 				rwing.transform.localPosition = new Vector3 (0.66f, -0.131f, 0.0f);
-				Rigidbody tmp_rb = rwing.AddComponent<Rigidbody> ();
-				tmp_rb.angularDrag = 30;
+				//Rigidbody tmp_rb = rwing.AddComponent<Rigidbody> ();
+				//tmp_rb.angularDrag = 30;
 				HingeJoint tmp_hj = rwing.AddComponent<HingeJoint> ();
 				tmp_hj.connectedBody = neck.GetComponent<Rigidbody> ();
 				tmp_hj.autoConfigureConnectedAnchor = true;
@@ -141,13 +152,14 @@ public class rb_player_controller : MonoBehaviour {
 				tmp_hj.limits = tmp_lim;
 				tmp_hj.useSpring = true;
 				JointSpring tmp_spring = tmp_hj.spring;
-				tmp_spring.spring = 100;
+				tmp_spring.spring = 50;
 				tmp_hj.spring = tmp_spring;
 
-				lwing.transform.localEulerAngles = new Vector3 (0, -90, 0);
+                Destroy(lwing.GetComponent<FixedJoint>());
+                lwing.transform.localEulerAngles = new Vector3 (0, -90, 0);
 				lwing.transform.localPosition = new Vector3 (-0.66f, -0.131f, 0.0f);
-				tmp_rb = lwing.AddComponent<Rigidbody> ();
-				tmp_rb.angularDrag = 30;
+				//tmp_rb = lwing.AddComponent<Rigidbody> ();
+				//tmp_rb.angularDrag = 30;
 				tmp_hj = lwing.AddComponent<HingeJoint> ();
 				tmp_hj.connectedBody = neck.GetComponent<Rigidbody> ();
 				tmp_hj.autoConfigureConnectedAnchor = true;
@@ -157,13 +169,14 @@ public class rb_player_controller : MonoBehaviour {
 				tmp_hj.limits = tmp_lim;
 				tmp_hj.useSpring = true;
 				tmp_spring = tmp_hj.spring;
-				tmp_spring.spring = 100;
+				tmp_spring.spring = 50;
 				tmp_hj.spring = tmp_spring;
 
-				fwing.transform.localEulerAngles = new Vector3 (0, 0, 0);
+                Destroy(fwing.GetComponent<FixedJoint>());
+                fwing.transform.localEulerAngles = new Vector3 (0, 0, 0);
 				fwing.transform.localPosition = new Vector3 (0.0f, -0.131f, 0.66f);
-				tmp_rb = fwing.AddComponent<Rigidbody> ();
-				tmp_rb.angularDrag = 30;
+				//tmp_rb = fwing.AddComponent<Rigidbody> ();
+				//tmp_rb.angularDrag = 30;
 				tmp_hj = fwing.AddComponent<HingeJoint> ();
 				tmp_hj.connectedBody = neck.GetComponent<Rigidbody> ();
 				tmp_hj.autoConfigureConnectedAnchor = true;
@@ -173,30 +186,40 @@ public class rb_player_controller : MonoBehaviour {
 				tmp_hj.limits = tmp_lim;
 				tmp_hj.useSpring = true;
 				tmp_spring = tmp_hj.spring;
-				tmp_spring.spring = 100;
+				tmp_spring.spring = 50;
 				tmp_hj.spring = tmp_spring;
-			
-			}
+
+                bwing.GetComponent<Rigidbody>().mass = 1;
+
+            }
 		}
 
 
-		//Jump ==============================================================================
-		//if(Input.GetButton("Jump"))
-		if (Input.GetButton ("Jump") ) 
+        //Jump ==============================================================================
+        //if(Input.GetButton("Jump"))
+        if (Input.GetButtonDown("Jump"))
+        {
+            wanted_hight = 5.0;
+        }
+        else if (Input.GetButton ("Jump") ) 
 		{
-			rwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 50);
-			lwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 50);
-			fwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 50);
-			bwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 50);
+			//rwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 40);
+			//lwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 40);
+			//fwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 40);
+			//bwing.GetComponent<Rigidbody> ().AddRelativeForce (Vector3.forward * 40);
 		}
+        else if (Input.GetButtonUp("Jump"))
+        {
+            wanted_hight = 2.4;
+        }
 
 
-		//grip===============================================================================
-		if (Input.GetButtonDown ("OpenWings")) {
+            //grip===============================================================================
+            if (Input.GetButtonDown ("OpenWings")) {
 			rwing.GetComponent<HingeJoint> ().useMotor = true;
 			JointMotor tmp_mot = rwing.GetComponent<HingeJoint> ().motor;
-			tmp_mot.targetVelocity = -100;
-			tmp_mot.force = 1000;
+			tmp_mot.targetVelocity = -70;
+			tmp_mot.force = 700;
 			rwing.GetComponent<HingeJoint> ().motor = tmp_mot;
 
 			lwing.GetComponent<HingeJoint> ().useMotor = true;
@@ -229,23 +252,25 @@ public class rb_player_controller : MonoBehaviour {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit mouse_hit;
 		Physics.Raycast (ray, out mouse_hit, 100, default_mask);
-		Vector3 curr_mouse = mouse_hit.point - transform.position;
-		curr_mouse.y = 0;
-		curr_mouse.Normalize ();
+        curr_mouse_hit = mouse_hit.point;
+        curr_mouse_dir = mouse_hit.point - transform.position;
+        curr_mouse_dir_noy = curr_mouse_dir;
+        curr_mouse_dir_noy.y = 0;
+        curr_mouse_dir_noy.Normalize ();
 
 		//head
 		Vector3 curr_forward = transform.up;
 		curr_forward.y = 0;
 		curr_forward.Normalize ();
 
-		head_rot_error = -Vector3.Angle (curr_mouse, curr_forward);
-		if (Vector3.Cross (curr_mouse, curr_forward).y < 0)
+		head_rot_error = -Vector3.Angle (curr_mouse_dir_noy, curr_forward);
+		if (Vector3.Cross (curr_mouse_dir_noy, curr_forward).y < 0)
 			head_rot_error = -head_rot_error;
 
 		head_rot_integral = head_rot_integral + head_rot_error * Time.deltaTime;
 		head_rot_derivative = (head_rot_error - prev_head_rot_error) / Time.deltaTime;
 
-		head_rot_adjustment = 0.1 * head_rot_error + 0.0 * head_rot_integral + 0.05 * head_rot_derivative;
+		head_rot_adjustment = 0.07 * head_rot_error + 0.0 * head_rot_integral + 0.04 * head_rot_derivative;
 		prev_head_rot_error = head_rot_error;
 		rb_head.AddRelativeTorque(Vector3.forward * (float)head_rot_adjustment);
 
@@ -254,14 +279,14 @@ public class rb_player_controller : MonoBehaviour {
 		curr_forward.y = 0;
 		curr_forward.Normalize ();
 
-		body_rot_error = -Vector3.Angle (curr_mouse, curr_forward);
-		if (Vector3.Cross (curr_mouse, curr_forward).y < 0)
+		body_rot_error = -Vector3.Angle (curr_mouse_dir_noy, curr_forward);
+		if (Vector3.Cross (curr_mouse_dir_noy, curr_forward).y < 0)
 			body_rot_error = -body_rot_error;
 
 		body_rot_integral = body_rot_integral + body_rot_error * Time.deltaTime;
 		body_rot_derivative = (body_rot_error - prev_body_rot_error) / Time.deltaTime;
 
-		body_rot_adjustment = 100.0 * body_rot_error + 0.0 * body_rot_integral + 1.0 * body_rot_derivative;
+		body_rot_adjustment = 50.0 * body_rot_error + 0.0 * body_rot_integral + 0.5 * body_rot_derivative;
 		prev_body_rot_error = body_rot_error;
 		neck.GetComponent<Rigidbody>().AddRelativeTorque(Vector3.up * (float)body_rot_adjustment);
 
@@ -308,10 +333,7 @@ public class rb_player_controller : MonoBehaviour {
 		}
 
 		//drag force that slows the player down in the x and z dirrs
-		rb_head.velocity = rb_head.velocity - planar_velocity * 0.1f;
-
-
-		 
+		//rb_head.velocity = rb_head.velocity - planar_velocity * 0.1f;
 	}
 
 	void LateUpdate()
@@ -320,9 +342,15 @@ public class rb_player_controller : MonoBehaviour {
 		Vector3 tmpAng;
 		if (Input.GetButton ("Fire2")) {
 			tmpAng = rwing.transform.eulerAngles;
-			tmpAng.z = -90;
-			rwing.transform.eulerAngles = tmpAng;
-		}
+            if (curr_mouse_dir.y < 0)
+                tmpAng.z = -90 + Vector3.Angle(curr_mouse_dir, curr_mouse_dir_noy);
+            else
+                tmpAng.z = -90 + -Vector3.Angle(curr_mouse_dir, curr_mouse_dir_noy);
+
+            rwing.transform.eulerAngles = tmpAng;
+           // rwing.transform.LookAt(tmp_mouse);
+           // rwing.transform.Rotate(-90, 0, 0);
+        }
 		tmpAng = transform.eulerAngles;
 		tmpAng.x = -90;
 		tmpAng.y = 0;
