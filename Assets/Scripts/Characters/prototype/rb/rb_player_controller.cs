@@ -104,6 +104,7 @@ using System;
         } else if (Input.GetButton("Fire2")) {
 
             float ict = (charge_timer) / charge_time;
+            rwing.GetComponent<MeshRenderer>().material.
             rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time*100)*0.03f * ict * ict, Mathf.Sin(Time.time * 100) * 0.03f * ict * ict, 0.45f * ict * ict + Mathf.Sin(Time.time * 100) * 0.03f * ict * ict);
 
             if (weapon_charged)
