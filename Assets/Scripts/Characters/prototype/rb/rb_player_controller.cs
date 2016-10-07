@@ -70,7 +70,11 @@ using System;
 		rwing = GameObject.Find("final_prototype_rwing");
 
         shoot_euler_angles = new Vector3(-10, 85, -92);
-        shoot_position = new Vector3(1.0f, -0.331f, -0.4f);
+        shoot_position = new Vector3(1.05f, -0.331f, -0.85f);
+        relaxed_euler_angles = new Vector3(0, 90, 0);
+        relaxed_position = new Vector3(0.66f, -0.131f, 0.0f);
+
+
 
         fwing = GameObject.Find("final_prototype_fwing");
 		bwing = GameObject.Find("final_prototype_bwing");
@@ -83,21 +87,13 @@ using System;
 
         if (!weapon_charged)
         {
-            float ict = (charge_time - charge_timer) / charge_time;
-            if (Input.GetButton("Fire2"))
-                rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time * 100 + 53) * 0.03f*ict*ict, Mathf.Sin(Time.time * 100) * 0.03f * ict * ict, -0.5f *ict * ict);
-            else
-                rwing.transform.localPosition = relaxed_position + new Vector3(Mathf.Sin(Time.time * 100 + 53) * 0.03f * ict * ict, Mathf.Sin(Time.time * 100) * 0.03f * ict * ict, -0.5f * ict * ict);
             charge_timer += Time.deltaTime;
             if (charge_timer > charge_time)
             {
                 weapon_charged = true;
-                charge_timer = 0.0f;
             }
         }
-        else
-        {
-        }
+
         if (Input.GetButtonDown("Fire2")) {
             Destroy(rwing.GetComponent<HingeJoint>());
             Destroy(rwing.GetComponent<Rigidbody>());
@@ -106,6 +102,9 @@ using System;
 
             //current_weapon = Instantiate (certain_weapon);
         } else if (Input.GetButton("Fire2")) {
+
+            float ict = (charge_timer) / charge_time;
+            rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time*100)*0.03f * ict * ict, Mathf.Sin(Time.time * 100) * 0.03f * ict * ict, 0.45f * ict * ict + Mathf.Sin(Time.time * 100) * 0.03f * ict * ict);
 
             if (weapon_charged)
             {
@@ -122,6 +121,7 @@ using System;
                     wing_projectile.GetComponent<Rigidbody>().AddForce(tmp_vec * 7000);
 
                     weapon_charged = false;
+                    charge_timer = 0.0f;
                 }
             }
             else
@@ -131,8 +131,8 @@ using System;
 
 
         } else if (Input.GetButtonUp("Fire2")) {
-            rwing.transform.localEulerAngles = new Vector3(0, 90, 0);
-            rwing.transform.localPosition = new Vector3(0.66f, -0.131f, 0.0f);
+            rwing.transform.localEulerAngles = relaxed_euler_angles;
+            rwing.transform.localPosition = relaxed_position;
             Rigidbody tmp_rb = rwing.AddComponent<Rigidbody>();
             tmp_rb.angularDrag = 30;
             HingeJoint tmp_hj = rwing.AddComponent<HingeJoint>();
