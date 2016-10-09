@@ -2,10 +2,10 @@
 using System.Collections;
 
 public class towerShoot_Enemy : MonoBehaviour {
-    public float enemySpeed;
+    float enemySpeed = 0.5f;
+    
     // Use this for initialization
     void Start () {
-	
 	}
 	
 	// Update is called once per frame
