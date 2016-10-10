@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
     public class rb_player_controller : MonoBehaviour {
@@ -62,6 +63,38 @@ using System;
 	private GameObject wing_projectile_prefab;
 	private LayerMask default_mask = 1;
 
+	//Materials
+	private GameObject tower_builder_prefab;
+	private Vector3 tmp_pos;
+
+	private List<GameObject> wood = new List<GameObject>();
+	private List<GameObject> stone = new List<GameObject>();
+	private List<GameObject> energy = new List<GameObject>();
+	void OnTriggerEnter(Collider col){
+		print (col.name);
+		print (col.tag);
+		if (col.tag == "Stone") {
+			stone.Add (col.gameObject);
+		} else if (col.tag == "Wood") {
+			wood.Add (col.gameObject);
+		} else {
+			energy.Add (col.gameObject);
+		}
+			
+		
+	}
+	void OnTriggerExit(Collider col){
+		print (col.name);
+		print (col.tag);
+		if (col.tag == "Stone") {
+			stone.Remove (col.gameObject);
+		} else if (col.tag == "Wood") {
+			wood.Remove (col.gameObject);
+		} else {
+			energy.Remove (col.gameObject);
+		}
+	}
+
 	void Start()
 	{
 		rb_head = GetComponent<Rigidbody> ();
@@ -70,20 +103,40 @@ using System;
 		rwing = GameObject.Find("final_prototype_rwing");
 
         shoot_euler_angles = new Vector3(-10, 85, -92);
-        shoot_position = new Vector3(1.05f, -0.331f, -0.85f);
+        shoot_position = new Vector3(1.05f, -0.331f, -0.9f);
         relaxed_euler_angles = new Vector3(0, 90, 0);
         relaxed_position = new Vector3(0.66f, -0.131f, 0.0f);
-
-
 
         fwing = GameObject.Find("final_prototype_fwing");
 		bwing = GameObject.Find("final_prototype_bwing");
 
 
 		wing_projectile_prefab = Resources.Load ("final_prototype_wing_projectile") as GameObject;
+		tower_builder_prefab = Resources.Load ("TowerBuilder") as GameObject;
 	}
 
 	void Update(){
+
+		if (Input.GetButtonDown ("Jump")) {
+			if (wood.Count > 0 && stone.Count > 0) {
+				GameObject tmpGO = wood [0];
+				tmp_pos = tmpGO.transform.position;
+				wood.RemoveAt (0);
+				Destroy (tmpGO);
+
+				tmpGO = stone [0];
+				tmp_pos += tmpGO.transform.position;
+				stone.RemoveAt (0);
+				Destroy (tmpGO);
+				print ("starting to build tower");
+				GameObject tower_builder = Instantiate (tower_builder_prefab) as GameObject;
+				tmp_pos.y = 2.0f;
+				tmp_pos = tmp_pos / 2.0f;
+				tower_builder.transform.position = tmp_pos;
+
+			}
+				
+		}
 
         if (!weapon_charged)
         {
@@ -104,7 +157,7 @@ using System;
         } else if (Input.GetButton("Fire2")) {
 
             float ict = (charge_timer) / charge_time;
-            rwing.GetComponent<MeshRenderer>().material.
+            //rwing.GetComponent<MeshRenderer>().material.
             rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time*100)*0.03f * ict * ict, Mathf.Sin(Time.time * 100) * 0.03f * ict * ict, 0.45f * ict * ict + Mathf.Sin(Time.time * 100) * 0.03f * ict * ict);
 
             if (weapon_charged)
@@ -273,6 +326,7 @@ using System;
         if (Input.GetButtonDown("Jump"))
         {
             wanted_hight = 5.0;
+			previous_hight_error = 0.0;
         }
         else if (Input.GetButton ("Jump") ) 
 		{
@@ -284,6 +338,7 @@ using System;
         else if (Input.GetButtonUp("Jump"))
         {
             wanted_hight = 2.4;
+			previous_hight_error = 0.0;
         }
 
 
