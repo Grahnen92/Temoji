@@ -6,26 +6,18 @@ public class towerShoot_Bullet : MonoBehaviour {
     float bulletSpeed = 100;
 
     // Use this for initialization
-    void Start () {
-        print("Tower shooting begins");//
+    void Start ()
+    {
         Rigidbody rb = GetComponent<Rigidbody>();
         Vector3 direction = tower.transform.GetChild(0).TransformVector(-1, 0, 0);//cannon direction
         print(direction);
         rb.AddForce(direction * bulletSpeed * 100);
     }
 
-    void OnCollisionEnter(Collision coll)
+    //Update is called once per frame
+    void Update()
     {
-        //if (coll.gameObject.tag == "enemy" || coll.gameObject.name == "Ground Quad")
-        if (coll.gameObject.tag == "enemy")//how to avoid bouncing back???
+        if (transform.position.y < 0.5 || transform.position.y > 1)
             Destroy(this.gameObject);
     }
-    
-    // Update is called once per frame
-    //void Update () {
-    //    if (transform.position.y < 0.2)
-    //    {
-    //        Destroy(this.gameObject);
-    //    }
-    //}
 }
