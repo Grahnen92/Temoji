@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class towerShoot_Tower : MonoBehaviour {
-    public GameObject bullet;//bulletPrefab
-    public Transform bulletSpawn;//bulletSpawn with Prefab
-    float bulletSpeed = 1;
+public class damaging_Tower : MonoBehaviour {
+    public GameObject dBullet;//bulletPrefab
+    float bulletSpeed = 0.8f;
     bool activeShooting = false;//Must have this flag, otherwise "spawnBullet" will be invoked many times, actually increasing frequency!!!
     List<GameObject> enemyList = new List<GameObject>();//put entering enemies into a list, linked one by one according to entering sequence,
                                                         //always take the top one, if any one out/die, it will be removed from the list
@@ -15,8 +14,14 @@ public class towerShoot_Tower : MonoBehaviour {
     {
         Vector3 direction = transform.GetChild(1).forward;
         print(direction);
-        GameObject tmp_bullet=Instantiate(bullet, bulletSpawn.position, bulletSpawn.localRotation) as GameObject;//create an empty GameObject as a child of cannon, 
-                                                                                                      //position it at the face of cannon
+        GameObject tmp_bullet=Instantiate(dBullet, transform.GetChild(1).position, transform.GetChild(1).localRotation) as GameObject;//create an empty GameObject as a child of cannon, 
+        /*                                                                                                                              //position it at the face of cannon
+        if (tmp_bullet.transform.position.y < 10.6)
+        {
+            transform.Translate(transform.TransformVector(0, 0.5f, 0) * Time.deltaTime);
+            tmp_bullet.transform.Translate(0, 1, 0);
+        }
+        */
         tmp_bullet.GetComponent<Rigidbody>().AddForce(direction * bulletSpeed);
     }
 
