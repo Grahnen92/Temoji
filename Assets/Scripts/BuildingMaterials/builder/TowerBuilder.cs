@@ -4,16 +4,15 @@ using System;
 
 public class TowerBuilder : MonoBehaviour {
 
-	public GameObject tower;
+	public GameObject tower_prefab;
 	private float buildTimer;
 	private float buildTime;
-
-    private GameObject tower_prefab;
 
     // Use this for initialization
     void Start () {
 		buildTimer = 0;
 		buildTime = 5;
+        tower_prefab = Resources.Load("Tower") as GameObject;
 	}
 	
 	// Update is called once per frame
@@ -22,7 +21,8 @@ public class TowerBuilder : MonoBehaviour {
 		buildTimer += Time.deltaTime;
 
 		if (buildTimer > buildTime) {
-			//instantiate tower
+            GameObject tower = Instantiate(tower_prefab);
+            tower.transform.position = transform.position;
 			Destroy(gameObject);
 		}
 	}
