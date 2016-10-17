@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class PlayerCamera : MonoBehaviour {
-	public GameObject player;
 	private Vector3 offset;
 	private Vector3 diff_vec;
 	private float distance;
@@ -13,9 +12,12 @@ public class PlayerCamera : MonoBehaviour {
 	private Vector2 camera_error_integral = Vector2.zero;
 	private Vector2 camera_error_derivative;
 	private Vector2 camera_adjustment;
+	private GameObject player;
+    
+    void Start () {
+        player = GameObject.Find("final_prototype_head");
 
-	void Start () {
-		rb = GetComponent<Rigidbody> ();
+        rb = GetComponent<Rigidbody> ();
 		offset = transform.position - player.transform.position;
 	}
 

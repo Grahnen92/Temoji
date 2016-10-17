@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    const int MAP_SIZE = 10;
+    const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
     float base_radius = 5;
     // Use this for initialization
@@ -42,8 +42,6 @@ public class GameManager : MonoBehaviour
     {
         Vector3 spawn_pos_player = new Vector3(1f, 3f, 0f);
 
-        NavigationScript.target_destination = initialBase(targetObject, 1);
-        NavigationScript.spawn_destination = initialEntry(gateObject, NavigationScript.target_destination, base_radius, ENTRY_SIZE);
         generateMap();
 
         Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
@@ -127,37 +125,26 @@ public class GameManager : MonoBehaviour
 
     void generateMap()
     {
+
         // Generate Base
-        generateBase();
+        NavigationScript.target_destination = initialBase(targetObject, 1);
 
         // Generate Gate
-        generateGate();
-
+        NavigationScript.spawn_destination = initialEntry(gateObject, NavigationScript.target_destination, base_radius, ENTRY_SIZE);
+        
         // Generate Indestructables
-        generateIndestructables();
-
-
+        ///generateIndestructables();
 
         // Generate Collectables
         generateCollectibles();
 
         // Generate Environment
+        //generateEnvironment();
 
-        generateEnvironment();
-
-        // Generate Ground
-        groundObject = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        // Scale Ground
+        //groundObject.transform.localScale = new Vector3(MAP_SIZE/10.0f, MAP_SIZE/10.0f, MAP_SIZE/10.0f);
     }
 
-    void generateBase()
-    {
-
-    }
-
-    void generateGate()
-    {
-
-    }
 
     /*------------------------------------------------
     In this function indestructable objects are generated
@@ -169,7 +156,6 @@ public class GameManager : MonoBehaviour
         const int N_CELLS = 10;
         const float CELL_SIZE = MAP_SIZE / N_CELLS;
         int[,] ruinGrid = new int[N_CELLS, N_CELLS];
-
         for (int x_cell = 0; x_cell < N_CELLS; x_cell++)
         {
             for (int z_cell = 0; z_cell < N_CELLS; z_cell++)
@@ -203,7 +189,7 @@ public class GameManager : MonoBehaviour
                     position.x = (x_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
                     position.y = 0;
                     position.z = (z_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
-                    innerRuinObject.transform.localScale = new Vector3(.6f, .6f, .6f);
+                    innerRuinObject.transform.localScale = new Vector3(60f, 60f, 60f);
                     Instantiate(innerRuinObject, position, Quaternion.identity);
                     ruinGrid[x_cell, z_cell] = RUIN.INNER;
                     RUIN.count++;
@@ -251,7 +237,7 @@ public class GameManager : MonoBehaviour
                     position.x = (x_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
                     position.y = 0;
                     position.z = (z_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
-                    outerRuinObject.transform.localScale = new Vector3(.4f, .4f, .4f);
+                    outerRuinObject.transform.localScale = new Vector3(60f, 60f, 60f);
                     Instantiate(outerRuinObject, position, Quaternion.identity);
                     ruinGrid[x_cell, z_cell] = RUIN.OUTER;
                     RUIN.count++;
@@ -266,7 +252,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Random Indestructables
-        for (int y = 0; y < N_CELLS; y++)
+        //for (int y = 0; y < N_CELLS; y++)
         {
             Vector3 position = new Vector3(); // game objects position
             position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
@@ -310,7 +296,7 @@ public class GameManager : MonoBehaviour
             Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
             coll_sphere_position = position;
             coll_sphere_position.y += .4f;
-            treeObject.transform.localScale = new Vector3(.4f, .4f, .4f);
+            treeObject.transform.localScale = new Vector3(30f, 40f, 30f);
 
             Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.30f);
             int i = 0;

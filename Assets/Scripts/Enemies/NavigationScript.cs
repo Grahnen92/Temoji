@@ -26,12 +26,12 @@ public class NavigationScript : MonoBehaviour
         GetComponent<NavMeshAgent>().SetDestination(target_destination);
         // Distance from target
         float distance = (target_destination - transform.position).magnitude;
+
         if (distance < attack_distance)
         {
             // Attack target
             print("Attack target!");
             Destroy(bot);
-            GetComponent<NavMeshAgent>().speed = 0;
         }
     }
 }
