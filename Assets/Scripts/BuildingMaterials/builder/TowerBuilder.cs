@@ -8,8 +8,10 @@ public class TowerBuilder : MonoBehaviour {
 	private float buildTimer;
 	private float buildTime;
 
-	// Use this for initialization
-	void Start () {
+    private GameObject tower_prefab;
+
+    // Use this for initialization
+    void Start () {
 		buildTimer = 0;
 		buildTime = 5;
 	}

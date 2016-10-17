@@ -20,15 +20,15 @@ using System;
     private GameObject fwing;
 	private GameObject bwing;
 
+    //weapon variables
 	private GameObject certain_weapon;
 	private GameObject current_weapon;
     private bool weapon_charged = false;
     private float charge_timer = 0.0f;
     private const float charge_time = 1.5f;
 
-
-	//movement properties
-	public float max_speed;
+    //movement properties
+    public float max_speed;
 	private float curr_speed;
 	private Vector3 planar_velocity;
 
@@ -45,9 +45,14 @@ using System;
 	private const double max_hight_adjustment = 1000.0;
 	private double wanted_hight = 2.4;
 
-	//rotational variables
+    //controls the rise speed when the wings was recently closed
+    private bool wings_closed_recently;
+    private float wings_closed_timer = 0.0f;
+    private const float WINGS_CLOSED = 0.7f;
 
-	private double prev_head_rot_error = 0.0;
+    //rotational variables
+
+    private double prev_head_rot_error = 0.0;
 	private double head_rot_error;
 	private double head_rot_integral = 0.0;
 	private double head_rot_derivative;
@@ -70,6 +75,7 @@ using System;
 	private List<GameObject> wood = new List<GameObject>();
 	private List<GameObject> stone = new List<GameObject>();
 	private List<GameObject> energy = new List<GameObject>();
+
 	void OnTriggerEnter(Collider col){
 		print (col.name);
 		print (col.tag);
@@ -110,13 +116,12 @@ using System;
         fwing = GameObject.Find("final_prototype_fwing");
 		bwing = GameObject.Find("final_prototype_bwing");
 
-
 		wing_projectile_prefab = Resources.Load ("final_prototype_wing_projectile") as GameObject;
 		tower_builder_prefab = Resources.Load ("TowerBuilder") as GameObject;
 	}
 
 	void Update(){
-
+        //build tower
 		if (Input.GetButtonDown ("Jump")) {
 			if (wood.Count > 0 && stone.Count > 0) {
 				GameObject tmpGO = wood [0];
@@ -157,8 +162,7 @@ using System;
         } else if (Input.GetButton("Fire2")) {
 
             float ict = (charge_timer) / charge_time;
-            //rwing.GetComponent<MeshRenderer>().material.
-            rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time*100)*0.03f * ict * ict, Mathf.Sin(Time.time * 100) * 0.03f * ict * ict, 0.45f * ict * ict + Mathf.Sin(Time.time * 100) * 0.03f * ict * ict);
+            rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time*150)*0.03f * ict * ict, Mathf.Sin(Time.time * 150) * 0.03f * ict * ict, 0.45f * ict * ict + Mathf.Sin(Time.time * 150) * 0.03f * ict * ict);
 
             if (weapon_charged)
             {
@@ -226,7 +230,7 @@ using System;
             fwing.GetComponent<HingeJoint>().useMotor = false;
             bwing.GetComponent<HingeJoint>().useMotor = false;
 
-            wanted_hight = 2.4f;
+            wings_closed_recently = true;
         } else {
             if (Input.GetButtonDown("Fire1")) {
                 Destroy(rwing.GetComponent<HingeJoint>());
@@ -351,7 +355,6 @@ using System;
 
 	void FixedUpdate()
 	{
-
 		//Turn function =====================================================================
 		//mouse
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -396,6 +399,18 @@ using System;
 		neck.GetComponent<Rigidbody>().AddRelativeTorque(Vector3.up * (float)body_rot_adjustment);
 
 		// Hover function ===================================================================
+
+        if(wings_closed_recently)
+        {
+            wings_closed_timer += Time.fixedDeltaTime;
+            if (wings_closed_timer > WINGS_CLOSED)
+            {
+                print("go higher..");
+                wanted_hight = 2.4;
+                wings_closed_timer = 0.0f;
+                wings_closed_recently = false;
+            }
+        }
 
 		RaycastHit hit;
 		if (Physics.Raycast (rb_head.transform.position, Vector3.down, out hit, 100.0f, default_mask)) {
