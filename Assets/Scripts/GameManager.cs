@@ -21,7 +21,7 @@ public class RUIN
 public class GameManager : MonoBehaviour
 {
 
-    public GameObject groundObject;
+    public static GameObject groundObject;
     public GameObject targetObject;
     public GameObject playerObject;
     public GameObject enemyObject;
@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
 
         print("Welcome to this level.");
 
-        InvokeRepeating("spawnEnemy", 0, 5.0f);
+        InvokeRepeating("spawnEnemy", 0, 1.0f);
     }
 
     void spawnEnemy()
@@ -67,7 +67,8 @@ public class GameManager : MonoBehaviour
     public Vector3 initialBase(GameObject BasePrefab, float BaseSize)
     {
         Vector3 position = new Vector3(Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)), BaseSize / 2, Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)));
-        Instantiate(BasePrefab, position, Quaternion.identity);
+        GameObject hej = (GameObject)Instantiate(BasePrefab, position, Quaternion.identity);
+        NavigationScript.setBase(hej);
         return position;
     }
 
@@ -286,7 +287,7 @@ public class GameManager : MonoBehaviour
     ------------------------------------------------   */
     void generateCollectibles()
     {
-        for (int y = 0; y < 12; y++)
+        for (int y = 0; y < 10; y++)
         {
             Vector3 position = new Vector3(); // game objects position
             position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
@@ -298,7 +299,7 @@ public class GameManager : MonoBehaviour
             coll_sphere_position.y += .4f;
             treeObject.transform.localScale = new Vector3(30f, 40f, 30f);
 
-            Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.30f);
+            Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
             int i = 0;
             bool build = true;
             while (i < hitColliders.Length) // Check collision
