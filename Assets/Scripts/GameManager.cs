@@ -37,15 +37,25 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Vector3 spawn_pos_player = new Vector3(1f, 3f, 0f);
+       
 
         generateMap();
 
-        Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
+        spawnPlayer();
+
 
         print("Welcome to this level.");
 
         InvokeRepeating("spawnEnemy", 0, 1.0f);
+    }
+
+    void spawnPlayer()
+    {
+
+        Vector3 spawn_pos_player = NavigationScript.target_destination + new Vector3(1f, 3f, 0f);
+
+        Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
+
     }
 
     void spawnEnemy()

@@ -7,10 +7,9 @@ public class NavigationScript : MonoBehaviour
     public static Vector3 target_destination;
     public static Vector3 spawn_destination;
     public float speed_factor;
-    public GameObject bot;
     static public GameObject baseObject;
     private Vector3 botVelocity;
-    public float attack_distance = 1.0f;
+    private float attack_distance = 1.0f;
     const float MIN_VELOCITY = 0.01f;
 
     // Use this for initialization
@@ -50,16 +49,14 @@ public class NavigationScript : MonoBehaviour
     {
         // Attack target
         print("Attack target!");
-
-        Destroy(bot);
+        Destroy(gameObject);
         Base_Combat base_combat = baseObject.GetComponent<Base_Combat>();
         base_combat.TakeDamage(10);
-
     }
 
     void suicide()
     {
         print("Commit Suicide!");
-        Destroy(bot);
+        Destroy(gameObject);
     }
 }
