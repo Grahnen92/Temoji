@@ -38,10 +38,10 @@ public class PlayerCamera : MonoBehaviour {
         wanted_pos = player.transform.position + offset;
         pos_error = wanted_pos - transform.position;
 
-        pos_integral = pos_integral + pos_error * Time.deltaTime;
+       // pos_integral = pos_integral + pos_error * Time.deltaTime;
         pos_derivative = (pos_error - prev_pos_error) / Time.deltaTime;
 
-        pos_adjustment = 1.0f * pos_error + 0.0f * pos_integral + 3.0f * pos_derivative;
+        pos_adjustment = 1.0f * pos_error + /*0.0f * pos_integral +*/ 3.0f * pos_derivative;
 
         prev_pos_error = pos_error;
 
