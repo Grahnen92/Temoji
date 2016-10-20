@@ -4,24 +4,42 @@ using System;
 
 public class TowerBuilder : MonoBehaviour {
 
-	public GameObject tower;
+	public GameObject tower_prefab;
+    private ParticleSystem particle_system;
 	private float buildTimer;
 	private float buildTime;
+    private float finalSpeed;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		buildTimer = 0;
-		buildTime = 5;
-	}
+		buildTime = 10;
+        tower_prefab = Resources.Load("Tower") as GameObject;
+        particle_system = gameObject.GetComponentInChildren<ParticleSystem>();
+        Color tmp_color = GetComponent<Renderer>().material.color;
+        tmp_color.a = 0.2f;
+        GetComponent<Renderer>().material.color = tmp_color;
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
-		buildTimer += Time.deltaTime;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 100.0f, 1))
+        {
 
-		if (buildTimer > buildTime) {
-			//instantiate tower
-			Destroy(gameObject);
-		}
+            finalSpeed = (hit.distance / 0.3f) + 1;
+        }
+
+        buildTimer += Time.deltaTime;
+        particle_system.startSpeed = (buildTimer/buildTime) * finalSpeed;
+
+
+        if (buildTimer > buildTime) {
+            GameObject tower = Instantiate(tower_prefab);
+            tower.transform.position = hit.point;
+            Destroy(gameObject);
+        }
 	}
 }

@@ -1,53 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+
 
 public class PlayerCamera : MonoBehaviour {
-	public GameObject player;
-	private Vector3 offset;
-	private Vector3 diff_vec;
+
+
+    private Vector3 offset;
 	private float distance;
 	private Rigidbody rb;
 
-	private Vector2 camera_error;
-	private Vector2 camera_prev_error = Vector2.zero;
-	private Vector2 camera_error_integral = Vector2.zero;
-	private Vector2 camera_error_derivative;
-	private Vector2 camera_adjustment;
+	private GameObject player;
 
-	void Start () {
-		rb = GetComponent<Rigidbody> ();
-		offset = transform.position - player.transform.position;
-	}
+    private Vector3 prev_pos_error;
+    private Vector3 pos_error;
+    private Vector3 pos_integral;
+    private Vector3 pos_derivative;
+    private Vector3 wanted_pos;
+    private Vector3 pos_adjustment;
+    private Vector3 max_pos_adjustment;
+
+
+
+    void Start () {
+        player = GameObject.Find("final_prototype_head");
+        distance = 10.0f;
+        rb = GetComponent<Rigidbody> ();
+        offset = new Vector3(0, 8, -5);
+        offset.Normalize();
+        offset *= distance;
+        transform.position = player.transform.position + offset;
+    }
 
 	void LateUpdate () {
-		//transform.position = player.transform.position + offset;
-		///*
-		Vector3 diff_vec = (player.transform.position + offset) - transform.position;
-		diff_vec.y = 0.0f;
-		distance = diff_vec.magnitude;
-		diff_vec.Normalize();
-		//rb.AddForce (distance);
-		rb.velocity = diff_vec*distance*distance;
-		//*/
 
-		/*
-		Vector3 diff_vec = (player.transform.position + offset) - transform.position;
-		diff_vec.y = 0.0f;
-		distance = diff_vec.magnitude;
-		Vector2 diff_vec_2 = new Vector2 (diff_vec.x, diff_vec.z);
+        wanted_pos = player.transform.position + offset;
+        pos_error = wanted_pos - transform.position;
 
-		camera_error = -diff_vec_2;
+       // pos_integral = pos_integral + pos_error * Time.deltaTime;
+        pos_derivative = (pos_error - prev_pos_error) / Time.deltaTime;
 
-		camera_error_integral = camera_error_integral + camera_error * Time.deltaTime;
-		camera_error_derivative = (camera_error - camera_prev_error) / Time.deltaTime;
+        pos_adjustment = 1.0f * pos_error + /*0.0f * pos_integral +*/ 3.0f * pos_derivative;
 
-		camera_adjustment = 2.0f * camera_error + 3.0f * camera_error_integral + 0.0f * camera_error_derivative;
-		camera_prev_error = camera_error;
+        prev_pos_error = pos_error;
 
-		diff_vec_2 = Vector3.Scale (diff_vec_2, camera_adjustment);
-		diff_vec.x = diff_vec_2.x; diff_vec.z = diff_vec_2.y;	
-		rb.AddForce (diff_vec);
-		//rb.velocity = -diff_vec*camera_adjustment;
-		*/
-	}
+        rb.AddForce(pos_adjustment);
+
+    }
 }
