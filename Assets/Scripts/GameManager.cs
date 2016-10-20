@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
     public GameObject innerRuinObject;
     public GameObject outerRuinObject;
     public GameObject indestructObject;
+    public GameObject rock1Object;
+    public GameObject rock2Object;
     public GameObject treeObject;
     public GameObject gateObject;
 
@@ -328,6 +330,38 @@ public class GameManager : MonoBehaviour
             if (build) // Build if no collide
             {
                 Instantiate(treeObject, position, Quaternion.identity);
+            }
+        }
+
+        for (int y = 0; y < 20; y++)
+        {
+            Vector3 position = targetObject.transform.position; // game objects position
+            while ((targetObject.transform.position - position).magnitude < 2.0f)
+            {
+                position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
+                position.z = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
+                position.y = 0f;
+            }
+
+            Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
+            coll_sphere_position = position;
+
+
+            coll_sphere_position.y += .4f;
+            rock1Object.transform.localScale = new Vector3(10f, 10f, 10f);
+
+            Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
+            int i = 0;
+            bool build = true;
+            while (i < hitColliders.Length) // Check collision
+            {
+                i++;
+                build = false;
+            }
+
+            if (build) // Build if no collide
+            {
+                Instantiate(rock1Object, position, Quaternion.identity);
             }
         }
     }

@@ -18,6 +18,7 @@ public class projectile_collision_destroy : MonoBehaviour {
 
         NavigationScript hit_player = hit.GetComponent<NavigationScript>();
         Base_Combat hit_base = hit.GetComponent<Base_Combat>();
+        Collectable_Combat hit_collectable = hit.GetComponent<Collectable_Combat>();
 
         if (hit_player)
         {
@@ -33,8 +34,15 @@ public class projectile_collision_destroy : MonoBehaviour {
             print("hit base!");
             Base_Combat base_combat = hit.GetComponent<Base_Combat>();
             base_combat.TakeDamage(10);
-
         }
+
+        if (hit_collectable)
+        {
+            print("hit collectable!");
+            Collectable_Combat col_combat = hit.GetComponent<Collectable_Combat>();
+            col_combat.TakeDamage(10);
+        }
+
         Destroy(gameObject);
     }
 

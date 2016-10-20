@@ -25,7 +25,7 @@ public class PlayerCamera : MonoBehaviour {
 
     void Start () {
         player = GameObject.Find("final_prototype_head");
-        distance = 100.0f;
+        distance = 10.0f;
         rb = GetComponent<Rigidbody> ();
         offset = new Vector3(0, 8, -5);
         offset.Normalize();
@@ -41,7 +41,7 @@ public class PlayerCamera : MonoBehaviour {
         pos_integral = pos_integral + pos_error * Time.deltaTime;
         pos_derivative = (pos_error - prev_pos_error) / Time.deltaTime;
 
-        pos_adjustment = 1.0f * pos_error + 0.0f * pos_integral + 5.0f * pos_derivative;
+        pos_adjustment = 1.0f * pos_error + 0.0f * pos_integral + 3.0f * pos_derivative;
 
         prev_pos_error = pos_error;
 
