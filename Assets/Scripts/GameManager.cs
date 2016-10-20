@@ -31,9 +31,6 @@ public class GameManager : MonoBehaviour
     public GameObject treeObject;
     public GameObject gateObject;
 
-
-
-
     const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
     float base_radius = 5;

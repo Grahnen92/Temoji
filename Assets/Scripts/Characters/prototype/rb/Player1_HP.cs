@@ -6,6 +6,7 @@ public class Player1_HP : MonoBehaviour {
     GUIStyle healthStyle;
     GUIStyle backStyle;
     Player_Combat playerCombat;
+    public GameObject playerHead;
 
     void Awake()
     {
@@ -18,7 +19,7 @@ public class Player1_HP : MonoBehaviour {
 
         // Draw a Health Bar
 
-        Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
+        Vector3 pos = Camera.main.WorldToScreenPoint(playerHead.transform.position);
 
         // draw health bar background
         GUI.color = Color.grey;

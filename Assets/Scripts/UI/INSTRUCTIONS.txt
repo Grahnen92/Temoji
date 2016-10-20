@@ -1,0 +1,11 @@
+For Hologram Spawn:
+Add the HologramSpawn prefab to the character object as a child.
+Holograms will spawn at the position that the HologramSpawn GameObject is at.
+
+
+For TargetPointer:
+Add the TargetPointer prefab to the character object as a child.
+	- Make sure to put it in the center of the character object.
+	- Also make sure that its front(blue) axis is aligned with the character's front(blue) axis.
+Adjust the ArrowPosition child object to control where the arrow will be, relative to the character.
+	- Make sure to put the align it's front axis with that of its parent.
