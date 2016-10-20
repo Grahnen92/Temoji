@@ -15,6 +15,8 @@ using System;
     private Vector3 shoot_position;
     private Vector3 relaxed_euler_angles;
     private Vector3 relaxed_position;
+    private ParticleSystem rwingParticles;
+
 
     //private Rigidbody rb_rwing;
     private GameObject fwing;
@@ -26,6 +28,7 @@ using System;
     private bool weapon_charged = false;
     private float charge_timer = 0.0f;
     private const float charge_time = 1.5f;
+    private float chargeRatio;
 
     //movement properties
     public float max_speed;
@@ -69,82 +72,86 @@ using System;
 	private LayerMask default_mask = 1;
 
 	//Materials
-	private GameObject tower_builder_prefab;
-	private Vector3 tmp_pos;
+	//private GameObject tower_builder_prefab;
+	//private Vector3 tmp_pos;
 
-	private List<GameObject> wood = new List<GameObject>();
-	private List<GameObject> stone = new List<GameObject>();
-	private List<GameObject> energy = new List<GameObject>();
+	//private List<GameObject> wood = new List<GameObject>();
+	//private List<GameObject> stone = new List<GameObject>();
+	//private List<GameObject> energy = new List<GameObject>();
 
-	void OnTriggerEnter(Collider col){
-		print (col.name);
-		print (col.tag);
-		if (col.tag == "Stone") {
-			stone.Add (col.gameObject);
-		} else if (col.tag == "Wood") {
-			wood.Add (col.gameObject);
-		} else {
-			energy.Add (col.gameObject);
-		}
+	//void OnTriggerEnter(Collider col){
+	//	print (col.name);
+	//	print (col.tag);
+	//	if (col.tag == "Stone") {
+	//		stone.Add (col.gameObject);
+	//	} else if (col.tag == "Wood") {
+	//		wood.Add (col.gameObject);
+	//	} else {
+	//		energy.Add (col.gameObject);
+	//	}
 			
 		
-	}
-	void OnTriggerExit(Collider col){
-		print (col.name);
-		print (col.tag);
-		if (col.tag == "Stone") {
-			stone.Remove (col.gameObject);
-		} else if (col.tag == "Wood") {
-			wood.Remove (col.gameObject);
-		} else {
-			energy.Remove (col.gameObject);
-		}
-	}
+	//}
+	//void OnTriggerExit(Collider col){
+	//	print (col.name);
+	//	print (col.tag);
+	//	if (col.tag == "Stone") {
+	//		stone.Remove (col.gameObject);
+	//	} else if (col.tag == "Wood") {
+	//		wood.Remove (col.gameObject);
+	//	} else {
+	//		energy.Remove (col.gameObject);
+	//	}
+	//}
 
 	void Start()
 	{
 		rb_head = GetComponent<Rigidbody> ();
 		neck = GameObject.Find("final_prototype_neckjoint");
-		lwing = GameObject.Find("final_prototype_lwing");
+		
 		rwing = GameObject.Find("final_prototype_rwing");
-
         shoot_euler_angles = new Vector3(-10, 85, -92);
         shoot_position = new Vector3(1.05f, -0.331f, -0.9f);
         relaxed_euler_angles = new Vector3(0, 90, 0);
         relaxed_position = new Vector3(0.66f, -0.131f, 0.0f);
+        rwingParticles = rwing.GetComponentInChildren<ParticleSystem>();
 
+        lwing = GameObject.Find("final_prototype_lwing");
         fwing = GameObject.Find("final_prototype_fwing");
 		bwing = GameObject.Find("final_prototype_bwing");
 
 		wing_projectile_prefab = Resources.Load ("final_prototype_wing_projectile") as GameObject;
-		tower_builder_prefab = Resources.Load ("TowerBuilder") as GameObject;
+        //tower_builder_prefab = Resources.Load ("TowerBuilder") as GameObject;
+
+        curr_speed = max_speed;
 	}
 
 	void Update(){
         //build tower
 		if (Input.GetButtonDown ("Jump")) {
-			if (wood.Count > 0 && stone.Count > 0) {
-				GameObject tmpGO = wood [0];
-				tmp_pos = tmpGO.transform.position;
-				wood.RemoveAt (0);
-				Destroy (tmpGO);
+			//if (wood.Count > 0 && stone.Count > 0) {
+			//	GameObject tmpGO = wood [0];
+			//	tmp_pos = tmpGO.transform.position;
+			//	wood.RemoveAt (0);
+			//	Destroy (tmpGO);
 
-				tmpGO = stone [0];
-				tmp_pos += tmpGO.transform.position;
-				stone.RemoveAt (0);
-				Destroy (tmpGO);
-				print ("starting to build tower");
-				GameObject tower_builder = Instantiate (tower_builder_prefab) as GameObject;
-				tmp_pos.y = 2.0f;
-				tmp_pos = tmp_pos / 2.0f;
-				tower_builder.transform.position = tmp_pos;
+			//	tmpGO = stone [0];
+			//	tmp_pos += tmpGO.transform.position;
+			//	stone.RemoveAt (0);
+			//	Destroy (tmpGO);
+			//	print ("starting to build tower");
+			//	GameObject tower_builder = Instantiate (tower_builder_prefab) as GameObject;
+			//	tmp_pos.y = 2.0f;
+			//	tmp_pos = tmp_pos / 2.0f;
+			//	tower_builder.transform.position = tmp_pos;
 
-			}
+			//}
 				
 		}
 
         if (!weapon_charged)
         {
+            chargeRatio = (charge_timer) / charge_time;
             charge_timer += Time.deltaTime;
             if (charge_timer > charge_time)
             {
@@ -152,17 +159,20 @@ using System;
             }
         }
 
-        if (Input.GetButtonDown("Fire2")) {
+        if (Input.GetButtonDown("Fire2"))
+        {
             Destroy(rwing.GetComponent<HingeJoint>());
             Destroy(rwing.GetComponent<Rigidbody>());
             rwing.transform.localEulerAngles = shoot_euler_angles;
             rwing.transform.localPosition = shoot_position;
 
             //current_weapon = Instantiate (certain_weapon);
-        } else if (Input.GetButton("Fire2")) {
-
-            float ict = (charge_timer) / charge_time;
-            rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time*150)*0.03f * ict * ict, Mathf.Sin(Time.time * 150) * 0.03f * ict * ict, 0.45f * ict * ict + Mathf.Sin(Time.time * 150) * 0.03f * ict * ict);
+        }
+        else if (Input.GetButton("Fire2"))
+        {
+            var em = rwingParticles.emission;//.rate = chargeRatio * 500;
+            em.rate = chargeRatio * 500;
+            rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio, Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio, 0.45f * chargeRatio * chargeRatio + Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio);
 
             if (weapon_charged)
             {
@@ -180,6 +190,9 @@ using System;
 
                     weapon_charged = false;
                     charge_timer = 0.0f;
+                    var em2 = rwingParticles.emission;//.rate = chargeRatio * 500;
+                    em2.rate = 0;
+                    rwingParticles.Clear();
                 }
             }
             else
@@ -188,7 +201,9 @@ using System;
             }
 
 
-        } else if (Input.GetButtonUp("Fire2")) {
+        }
+        else if (Input.GetButtonUp("Fire2"))
+        {
             rwing.transform.localEulerAngles = relaxed_euler_angles;
             rwing.transform.localPosition = relaxed_position;
             Rigidbody tmp_rb = rwing.AddComponent<Rigidbody>();
@@ -204,7 +219,111 @@ using System;
             JointSpring tmp_spring = tmp_hj.spring;
             tmp_spring.spring = 50;
             tmp_hj.spring = tmp_spring;
-        } else if (Input.GetButtonDown("OpenWings")) {
+
+            var em3 = rwingParticles.emission;//.rate = chargeRatio * 500;
+            em3.rate = 0;
+            rwingParticles.Clear();
+        }
+        else if (Input.GetButtonDown("Fire1"))
+        {
+            Destroy(rwing.GetComponent<HingeJoint>());
+            //Destroy (rwing.GetComponent<Rigidbody> ());
+            rwing.transform.localEulerAngles = new Vector3(0, 50, 0);
+            rwing.transform.localPosition = new Vector3(0.9f, 0.6f, 0.48f);
+            // Rigidbody tmp_rb = rwing.AddComponent<Rigidbody>();
+            // tmp_rb.angularDrag = 30;
+            FixedJoint tmp_hj = rwing.AddComponent<FixedJoint>();
+            tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+            tmp_hj.autoConfigureConnectedAnchor = true;
+
+
+            Destroy(lwing.GetComponent<HingeJoint>());
+            //Destroy (lwing.GetComponent<Rigidbody> ());
+            lwing.transform.localEulerAngles = new Vector3(0, -50, 0);
+            lwing.transform.localPosition = new Vector3(-0.9f, 0.6f, 0.48f);
+            // tmp_rb = rwing.AddComponent<Rigidbody>();
+            // tmp_rb.angularDrag = 30;
+            tmp_hj = lwing.AddComponent<FixedJoint>();
+            tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+            tmp_hj.autoConfigureConnectedAnchor = true;
+
+            Destroy(fwing.GetComponent<HingeJoint>());
+            //Destroy (fwing.GetComponent<Rigidbody> ());
+            fwing.transform.localEulerAngles = new Vector3(0, 0, 0);
+            fwing.transform.localPosition = new Vector3(0, 0.6f, 0.9f);
+            // tmp_rb = rwing.AddComponent<Rigidbody>();
+            // tmp_rb.angularDrag = 30;
+            tmp_hj = fwing.AddComponent<FixedJoint>();
+            tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+            tmp_hj.autoConfigureConnectedAnchor = true;
+
+            bwing.GetComponent<Rigidbody>().mass = 3;
+
+        }
+        else if (Input.GetButton("Fire1")) {
+        }
+        else if (Input.GetButtonUp("Fire1"))
+        {
+
+            Destroy(rwing.GetComponent<FixedJoint>());
+            rwing.transform.localEulerAngles = new Vector3(0, 90, 0);
+            rwing.transform.localPosition = new Vector3(0.66f, -0.131f, 0.0f);
+            //Rigidbody tmp_rb = rwing.AddComponent<Rigidbody> ();
+            //tmp_rb.angularDrag = 30;
+            HingeJoint tmp_hj = rwing.AddComponent<HingeJoint>();
+            tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+            tmp_hj.autoConfigureConnectedAnchor = true;
+            tmp_hj.useLimits = true;
+            JointLimits tmp_lim = tmp_hj.limits;
+            tmp_lim.min = -50;
+            tmp_hj.limits = tmp_lim;
+            tmp_hj.useSpring = true;
+            JointSpring tmp_spring = tmp_hj.spring;
+            tmp_spring.spring = 50;
+            tmp_hj.spring = tmp_spring;
+
+            Destroy(lwing.GetComponent<FixedJoint>());
+            lwing.transform.localEulerAngles = new Vector3(0, -90, 0);
+            lwing.transform.localPosition = new Vector3(-0.66f, -0.131f, 0.0f);
+            //tmp_rb = lwing.AddComponent<Rigidbody> ();
+            //tmp_rb.angularDrag = 30;
+            tmp_hj = lwing.AddComponent<HingeJoint>();
+            tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+            tmp_hj.autoConfigureConnectedAnchor = true;
+            tmp_hj.useLimits = true;
+            tmp_lim = tmp_hj.limits;
+            tmp_lim.min = -50;
+            tmp_hj.limits = tmp_lim;
+            tmp_hj.useSpring = true;
+            tmp_spring = tmp_hj.spring;
+            tmp_spring.spring = 50;
+            tmp_hj.spring = tmp_spring;
+
+            Destroy(fwing.GetComponent<FixedJoint>());
+            fwing.transform.localEulerAngles = new Vector3(0, 0, 0);
+            fwing.transform.localPosition = new Vector3(0.0f, -0.131f, 0.66f);
+            //tmp_rb = fwing.AddComponent<Rigidbody> ();
+            //tmp_rb.angularDrag = 30;
+            tmp_hj = fwing.AddComponent<HingeJoint>();
+            tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
+            tmp_hj.autoConfigureConnectedAnchor = true;
+            tmp_hj.useLimits = true;
+            tmp_lim = tmp_hj.limits;
+            tmp_lim.min = -50;
+            tmp_hj.limits = tmp_lim;
+            tmp_hj.useSpring = true;
+            tmp_spring = tmp_hj.spring;
+            tmp_spring.spring = 50;
+            tmp_hj.spring = tmp_spring;
+
+            bwing.GetComponent<Rigidbody>().mass = 1;
+
+        }
+        else if (Input.GetButtonDown("Fire3"))
+        {
+
+            curr_speed = max_speed * 0.5f;
+
             rwing.GetComponent<HingeJoint>().useMotor = true;
             JointMotor tmp_mot = rwing.GetComponent<HingeJoint>().motor;
             tmp_mot.targetVelocity = -70;
@@ -219,110 +338,23 @@ using System;
 
             bwing.GetComponent<HingeJoint>().useMotor = true;
             bwing.GetComponent<HingeJoint>().motor = tmp_mot;
-
-            wanted_hight = 2.1f;
+            
 
         }
-        else if (Input.GetButtonUp("OpenWings"))
+        else if (Input.GetButtonUp("Fire3"))
         {
+            curr_speed = max_speed;
             rwing.GetComponent<HingeJoint>().useMotor = false;
             lwing.GetComponent<HingeJoint>().useMotor = false;
             fwing.GetComponent<HingeJoint>().useMotor = false;
             bwing.GetComponent<HingeJoint>().useMotor = false;
 
             wings_closed_recently = true;
-        } else {
-            if (Input.GetButtonDown("Fire1")) {
-                Destroy(rwing.GetComponent<HingeJoint>());
-                //Destroy (rwing.GetComponent<Rigidbody> ());
-                rwing.transform.localEulerAngles = new Vector3(0, 50, 0);
-                rwing.transform.localPosition = new Vector3(0.9f, 0.6f, 0.48f);
-                // Rigidbody tmp_rb = rwing.AddComponent<Rigidbody>();
-                // tmp_rb.angularDrag = 30;
-                FixedJoint tmp_hj = rwing.AddComponent<FixedJoint>();
-                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
-                tmp_hj.autoConfigureConnectedAnchor = true;
+            if (!Input.GetButton("Jump"))
+                wanted_hight = 2.1f;
 
-
-                Destroy(lwing.GetComponent<HingeJoint>());
-                //Destroy (lwing.GetComponent<Rigidbody> ());
-                lwing.transform.localEulerAngles = new Vector3(0, -50, 0);
-                lwing.transform.localPosition = new Vector3(-0.9f, 0.6f, 0.48f);
-                // tmp_rb = rwing.AddComponent<Rigidbody>();
-                // tmp_rb.angularDrag = 30;
-                tmp_hj = lwing.AddComponent<FixedJoint>();
-                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
-                tmp_hj.autoConfigureConnectedAnchor = true;
-
-                Destroy(fwing.GetComponent<HingeJoint>());
-                //Destroy (fwing.GetComponent<Rigidbody> ());
-                fwing.transform.localEulerAngles = new Vector3(0, 0, 0);
-                fwing.transform.localPosition = new Vector3(0, 0.6f, 0.9f);
-                // tmp_rb = rwing.AddComponent<Rigidbody>();
-                // tmp_rb.angularDrag = 30;
-                tmp_hj = fwing.AddComponent<FixedJoint>();
-                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
-                tmp_hj.autoConfigureConnectedAnchor = true;
-
-                bwing.GetComponent<Rigidbody>().mass = 3;
-
-            } else if (Input.GetButtonUp("Fire1")) {
-
-                Destroy(rwing.GetComponent<FixedJoint>());
-                rwing.transform.localEulerAngles = new Vector3(0, 90, 0);
-                rwing.transform.localPosition = new Vector3(0.66f, -0.131f, 0.0f);
-                //Rigidbody tmp_rb = rwing.AddComponent<Rigidbody> ();
-                //tmp_rb.angularDrag = 30;
-                HingeJoint tmp_hj = rwing.AddComponent<HingeJoint>();
-                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
-                tmp_hj.autoConfigureConnectedAnchor = true;
-                tmp_hj.useLimits = true;
-                JointLimits tmp_lim = tmp_hj.limits;
-                tmp_lim.min = -50;
-                tmp_hj.limits = tmp_lim;
-                tmp_hj.useSpring = true;
-                JointSpring tmp_spring = tmp_hj.spring;
-                tmp_spring.spring = 50;
-                tmp_hj.spring = tmp_spring;
-
-                Destroy(lwing.GetComponent<FixedJoint>());
-                lwing.transform.localEulerAngles = new Vector3(0, -90, 0);
-                lwing.transform.localPosition = new Vector3(-0.66f, -0.131f, 0.0f);
-                //tmp_rb = lwing.AddComponent<Rigidbody> ();
-                //tmp_rb.angularDrag = 30;
-                tmp_hj = lwing.AddComponent<HingeJoint>();
-                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
-                tmp_hj.autoConfigureConnectedAnchor = true;
-                tmp_hj.useLimits = true;
-                tmp_lim = tmp_hj.limits;
-                tmp_lim.min = -50;
-                tmp_hj.limits = tmp_lim;
-                tmp_hj.useSpring = true;
-                tmp_spring = tmp_hj.spring;
-                tmp_spring.spring = 50;
-                tmp_hj.spring = tmp_spring;
-
-                Destroy(fwing.GetComponent<FixedJoint>());
-                fwing.transform.localEulerAngles = new Vector3(0, 0, 0);
-                fwing.transform.localPosition = new Vector3(0.0f, -0.131f, 0.66f);
-                //tmp_rb = fwing.AddComponent<Rigidbody> ();
-                //tmp_rb.angularDrag = 30;
-                tmp_hj = fwing.AddComponent<HingeJoint>();
-                tmp_hj.connectedBody = neck.GetComponent<Rigidbody>();
-                tmp_hj.autoConfigureConnectedAnchor = true;
-                tmp_hj.useLimits = true;
-                tmp_lim = tmp_hj.limits;
-                tmp_lim.min = -50;
-                tmp_hj.limits = tmp_lim;
-                tmp_hj.useSpring = true;
-                tmp_spring = tmp_hj.spring;
-                tmp_spring.spring = 50;
-                tmp_hj.spring = tmp_spring;
-
-                bwing.GetComponent<Rigidbody>().mass = 1;
-
-            }
         }
+
 
 
         //Jump ==============================================================================
@@ -436,13 +468,8 @@ using System;
 		float moveH = Input.GetAxis ("Horizontal");
 		float moveV = Input.GetAxis ("Vertical");
 
-		//sprint
-		if (Input.GetButton ("Fire3"))
-			curr_speed = max_speed * 2.0f;
-		else
-			curr_speed = max_speed;
 
-		Vector3 wanted_velocity = new Vector3(moveH, 0, moveV) * curr_speed;
+		Vector3 wanted_velocity = new Vector3(moveH, 0, moveV).normalized * curr_speed;
 		Vector3 velocity_diff = wanted_velocity - planar_velocity;
 
 		float diff_magnitude = velocity_diff.magnitude;
