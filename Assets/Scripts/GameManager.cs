@@ -294,15 +294,20 @@ public class GameManager : MonoBehaviour
     ------------------------------------------------   */
     void generateCollectibles()
     {
-        for (int y = 0; y < 10; y++)
+        for (int y = 0; y < 40; y++)
         {
-            Vector3 position = new Vector3(); // game objects position
-            position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-            position.z = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-            position.y = 0f;
+            Vector3 position = targetObject.transform.position; // game objects position
+            while ((targetObject.transform.position - position).magnitude < 2.0f)
+            {
+                position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
+                position.z = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
+                position.y = 0f;
+            }
 
             Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
             coll_sphere_position = position;
+
+
             coll_sphere_position.y += .4f;
             treeObject.transform.localScale = new Vector3(30f, 40f, 30f);
 
