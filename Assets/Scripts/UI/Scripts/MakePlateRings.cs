@@ -9,37 +9,32 @@ public class MakePlateRings : MonoBehaviour {
     public Direction rotation;
     public int plateCount;
     public bool lookAtCenter;
+    public float rotationSpeed;
 
     public enum Direction { Clockwise, CounterClock };
     public enum Axis { x, y, z };
-    GameObject center;
-    Transform pos;
+
 
     // Use this for initialization
     void Start() {
-        center = this.gameObject;
-        pos = center.transform;
+        Vector3 pos = transform.position;
 
-        Vector3[] points = GenerateCirclePts(pos.position, radius, plateCount, Axis.z);
+        Vector3[] points = GenerateCirclePts(pos, radius, plateCount, Axis.z);
         foreach (Vector3 pt in points)
         {
             plate = Instantiate(plate);
-            plate.transform.parent = center.transform;
+            plate.transform.parent = this.transform;
             plate.transform.position = pt;
             if(lookAtCenter) plate.transform.LookAt(pos);
         }
-        //plate = Instantiate(plate);
-        //plate.transform.parent = center.transform;
-        //plate.transform.position = points[0];
-        //plate = Instantiate(plate);
-        //plate.transform.parent = center.transform;
-        //plate.transform.position = points[1];
-
     }
 
     // Update is called once per frame
     void Update() {
-        center.transform.Rotate(0, 0, 1);
+        if (rotation == Direction.Clockwise)
+            transform.Rotate(0, 0, rotationSpeed);
+        else
+            transform.Rotate(0, 0, -rotationSpeed);
     }
 
     // Axis: (x,0), (y,1), (z,2)
