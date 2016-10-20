@@ -27,9 +27,11 @@ public class TowerSelector : MonoBehaviour {
 
     // Just the model alone, without any additional components. 
     // Add additional fields as needed
+    private const int nrOfModels = 3;
     public GameObject model1;
     public GameObject model2;
     public GameObject model3;
+    public GameObject uiRing;
 
     // Key to press that will show the holograms
     public KeyCode startBuildKey = KeyCode.F;
@@ -40,31 +42,160 @@ public class TowerSelector : MonoBehaviour {
     public KeyCode tower3key = KeyCode.Alpha3;
 
     // Set transparency of models NOTE: Material must support transparency
-    public float transparency = 0.5f;
+    public float transparency = 0.3f;
 
     // Lists for storing all models and instantiated towers
     List<GameObject> modelList = new List<GameObject>();
     List<GameObject> modInstances = new List<GameObject>();
+    private int[] activeModels = new int[nrOfModels];
+    GameObject uiRingInstance;
 
     // True when showing hologram
     bool showing = false;
 
     // Index of currently selected tower
     // This attribute is public to let other classes know which tower is currently selected.
-    public int selectedTower = 0; 
+    public int selectedTower = 0;
 
-	void Start () {
+    //Materials
+    private List<GameObject> wood = new List<GameObject>();
+    private List<GameObject> stone = new List<GameObject>();
+    private List<GameObject> energy = new List<GameObject>();
+
+    public GameObject tower_builder;
+    private Vector3 tmp_pos;
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.tag == "Stone")
+        {
+            stone.Add(col.gameObject);
+
+            //var renderers = modInstances[0].GetComponentsInChildren<Renderer>();
+            //Color tmp_color;
+            //foreach (var r in renderers)
+            //{
+            //    tmp_color = r.material.color;
+            //    tmp_color.a = transparency;
+            //}
+        }
+        else if (col.tag == "Wood")
+        {
+            wood.Add(col.gameObject);
+        }
+        else
+        {
+            energy.Add(col.gameObject);
+        }
+
+        if (wood.Count > 0 && stone.Count > 0)
+        {
+            if (activeModels[1] == 0)
+            {
+                showModel(1);
+                activeModels[1] = 1;
+            }
+             
+        }
+
+        if (energy.Count > 0 && stone.Count > 0)
+        {
+            if (activeModels[0] == 0)
+            {
+                showModel(0);
+                activeModels[0] = 1;
+            }
+
+        }
+        if (stone.Count > 0)
+        {
+            if (activeModels[2] == 0)
+            {
+                showModel(2);
+                activeModels[2] = 1;
+            }
+
+        }
+
+
+    }
+    void OnTriggerExit(Collider col)
+    {
+        if (col.tag == "Stone")
+        {
+            stone.Remove(col.gameObject);
+        }
+        else if (col.tag == "Wood")
+        {
+            wood.Remove(col.gameObject);
+        }
+        else
+        {
+            energy.Remove(col.gameObject);
+        }
+
+        if (wood.Count < 1 || stone.Count < 1)
+        {
+            if (activeModels[1] == 1)
+            {
+                hideModel(1);
+                activeModels[1] = 0;
+            }
+
+        }
+        if (energy.Count < 1 || stone.Count < 1)
+        {
+            if (activeModels[0] == 1)
+            {
+                hideModel(0);
+                activeModels[0] = 0;
+            }
+
+        }
+        if (stone.Count < 1)
+        {
+            if (activeModels[2] == 1)
+            {
+                hideModel(2);
+                activeModels[2] = 0;
+            }
+
+        }
+    }
+
+    void Start () {
         // Add additional lines here if adding additional models
+
+        for (int i = 0; i < nrOfModels; i++)
+        {
+            activeModels[i] = 0;
+        }
+
+        uiRingInstance =  Instantiate(uiRing);
+        uiRingInstance.transform.parent = transform;
+        uiRingInstance.transform.position = spawnPt.position;
+        uiRingInstance.transform.localScale = new Vector3(7.8f, 7.8f, 7.8f);
+        Renderer tmp_renderer = uiRingInstance.GetComponent<Renderer>();
+        tmp_renderer.enabled = false;
+        Color tmp_color = tmp_renderer.material.color;
+        tmp_color.a = transparency;
+        uiRingInstance.GetComponent<Renderer>().material.color = tmp_color;
+
+
         modelList.Add(model1);
         modelList.Add(model2);
         modelList.Add(model3);
 
-        foreach (GameObject go in modelList)
+        for(int i = 0; i < modelList.Count; i++)
         {
-            GameObject modInst = Instantiate(go);
+            GameObject modInst = Instantiate(modelList[i]);
             modInstances.Add(modInst);
             modInst.transform.parent = this.transform;
-            modInst.transform.position = spawnPt.position;
+            Vector3 tmpVec = new Vector3(Mathf.Cos((2.0f*Mathf.PI / modelList.Count) * i), 0.0f, Mathf.Sin((2.0f * Mathf.PI / modelList.Count) * i)) * 2;
+            modInst.transform.position = spawnPt.position + tmpVec;
+
+            print(tmpVec);
+            print((Mathf.PI / modelList.Count) * i);
 
             // Making object invisible and transparent
             var renderers = modInst.GetComponentsInChildren<Renderer>();
@@ -74,7 +205,8 @@ public class TowerSelector : MonoBehaviour {
 
                 // Making the object transparent NOTE: Material for model must support transparency
                 Color c = r.material.color;
-                c.a = transparency;
+                //c.a = transparency;
+                c.a = 0.0f;
                 r.material.color = c;
             }
         }
@@ -88,37 +220,76 @@ public class TowerSelector : MonoBehaviour {
             else
                 hideHolograms();
         }
+        else if (Input.GetKeyUp(startBuildKey))
+        {
+            if (!showing)
+                showHolograms();
+            else
+                hideHolograms();
+        }
 
         // Checking for keypresses indicating a switch of model
         if (showing)
         {
             if (Input.GetKeyDown(tower1Key))
             {
-                switchModel(0);
+                // switchModel(0);
+                if (activeModels[1] > 0)
+                {
+                    GameObject tmpGO = wood[0];
+                    //tmp_pos = tmpGO.transform.position;
+                    wood.RemoveAt(0);
+                    Destroy(tmpGO);
+
+                    tmpGO = stone[0];
+                    //tmp_pos += tmpGO.transform.position;
+                    stone.RemoveAt(0);
+                    Destroy(tmpGO);
+                    print("starting to build tower");
+                    GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
+                    //tmp_pos.y = 2.0f;
+                    //tmp_pos = tmp_pos / 2.0f;
+                    towerBuilderInstance.transform.position = transform.position + Vector3.up;
+
+                }
             }
             else if (Input.GetKeyDown(tower2Key))
             {
-                switchModel(1);
+               // switchModel(1);
             }
             else if (Input.GetKeyDown(tower3key))
             {
-                switchModel(2);
+               // switchModel(2);
             }
         }
 	}
 
+    void LateUpdate()
+    {
+
+        Vector3 tmpAng;
+        tmpAng = transform.localEulerAngles;
+        //tmpAng.x = 0;
+        //tmpAng.y = -90;
+        //tmpAng.z = 90;
+        transform.localEulerAngles = tmpAng;
+    }
+
     // Make the models visible
     void showHolograms()
     {
+        uiRingInstance.GetComponent<Renderer>().enabled = true;
         showing = true;
-        showModel(selectedTower);
+        showModels();
+ 
     }
 
     // Make the models invisible
     void hideHolograms()
     {
+        uiRingInstance.GetComponent<Renderer>().enabled = false;
         showing = false;
-        hideModel(selectedTower);
+        hideModels();
     }
 
     // Switch which model is visible
@@ -133,20 +304,61 @@ public class TowerSelector : MonoBehaviour {
     // Show a model
     void showModel(int model)
     {
+        //var renderers = modInstances[model].GetComponentsInChildren<Renderer>();
+        //foreach (var r in renderers)
+        //{
+        //    r.enabled = true;
+        //}
         var renderers = modInstances[model].GetComponentsInChildren<Renderer>();
+        Color tmp_color;
         foreach (var r in renderers)
         {
-            r.enabled = true;
+            tmp_color = r.material.color;
+            tmp_color.a = transparency;
+            r.material.color = tmp_color;
         }
+    }
+    void showModels()
+    {
+        
+        foreach (var mod in modInstances)
+        {
+            var renderers = mod.GetComponentsInChildren<Renderer>();
+            foreach (var r in renderers)
+            {
+                r.enabled = true;
+            }
+        }
+        
     }
 
     // Hide a model
     void hideModel(int model)
     {
-        var renderers = modInstances[selectedTower].GetComponentsInChildren<Renderer>();
+        //var renderers = modInstances[selectedTower].GetComponentsInChildren<Renderer>();
+        //foreach (var r in renderers)
+        //{
+        //    r.enabled = false;
+        //}
+        var renderers = modInstances[model].GetComponentsInChildren<Renderer>();
+        Color tmp_color;
         foreach (var r in renderers)
         {
-            r.enabled = false;
+            tmp_color = r.material.color;
+            tmp_color.a = 0;
+            r.material.color = tmp_color;
+        }
+    }
+
+    void hideModels()
+    {
+        foreach (var mod in modInstances)
+        {
+            var renderers = mod.GetComponentsInChildren<Renderer>();
+            foreach (var r in renderers)
+            {
+                r.enabled = false;
+            }
         }
     }
 }
