@@ -5,16 +5,12 @@ using System;
 
 
 public class PlayerCamera : MonoBehaviour {
-	private Vector3 offset;
-	private Vector3 diff_vec;
+
+
+    private Vector3 offset;
 	private float distance;
 	private Rigidbody rb;
 
-	private Vector2 camera_error;
-	private Vector2 camera_prev_error = Vector2.zero;
-	private Vector2 camera_error_integral = Vector2.zero;
-	private Vector2 camera_error_derivative;
-	private Vector2 camera_adjustment;
 	private GameObject player;
 
     private Vector3 prev_pos_error;
@@ -25,11 +21,15 @@ public class PlayerCamera : MonoBehaviour {
     private Vector3 pos_adjustment;
     private Vector3 max_pos_adjustment;
 
+
+
     void Start () {
         player = GameObject.Find("final_prototype_head");
-
+        distance = 100.0f;
         rb = GetComponent<Rigidbody> ();
         offset = new Vector3(0, 8, -5);
+        offset.Normalize();
+        offset *= distance;
         transform.position = player.transform.position + offset;
     }
 
