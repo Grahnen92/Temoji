@@ -71,39 +71,6 @@ using System;
 	private GameObject wing_projectile_prefab;
 	private LayerMask default_mask = 1;
 
-	//Materials
-	//private GameObject tower_builder_prefab;
-	//private Vector3 tmp_pos;
-
-	//private List<GameObject> wood = new List<GameObject>();
-	//private List<GameObject> stone = new List<GameObject>();
-	//private List<GameObject> energy = new List<GameObject>();
-
-	//void OnTriggerEnter(Collider col){
-	//	print (col.name);
-	//	print (col.tag);
-	//	if (col.tag == "Stone") {
-	//		stone.Add (col.gameObject);
-	//	} else if (col.tag == "Wood") {
-	//		wood.Add (col.gameObject);
-	//	} else {
-	//		energy.Add (col.gameObject);
-	//	}
-			
-		
-	//}
-	//void OnTriggerExit(Collider col){
-	//	print (col.name);
-	//	print (col.tag);
-	//	if (col.tag == "Stone") {
-	//		stone.Remove (col.gameObject);
-	//	} else if (col.tag == "Wood") {
-	//		wood.Remove (col.gameObject);
-	//	} else {
-	//		energy.Remove (col.gameObject);
-	//	}
-	//}
-
 	void Start()
 	{
 		rb_head = GetComponent<Rigidbody> ();
@@ -127,27 +94,6 @@ using System;
 	}
 
 	void Update(){
-        //build tower
-		if (Input.GetButtonDown ("Jump")) {
-			//if (wood.Count > 0 && stone.Count > 0) {
-			//	GameObject tmpGO = wood [0];
-			//	tmp_pos = tmpGO.transform.position;
-			//	wood.RemoveAt (0);
-			//	Destroy (tmpGO);
-
-			//	tmpGO = stone [0];
-			//	tmp_pos += tmpGO.transform.position;
-			//	stone.RemoveAt (0);
-			//	Destroy (tmpGO);
-			//	print ("starting to build tower");
-			//	GameObject tower_builder = Instantiate (tower_builder_prefab) as GameObject;
-			//	tmp_pos.y = 2.0f;
-			//	tmp_pos = tmp_pos / 2.0f;
-			//	tower_builder.transform.position = tmp_pos;
-
-			//}
-				
-		}
 
         if (!weapon_charged)
         {
