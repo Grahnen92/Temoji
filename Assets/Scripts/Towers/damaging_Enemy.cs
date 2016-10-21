@@ -15,6 +15,6 @@ public class damaging_Enemy : MonoBehaviour {
             //if (transform.position.x > -3)
             //    Destroy(gameObject);
         }
-	}
+    }
 
 }

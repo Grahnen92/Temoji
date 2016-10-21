@@ -4,25 +4,54 @@ using System.Collections.Generic;
 
 public class damaging_Tower : MonoBehaviour {
     public GameObject dBullet;//bulletPrefab
-    float bulletSpeed = 0.8f;
+    double bulletSpeed = 0.8;
     bool activeShooting = false;//Must have this flag, otherwise "spawnBullet" will be invoked many times, actually increasing frequency!!!
     List<GameObject> enemyList = new List<GameObject>();//put entering enemies into a list, linked one by one according to entering sequence,
                                                         //always take the top one, if any one out/die, it will be removed from the list
-    void Start() { }
+    List<GameObject> bulletList = new List<GameObject>();
+    ///height hovering
+    double[] height_target = new double[4] { 2.7, 1.8, 1.2, 0.7 };
+    double[] height_current = new double[4];
+    double[] height_error = new double[4];
+    double[] height_error_pre = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    double[] height_integral = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    double[] height_derivative = new double[4];
+    double[] height_adjustment = new double[4];
+    double[] height_adjustment_max = new double[4] { 0.04, 0.04, 0.04, 0.04 };
+
+    /*//radius hovering
+    double[] radius_target = new double[4] { 0, 2, 1, 0 };
+    double[] radius_current = new double[4];
+    double[] radius_error = new double[4];
+    double[] radius_error_pre = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    double[] radius_integral = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    double[] radius_derivative = new double[4];
+    double[] radius_adjustment = new double[4];
+    double[] radius_adjustment_max = new double[4] { 1, 1, 1, 1 };//?????
+    Vector2[] radius_normal_out = new Vector2[4];
+    Vector2[] radius_normal_in = new Vector2[4];
+    */
+    
+
+    void Start()
+    {
+        //first 4 bullets: bulletList[0], bulletList[1], bulletList[2], bulletList[3]
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(1).position, transform.GetChild(1).localRotation) as GameObject);//create an empty GameObject as a child of cannon
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(2).position, transform.GetChild(2).localRotation) as GameObject);
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(3).position, transform.GetChild(3).localRotation) as GameObject);
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);
+    }
 
     void spawnBullet()
     {
         Vector3 direction = transform.GetChild(1).forward;
-        print(direction);
-        GameObject tmp_bullet=Instantiate(dBullet, transform.GetChild(1).position, transform.GetChild(1).localRotation) as GameObject;//create an empty GameObject as a child of cannon, 
-        /*                                                                                                                              //position it at the face of cannon
-        if (tmp_bullet.transform.position.y < 10.6)
-        {
-            transform.Translate(transform.TransformVector(0, 0.5f, 0) * Time.deltaTime);
-            tmp_bullet.transform.Translate(0, 1, 0);
-        }
-        */
-        tmp_bullet.GetComponent<Rigidbody>().AddForce(direction * bulletSpeed);
+        print("direction: " + direction);
+        
+        bulletList[0].GetComponent<Rigidbody>().useGravity = false;
+        bulletList[0].GetComponent<Rigidbody>().AddForce(direction * (float)bulletSpeed);
+        bulletList.Remove(bulletList[0]);
+
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);//create an empty GameObject as a child of cannon
     }
 
     //SituationI[1 enemy OR 2 enemies(enemy[0] or enemy[1] escape/die first), 1 cannon]
@@ -98,10 +127,47 @@ public class damaging_Tower : MonoBehaviour {
             if (enemyList.Count != 0)
                 print("enemyNewHead: " + enemyList[0]);
         }
+        ///*
+        if(bulletList[0] != null)
+        {
+            transform.GetChild(5).Rotate(0, -80 * Time.deltaTime, 0);
+            for (int i = 0; i < 4; i++)
+            {
+                //Rotation
+                bulletList[i].transform.Rotate(0, -90 * Time.deltaTime, 0);
+
+                //height hovering
+                height_current[i] = bulletList[i].transform.position.y;
+                height_error[i] = height_target[i] - height_current[i];
+                height_integral[i] += height_error[i] * Time.deltaTime;
+                height_derivative[i] = (height_error[i] - height_error_pre[i]) / Time.deltaTime;
+
+                height_adjustment[i] = 100.0 * height_error[i] + 0.0 * height_integral[i] + 50.0 * height_derivative[i];//how to adjust?
+                height_adjustment[i] = Mathf.Min(Mathf.Max(0.0f, (float)height_adjustment[i]), (float)height_adjustment_max[i]);
+                bulletList[i].GetComponent<Rigidbody>().AddForce(Vector3.up * (float)height_adjustment[i]);
+                height_error_pre[i] = height_error[i];
+
+                //bulletList[i].transform.RotateAround(transform.position, Vector3.up, -60 * Time.deltaTime);
+
+                ////radius_out
+                //radius_normal_out[i].x = bulletList[i].transform.position.x - transform.position.x;
+                //radius_normal_out[i].y = bulletList[i].transform.position.z - transform.position.z;
+                //bulletList[i].GetComponent<Rigidbody>().AddForce(radius_normal_out[i]);
+
+                ////radius hovering
+                //radius_normal_in[i].x = transform.position.x - bulletList[i].transform.position.x;
+                //radius_normal_in[i].y = transform.position.z - bulletList[i].transform.position.z;
+                //radius_current[i] = Mathf.Sqrt(Mathf.Pow(bulletList[i].transform.position.x, 2) + Mathf.Pow(bulletList[i].transform.position.z, 2));
+                //radius_error[i] = radius_target[i] - radius_current[i];
+                //radius_integral[i] += radius_error[i] * Time.deltaTime;
+                //radius_derivative[i] = (radius_error[i] - radius_error_pre[i]) / Time.deltaTime;
+
+                //radius_adjustment[i] = 100.0 * radius_error[i] + 0.0 * radius_integral[i] + 50.0 * radius_derivative[i];//how to adjust?
+                //radius_adjustment[i] = Mathf.Min(Mathf.Max(0.0f, (float)radius_adjustment[i]), (float)radius_adjustment_max[i]);
+
+                //bulletList[i].GetComponent<Rigidbody>().AddForce(radius_normal_in[i] * (float)radius_adjustment[i]);
+                //radius_error_pre[i] = radius_error[i];
+            }
+        }
     }
-
-
-    //SituationII[1 enemy OR 2 enemies(enemy[0] or enemy[1] escape/die first), 2 cannons]
-    //if more than 1 cannon, all the functions(spawnBullet, OnTriggerEnter, OnTriggerStay, OnTriggerExit, Update)
-    //will be on cannons instead of tower, and get rid of "GetChild(1)"
 }
