@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public GameObject rock2Object;
     public GameObject treeObject;
     public GameObject gateObject;
+    public static bool base_alive = false;
 
     const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
@@ -68,7 +69,10 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!base_alive)
+        {
+            CancelInvoke();
+        }
     }
 
     public Vector3 initialBase(GameObject BasePrefab, float BaseSize)
@@ -82,6 +86,7 @@ public class GameManager : MonoBehaviour
 
 
         GameObject hej = (GameObject)Instantiate(BasePrefab, position, Quaternion.identity);
+        base_alive = true;
         NavigationScript.setBase(hej);
         return position;
     }
