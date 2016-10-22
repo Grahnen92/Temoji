@@ -15,7 +15,7 @@ public class Base_Combat : MonoBehaviour {
         {
             health = 0;
             Debug.Log("Dead!");
-
+            GameManager.base_alive = false;
             Destroy(gameObject);
         }
     }
