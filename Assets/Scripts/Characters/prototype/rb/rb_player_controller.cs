@@ -5,11 +5,17 @@ using System;
 
     public class rb_player_controller : MonoBehaviour {
 
-    private int nrOfStates;
-    private bool[] characterStates;
+    
+    //0 = aim
+    //1 = shield
+    //2 = openWings
+    private state[] characterStates;
+    private const int nrOfStates = 3;
+    private int currentState = -1;
 
-	//Avatar parts
-	private Rigidbody rb_head;
+
+    //Avatar parts
+    private Rigidbody rb_head;
 	private GameObject neck;
 	private GameObject lwing;
 
@@ -76,8 +82,17 @@ using System;
 
 	void Start()
 	{
-        characterStates = new bool[nrOfStates];
-		rb_head = GetComponent<Rigidbody> ();
+        //Initiating the different action states of the character
+        characterStates = new state[nrOfStates];
+        characterStates[0] = new aim();
+        characterStates[0].playerController = gameObject.GetComponent<rb_player_controller>();
+        characterStates[1] = new shield();
+        characterStates[1].playerController = gameObject.GetComponent<rb_player_controller>();
+        characterStates[2] = new wings();
+        characterStates[2].playerController = gameObject.GetComponent<rb_player_controller>();
+
+        //initiating the different parts of the character
+        rb_head = GetComponent<Rigidbody> ();
 		neck = GameObject.Find("final_prototype_neckjoint");
 		
 		rwing = GameObject.Find("final_prototype_rwing");
@@ -91,14 +106,15 @@ using System;
         fwing = GameObject.Find("final_prototype_fwing");
 		bwing = GameObject.Find("final_prototype_bwing");
 
+        //initiating the projectile prefab of the character
 		wing_projectile_prefab = Resources.Load ("final_prototype_wing_projectile") as GameObject;
-        //tower_builder_prefab = Resources.Load ("TowerBuilder") as GameObject;
 
         curr_speed = max_speed;
 	}
 
 	void Update(){
 
+        //charing the weapon
         if (!weapon_charged)
         {
             chargeRatio = (charge_timer) / charge_time;
@@ -109,15 +125,21 @@ using System;
             }
         }
 
+        // === Character input handling =====================================================================
+
+        //AIM ===========================================================================================
         if (Input.GetButtonDown("Fire2"))
         {
-
-            startAim();
+            // startAim();
+            activateState(0);
         }
-        else if (Input.GetButton("Fire2"))
+        else if (Input.GetButton("Fire2") && currentState == 0)
         {
+            print("yo");
+            
             var em = rwingParticles.emission;//.rate = chargeRatio * 500;
             em.rate = chargeRatio * 500;
+            //vacker - DO NOT BREAK LINE
             rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio, Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio, 0.45f * chargeRatio * chargeRatio + Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio);
 
             if (weapon_charged)
@@ -133,72 +155,39 @@ using System;
                     rwingParticles.Clear();
                 }
             }
-            else
-            {
-
-            }
-
-
         }
         else if (Input.GetButtonUp("Fire2"))
         {
-            stopAim();
-
-            var em3 = rwingParticles.emission;//.rate = chargeRatio * 500;
-            em3.rate = 0;
-            rwingParticles.Clear();
+           // stopAim();
+            deActivateState(0);
         }
-        else if (Input.GetButtonDown("Fire1"))
+
+        //RAISE SHIELD ===========================================================================================
+        if (Input.GetButtonDown("Fire1") && currentState != 0)
         {
-            raiseShield();
+            //raiseShield();
+            activateState(1);
 
         }
         else if (Input.GetButton("Fire1")) {
         }
         else if (Input.GetButtonUp("Fire1"))
         {
-
-            lowerShield();
-
+            //lowerShield();
+            deActivateState(1);
         }
-        else if (Input.GetButtonDown("Fire3"))
+
+        //OPEN WINGS ===========================================================================================
+        if (Input.GetButtonDown("Fire3"))
         {
-
-            curr_speed = max_speed * 0.5f;
-
-            rwing.GetComponent<HingeJoint>().useMotor = true;
-            JointMotor tmp_mot = rwing.GetComponent<HingeJoint>().motor;
-            tmp_mot.targetVelocity = -70;
-            tmp_mot.force = 700;
-            rwing.GetComponent<HingeJoint>().motor = tmp_mot;
-
-            lwing.GetComponent<HingeJoint>().useMotor = true;
-            lwing.GetComponent<HingeJoint>().motor = tmp_mot;
-
-            fwing.GetComponent<HingeJoint>().useMotor = true;
-            fwing.GetComponent<HingeJoint>().motor = tmp_mot;
-
-            bwing.GetComponent<HingeJoint>().useMotor = true;
-            bwing.GetComponent<HingeJoint>().motor = tmp_mot;
-            
-
+            //openWings();
+            activateState(2);
         }
         else if (Input.GetButtonUp("Fire3"))
         {
-            curr_speed = max_speed;
-            rwing.GetComponent<HingeJoint>().useMotor = false;
-            lwing.GetComponent<HingeJoint>().useMotor = false;
-            fwing.GetComponent<HingeJoint>().useMotor = false;
-            bwing.GetComponent<HingeJoint>().useMotor = false;
-
-            wings_closed_recently = true;
-            if (!Input.GetButton("Jump"))
-                wanted_hight = 2.1f;
-
+            //closeWings();
+            deActivateState(2);
         }
-
-
-
         //Jump ==============================================================================
         //if(Input.GetButton("Jump"))
         if (Input.GetButtonDown("Jump"))
@@ -214,9 +203,8 @@ using System;
             wanted_hight = 2.4;
 			previous_hight_error = 0.0;
         }
-
-
-            //grip===============================================================================
+        
+        //Debug actions ====================================================================
 
 		//Hover Hight
 		wanted_hight += Input.mouseScrollDelta.x;
@@ -225,9 +213,9 @@ using System;
 
 	void FixedUpdate()
 	{
-		//Turn function =====================================================================
-		//mouse
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // === Turn functions =====================================================================
+        //mouse ray tracing =====================================================================
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit mouse_hit;
 		Physics.Raycast (ray, out mouse_hit, 100, default_mask);
         curr_mouse_hit = mouse_hit.point;
@@ -236,8 +224,8 @@ using System;
         curr_mouse_dir_noy.y = 0;
         curr_mouse_dir_noy.Normalize ();
 
-		//head
-		Vector3 curr_forward = transform.up;
+        //head turning =====================================================================
+        Vector3 curr_forward = transform.up;
 		curr_forward.y = 0;
 		curr_forward.Normalize ();
 
@@ -252,8 +240,8 @@ using System;
 		prev_head_rot_error = head_rot_error;
 		rb_head.AddRelativeTorque(Vector3.forward * (float)head_rot_adjustment);
 
-		//Body
-		curr_forward = neck.transform.forward;
+        //Body turning =====================================================================
+        curr_forward = neck.transform.forward;
 		curr_forward.y = 0;
 		curr_forward.Normalize ();
 
@@ -268,9 +256,10 @@ using System;
 		prev_body_rot_error = body_rot_error;
 		neck.GetComponent<Rigidbody>().AddRelativeTorque(Vector3.up * (float)body_rot_adjustment);
 
-		// Hover function ===================================================================
+        // Hover function ===================================================================
 
-        if(wings_closed_recently)
+        //lowers the character if it's trying to pick something up
+        if (wings_closed_recently)
         {
             wings_closed_timer += Time.fixedDeltaTime;
             if (wings_closed_timer > WINGS_CLOSED)
@@ -282,7 +271,7 @@ using System;
             }
         }
 
-		RaycastHit hit;
+        RaycastHit hit;
 		if (Physics.Raycast (rb_head.transform.position, Vector3.down, out hit, 100.0f, default_mask)) {
 			hight_error = wanted_hight - hit.distance;
 			hight_integral = hight_integral + hight_error * Time.deltaTime;
@@ -296,7 +285,7 @@ using System;
 			rb_head.AddForce (Vector3.up * (float)hight_adjustment);
 
 		} else {
-			previous_hight_error = previous_hight_error;
+			previous_hight_error = 0.0;
 			hight_integral = 0.0;
 		}
 			
@@ -316,16 +305,13 @@ using System;
 		if (planar_velocity.magnitude < curr_speed) {
 			rb_head.AddForce (velocity_diff * diff_magnitude * diff_magnitude * Time.deltaTime * 60);
 		}
-
-		//drag force that slows the player down in the x and z dirrs
-		//rb_head.velocity = rb_head.velocity - planar_velocity * 0.1f;
 	}
 
 	void LateUpdate()
 	{
-		
+		//Points the right wing towards the mouse ray trace hit point
 		Vector3 tmpAng;
-		if (Input.GetButton ("Fire2")) {
+        if (currentState == 0) {
 			tmpAng = rwing.transform.eulerAngles;
             if (curr_mouse_dir.y < 0)
                 tmpAng.z = -90 + Vector3.Angle(curr_mouse_dir, curr_mouse_dir_noy);
@@ -336,13 +322,98 @@ using System;
            // rwing.transform.LookAt(tmp_mouse);
            // rwing.transform.Rotate(-90, 0, 0);
         }
-		tmpAng = transform.eulerAngles;
-		tmpAng.x = -90;
-		tmpAng.y = 0;
-		//transform.eulerAngles = tmpAng;
 	}
 
+    // Character state handling ==================================================================
 
+    void activateState(int _state)
+    {
+        if (currentState != -1)
+            characterStates[currentState].deActivate();
+
+        currentState = _state;
+        characterStates[currentState].activate();
+
+    }
+
+    void deActivateState(int _state)
+    {
+        if (_state == currentState)
+        {
+            characterStates[currentState].deActivate();
+            currentState = -1;
+        }
+    }
+
+    public class state
+    {
+        public bool active;
+        public rb_player_controller playerController;
+
+        public virtual void activate()
+        {
+
+        }
+
+        public virtual void deActivate()
+        {
+
+        }
+    }
+
+    public class aim : state
+    {
+        public override void activate()
+        {
+            print("aim active");
+            playerController.startAim();
+            active = true;
+
+        }
+
+        public override void deActivate()
+        {
+            print("aim inactive");
+            playerController.stopAim();
+            active = false;
+        }
+    }
+
+    public class shield : state
+    {
+        public override void activate()
+        {
+            print("shield active");
+            playerController.raiseShield();
+            active = true;
+        }
+
+        public override void deActivate()
+        {
+            print("shield inactive");
+            playerController.lowerShield();
+            active = false;
+        }
+    }
+
+    public class wings : state
+    {
+        public override void activate()
+        {
+            print("wings active");
+            playerController.openWings();
+            active = true;
+        }
+
+        public override void deActivate()
+        {
+            print("wings inactive");
+            playerController.closeWings();
+            active = false;
+        }
+    }
+
+    // different action functions =========================================================
     void startAim()
     {
         Destroy(rwing.GetComponent<HingeJoint>());
@@ -367,6 +438,10 @@ using System;
         JointSpring tmp_spring = tmp_hj.spring;
         tmp_spring.spring = 50;
         tmp_hj.spring = tmp_spring;
+
+        var em3 = rwingParticles.emission;//.rate = chargeRatio * 500;
+        em3.rate = 0;
+        rwingParticles.Clear();
     }
     void shoot()
     {
@@ -382,11 +457,34 @@ using System;
     }
     void openWings()
     {
+        curr_speed = max_speed * 0.5f;
 
+        rwing.GetComponent<HingeJoint>().useMotor = true;
+        JointMotor tmp_mot = rwing.GetComponent<HingeJoint>().motor;
+        tmp_mot.targetVelocity = -70;
+        tmp_mot.force = 700;
+        rwing.GetComponent<HingeJoint>().motor = tmp_mot;
+
+        lwing.GetComponent<HingeJoint>().useMotor = true;
+        lwing.GetComponent<HingeJoint>().motor = tmp_mot;
+
+        fwing.GetComponent<HingeJoint>().useMotor = true;
+        fwing.GetComponent<HingeJoint>().motor = tmp_mot;
+
+        bwing.GetComponent<HingeJoint>().useMotor = true;
+        bwing.GetComponent<HingeJoint>().motor = tmp_mot;
     }
     void closeWings()
     {
+        curr_speed = max_speed;
+        rwing.GetComponent<HingeJoint>().useMotor = false;
+        lwing.GetComponent<HingeJoint>().useMotor = false;
+        fwing.GetComponent<HingeJoint>().useMotor = false;
+        bwing.GetComponent<HingeJoint>().useMotor = false;
 
+        wings_closed_recently = true;
+        if (!Input.GetButton("Jump"))
+            wanted_hight = 2.1f;
     }
     void raiseShield()
     {
@@ -478,4 +576,6 @@ using System;
 
         bwing.GetComponent<Rigidbody>().mass = 1;
     }
+
+   
 }
