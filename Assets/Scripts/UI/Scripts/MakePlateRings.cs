@@ -9,37 +9,51 @@ public class MakePlateRings : MonoBehaviour {
     public Direction rotation;
     public int plateCount;
     public bool lookAtCenter;
+    public float rotationSpeed;
+    public Axis ringAxis;
+    public Axis rotationAxis;
 
     public enum Direction { Clockwise, CounterClock };
     public enum Axis { x, y, z };
-    GameObject center;
-    Transform pos;
+
+    Vector3 rotationVec = new Vector3();
+    GameObject newPlate;
 
     // Use this for initialization
     void Start() {
-        center = this.gameObject;
-        pos = center.transform;
+        Vector3 pos = transform.position;
 
-        Vector3[] points = GenerateCirclePts(pos.position, radius, plateCount, Axis.z);
+        Vector3[] points = GenerateCirclePts(pos, radius, plateCount, ringAxis);
         foreach (Vector3 pt in points)
         {
-            plate = Instantiate(plate);
-            plate.transform.parent = center.transform;
-            plate.transform.position = pt;
-            if(lookAtCenter) plate.transform.LookAt(pos);
+            newPlate = Instantiate(plate);
+            newPlate.transform.parent = this.transform;
+            newPlate.transform.position = pt;
+            if(lookAtCenter) newPlate.transform.LookAt(pos);
         }
-        //plate = Instantiate(plate);
-        //plate.transform.parent = center.transform;
-        //plate.transform.position = points[0];
-        //plate = Instantiate(plate);
-        //plate.transform.parent = center.transform;
-        //plate.transform.position = points[1];
-
     }
 
     // Update is called once per frame
     void Update() {
-        center.transform.Rotate(0, 0, 1);
+        int direction;
+        if (rotation == Direction.Clockwise)
+            direction = 1;
+        else
+            direction = -1;
+        float velocity = direction * rotationSpeed;
+
+        switch (rotationAxis)
+        {
+            case Axis.x:
+                transform.Rotate(velocity, 0, 0);
+                break;
+            case Axis.y:
+                transform.Rotate(0, velocity, 0);
+                break;
+            case Axis.z:
+                transform.Rotate(0, 0, velocity);
+                break;
+        }
     }
 
     // Axis: (x,0), (y,1), (z,2)
