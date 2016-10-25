@@ -31,8 +31,10 @@ using System;
     private GameObject fwing;
 	private GameObject bwing;
 
+    private GameObject eyes;
+
     //weapon variables
-	private GameObject certain_weapon;
+    private GameObject certain_weapon;
 	private GameObject current_weapon;
     private bool weapon_charged = false;
     private float charge_timer = 0.0f;
@@ -82,6 +84,9 @@ using System;
 
 	void Start()
 	{
+
+
+
         //Initiating the different action states of the character
         characterStates = new state[nrOfStates];
         characterStates[0] = new aim();
@@ -110,7 +115,16 @@ using System;
 		wing_projectile_prefab = Resources.Load ("final_prototype_wing_projectile") as GameObject;
 
         curr_speed = max_speed;
-	}
+
+        eyes = GameObject.Find("eyes");
+        var renderers = eyes.GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers)
+        {
+            Color c = r.material.color;
+            c.a = 0.5f;
+            r.material.color = c;
+        }
+    }
 
 	void Update(){
 
@@ -134,9 +148,7 @@ using System;
             activateState(0);
         }
         else if (Input.GetButton("Fire2") && currentState == 0)
-        {
-            print("yo");
-            
+        {           
             var em = rwingParticles.emission;//.rate = chargeRatio * 500;
             em.rate = chargeRatio * 500;
             //vacker - DO NOT BREAK LINE

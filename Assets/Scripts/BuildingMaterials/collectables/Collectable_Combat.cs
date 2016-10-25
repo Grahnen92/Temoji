@@ -2,16 +2,16 @@
 using System.Collections;
 //using UnityEngine.Networking;
 
-public class Collectable_Combat : MonoBehaviour
+public class Collectable_Combat : Combat
 {
 
     public GameObject collectable;
-    public const int maxHealth = 10;
+    //public const int maxHealth = 10;
 
     //[SyncVar]
-    public int health = maxHealth;
+    //public int health = maxHealth;
 
-    public void TakeDamage(int amount)
+    public override void TakeDamage(int amount)
     {
         //if (!isServer)
         //  return;

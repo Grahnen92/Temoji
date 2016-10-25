@@ -13,6 +13,9 @@ public class NavigationScript : MonoBehaviour
     private bool base_alive;
     const float MIN_VELOCITY = 0.01f;
 
+    private GameObject explosion_prefab;
+    private GameObject explosion;
+
     // Use this for initialization
     void Start()
     {
@@ -26,6 +29,7 @@ public class NavigationScript : MonoBehaviour
         GetComponent<NavMeshAgent>().baseOffset = 0.0f;
         GetComponent<NavMeshAgent>().stoppingDistance = -1.0f;
 
+        explosion_prefab = Resources.Load("bot_explosion") as GameObject;
     }
 
     public static void setBase(GameObject b)
@@ -38,7 +42,6 @@ public class NavigationScript : MonoBehaviour
     {
         // Distance from target
         float distance = (target_destination - transform.position).magnitude;
-        print(GetComponent<NavMeshAgent>().remainingDistance);
 
         if (GetComponent<NavMeshAgent>().remainingDistance <= attack_distance)
         {
@@ -71,9 +74,12 @@ public class NavigationScript : MonoBehaviour
         print("Attack target!");
         Destroy(gameObject);
         Base_Combat base_combat = baseObject.GetComponent<Base_Combat>();
-        base_combat.TakeDamage(10);
+       // base_combat.TakeDamage(10);
+        explosion = Instantiate(explosion_prefab) as GameObject;
+        explosion.transform.position = transform.position;
+        explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
-       
+
     }
 
     void suicide()

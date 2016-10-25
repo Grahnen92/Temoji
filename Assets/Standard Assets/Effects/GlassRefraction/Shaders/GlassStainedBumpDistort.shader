@@ -64,7 +64,7 @@ v2f vert (appdata_t v)
 	#endif
 	o.uvgrab.xy = (float2(o.vertex.x, o.vertex.y*scale) + o.vertex.w) * 0.5;
 	o.uvgrab.zw = o.vertex.zw;
-	o.uvbump = TRANSFORM_TEX( v.texcoord, _BumpMap );
+	o.uvbump = TRANSFORM_TEX( v.texcoord + float2(_Time[0], _Time[0]), _BumpMap );
 	o.uvmain = TRANSFORM_TEX( v.texcoord, _MainTex );
 	UNITY_TRANSFER_FOG(o,o.vertex);
 	return o;
