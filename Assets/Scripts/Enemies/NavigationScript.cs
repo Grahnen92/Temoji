@@ -22,7 +22,7 @@ public class NavigationScript : MonoBehaviour
         base_alive = true;
         GetComponent<NavMeshAgent>().SetDestination(target_destination);
         botVelocity = new Vector3(-.01f, 0, 0);
-        GetComponent<NavMeshAgent>().speed = speed_factor*(Random.value + .5f);
+        GetComponent<NavMeshAgent>().speed = speed_factor*(Random.value + .5f);//0.5*s - 1.5*s
         GetComponent<NavMeshAgent>().avoidancePriority = (int)Random.value * 100;
         GetComponent<NavMeshAgent>().autoBraking = false;
         GetComponent<NavMeshAgent>().autoRepath = true;
@@ -65,6 +65,11 @@ public class NavigationScript : MonoBehaviour
             }
         }
 
+        if (GetComponent<NavMeshAgent>().velocity.magnitude< speed_factor*0.4f)
+        {
+            stuck();
+        }
+
 
     }
 
@@ -86,5 +91,13 @@ public class NavigationScript : MonoBehaviour
     {
         print("Commit Suicide!");
         Destroy(gameObject);
+    }
+
+    void stuck()
+    {
+        print(gameObject+" is stuck");
+        Destroy(gameObject);
+
+
     }
 }

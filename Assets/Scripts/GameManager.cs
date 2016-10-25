@@ -64,6 +64,8 @@ public class GameManager : MonoBehaviour
     void spawnEnemy()
     {
         Instantiate(enemyObject, NavigationScript.spawn_destination, Quaternion.identity);
+        print("enemy position"+NavigationScript.spawn_destination);
+
     }
 
     // Update is called once per frame
