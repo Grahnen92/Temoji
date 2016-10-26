@@ -8,7 +8,7 @@ namespace UnityStandardAssets.Effects
     public class ExplosionPhysicsForce : MonoBehaviour
     {
         public float explosionForce = 4;
-        public LayerMask mask = (1 << 10) | ( 1 << 13) | ( 1 << 14 );
+        public LayerMask mask = (1 << 10) | ( 1 << 13) | ( 1 << 14 ) | (1 << 18);
 
         public float maxDamage = 10.0f;
         private float x;
@@ -38,12 +38,10 @@ namespace UnityStandardAssets.Effects
                 rb.AddExplosionForce(explosionForce*multiplier, transform.position, r, 1*multiplier, ForceMode.Impulse);
                 var dist = Vector3.Distance(transform.position, rb.transform.position);
 
-                
-
                 float dmgScaled = Mathf.Max((dist / r), 0.2f);
                 dmgScaled = dmgScaled * dmgScaled;
 
-               if(rb.gameObject.tag == "Player")
+               if(rb.gameObject.tag == "Collectable")
                 {
                     print("============");
                     print("dist = " + dist);
@@ -58,6 +56,7 @@ namespace UnityStandardAssets.Effects
                
                 if (tmpCombatScript)
                 {
+                    print("hej combat script");
                     tmpCombatScript.TakeDamage((int)(x / dmgScaled));
                 }
               

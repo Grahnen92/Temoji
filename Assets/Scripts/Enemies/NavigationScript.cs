@@ -42,7 +42,7 @@ public class NavigationScript : MonoBehaviour
     {
         // Distance from target
         float distance = (target_destination - transform.position).magnitude;
-
+       // print("dist: " + distance);
         if (GetComponent<NavMeshAgent>().remainingDistance <= attack_distance)
         {
             attack();
@@ -55,6 +55,7 @@ public class NavigationScript : MonoBehaviour
             //suicide();
         }
 
+        print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
             GetComponent<NavMeshAgent>().SetDestination(spawn_destination);
@@ -64,13 +65,6 @@ public class NavigationScript : MonoBehaviour
                 Destroy(gameObject); // They are home again
             }
         }
-
-        if (GetComponent<NavMeshAgent>().velocity.magnitude< speed_factor*0.4f)
-        {
-            stuck();
-        }
-
-
     }
 
     void attack()
@@ -97,7 +91,5 @@ public class NavigationScript : MonoBehaviour
     {
         print(gameObject+" is stuck");
         Destroy(gameObject);
-
-
     }
 }
