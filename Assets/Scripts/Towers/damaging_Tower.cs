@@ -4,29 +4,27 @@ using System.Collections.Generic;
 
 public class damaging_Tower : MonoBehaviour {
     public GameObject dBullet;//bulletPrefab
-    double bulletSpeed = 0.8;
+    double bulletSpeed = 50;
     bool activeShooting = false;//Must have this flag, otherwise "spawnBullet" will be invoked many times, actually increasing frequency!!!
     List<GameObject> enemyList = new List<GameObject>();//put entering enemies into a list, linked one by one according to entering sequence,
                                                         //always take the top one, if any one out/die, it will be removed from the list
     List<GameObject> bulletList = new List<GameObject>();
-    ///height hovering
-    //double[] height_target = new double[4] { 2.7, 1.8, 1.2, 0.7 };
-    //double[] height_current = new double[4];
-    //double[] height_error = new double[4];
-    //double[] height_error_pre = new double[4] { 0.0, 0.0, 0.0, 0.0 };
-    //double[] height_integral = new double[4] { 0.0, 0.0, 0.0, 0.0 };
-    //double[] height_derivative = new double[4];
-    //double[] height_adjustment = new double[4];
-    //double[] height_adjustment_max = new double[4] { 0.04, 0.04, 0.04, 0.04 };
+    //height hovering
+    double[] height_target = new double[4] { 2.7, 1.8, 1.2, 0.7 };
+    double[] height_current = new double[4];
+    double[] height_error = new double[4];
+    double[] height_error_pre = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    double[] height_integral = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    double[] height_derivative = new double[4];
+    double[] height_adjustment = new double[4];
 
-    double[] height_target = new double[3] { 2.7, 1.8, 0.7 };
-    double[] height_current = new double[3];
-    double[] height_error = new double[3];
-    double[] height_error_pre = new double[3] { 0.0, 0.0, 0.0 };
-    double[] height_integral = new double[3] { 0.0, 0.0, 0.0 };
-    double[] height_derivative = new double[3];
-    double[] height_adjustment = new double[3];
-    double[] height_adjustment_max = new double[3] { 0.04, 0.04, 0.04 };
+    //double[] height_target = new double[3] { 2.7, 1.8, 0.7 };
+    //double[] height_current = new double[3];
+    //double[] height_error = new double[3];
+    //double[] height_error_pre = new double[3] { 0.0, 0.0, 0.0 };
+    //double[] height_integral = new double[3] { 0.0, 0.0, 0.0 };
+    //double[] height_derivative = new double[3];
+    //double[] height_adjustment = new double[3];
 
     /*//radius hovering
     double[] radius_target = new double[4] { 0, 2, 1, 0 };
@@ -36,7 +34,6 @@ public class damaging_Tower : MonoBehaviour {
     double[] radius_integral = new double[4] { 0.0, 0.0, 0.0, 0.0 };
     double[] radius_derivative = new double[4];
     double[] radius_adjustment = new double[4];
-    double[] radius_adjustment_max = new double[4] { 1, 1, 1, 1 };//?????
     Vector2[] radius_normal_out = new Vector2[4];
     Vector2[] radius_normal_in = new Vector2[4];
     */
@@ -48,40 +45,34 @@ public class damaging_Tower : MonoBehaviour {
         bulletList.Add(Instantiate(dBullet, transform.GetChild(1).position, transform.GetChild(1).localRotation) as GameObject);//create an empty GameObject as a child of cannon
         bulletList.Add(Instantiate(dBullet, transform.GetChild(2).position, transform.GetChild(2).localRotation) as GameObject);
         bulletList.Add(Instantiate(dBullet, transform.GetChild(3).position, transform.GetChild(3).localRotation) as GameObject);
-        //bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);
     }
 
     void spawnBullet()
     {
         Vector3 direction = transform.GetChild(1).forward;
-        print("direction: " + direction);
         
-        bulletList[0].GetComponent<Rigidbody>().useGravity = false;
         bulletList[0].GetComponent<Rigidbody>().AddForce(direction * (float)bulletSpeed);
         bulletList.Remove(bulletList[0]);
 
-        //bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);//create an empty GameObject as a child of cannon
-        bulletList.Add(Instantiate(dBullet, transform.GetChild(3).position, transform.GetChild(3).localRotation) as GameObject);//create an empty GameObject as a child of cannon
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);//create an empty GameObject as a child of cannon
+        //bulletList.Add(Instantiate(dBullet, transform.GetChild(3).position, transform.GetChild(3).localRotation) as GameObject);//create an empty GameObject as a child of cannon
     }
 
     //SituationI[1 enemy OR 2 enemies(enemy[0] or enemy[1] escape/die first), 1 cannon]
     void OnTriggerEnter(Collider col)
     {
         print("enemyEnter: " + col.gameObject);
-        print("enemyCount before Enter: " + enemyList.Count);
         enemyList.Add(col.gameObject);//add enemy into list, at the last position
         print("enemyCount after Enter: " + enemyList.Count);
         if (!activeShooting)//situationA(1 enemy): if enemy[0] enter, shoot enemy[0]
                             //situationB(2 ~s): "spawnBullet" & "LookAt" won't be invoked when enemy[not 0] enter;
                             //if enemy[0] out/die, "spawnBullet" cancleInvoked, enemy[0] removed, aS==false, LET "spawnBullet" & "LookAt" invoked  
         {
-            print("activeShooting before Enter: " + activeShooting);
             if (enemyList[0] != null)
                 transform.GetChild(1).LookAt(enemyList[0].transform.position);//cannon looks at enemy[0]
-            //print("look at: " + enemyList[0].transform.position);
             InvokeRepeating("spawnBullet", 0, 1);//cannon shoots enemy[0] every 0.5 seconds
             activeShooting = true;
-            print("activeShooting after Enter: " + activeShooting);
         }
     }
 
@@ -91,14 +82,11 @@ public class damaging_Tower : MonoBehaviour {
         //SituationB(2 ~s): if enemy[0] stay, shoot enemy[0]; if enemy[0] out/die, shoot current[0], which is enemy[1];
         if (enemyList[0] != null)
             transform.GetChild(1).LookAt(enemyList[0].transform.position);//cannon traces enemy[0](because OnTriggerStay called per frame)
-        //print("look at: " + enemyList[0].transform.position);
         if (!activeShooting)
         {
             print("enemyStay: " + col.gameObject);
-            print("activeShooting before Stay: " + activeShooting);
             InvokeRepeating("spawnBullet", 0, 1);
             activeShooting = true;
-            print("activeShooting after Stay: " + activeShooting);
         }
     }
 
@@ -110,12 +98,9 @@ public class damaging_Tower : MonoBehaviour {
         //if enemy[0] out, remove it from list, LET "spawnBullet" cancleInvoked, aS==false
         if (col.gameObject == enemyList[0])
         {
-            print("activeShooting before Exit: " + activeShooting);
             CancelInvoke("spawnBullet");
             activeShooting = false;
-            print("activeShooting after Exit: " + activeShooting);
         }
-        print("enemyCount before Exit: " + enemyList.Count);
         enemyList.Remove(col.gameObject);//Must remove, then original 2nd one automatically becomes 1st one
         print("enemyCount after Exit: " + enemyList.Count);
         if (enemyList.Count != 0)
@@ -127,11 +112,8 @@ public class damaging_Tower : MonoBehaviour {
     {
         while (enemyList.Count != 0 && enemyList[0] == null)//remove until enemy[0] != null
         {
-            print("activeShooting before Die: " + activeShooting);
             CancelInvoke("spawnBullet");
             activeShooting = false;
-            print("activeShooting after Die: " + activeShooting);
-            print("enemyCount before Die: " + enemyList.Count);
             enemyList.Remove(enemyList[0]);
             print("enemyCount after Die: " + enemyList.Count);
             if (enemyList.Count != 0)
@@ -140,22 +122,23 @@ public class damaging_Tower : MonoBehaviour {
         ///*
         if(bulletList[0] != null)
         {
-            //transform.GetChild(5).Rotate(0, -80 * Time.deltaTime, 0);
-            //for (int i = 0; i < 4; i++)
-            transform.GetChild(4).Rotate(0, -80 * Time.deltaTime, 0);
-            for (int i = 0; i < 3; i++)
+            transform.GetChild(5).Rotate(0, -80 * Time.deltaTime, 0);
+            for (int i = 0; i < 4; i++)
+            //transform.GetChild(4).Rotate(0, -80 * Time.deltaTime, 0);
+            //for (int i = 0; i < 3; i++)
             {
+                bulletList[0].transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 //Rotation
                 bulletList[i].transform.Rotate(0, -90 * Time.deltaTime, 0);
-
+                
                 //height hovering
                 height_current[i] = bulletList[i].transform.position.y;
                 height_error[i] = height_target[i] - height_current[i];
                 height_integral[i] += height_error[i] * Time.deltaTime;
                 height_derivative[i] = (height_error[i] - height_error_pre[i]) / Time.deltaTime;
 
-                height_adjustment[i] = 100.0 * height_error[i] + 0.0 * height_integral[i] + 50.0 * height_derivative[i];//how to adjust?
-                height_adjustment[i] = Mathf.Min(Mathf.Max(0.0f, (float)height_adjustment[i]), (float)height_adjustment_max[i]);
+                height_adjustment[i] = 1.0 * height_error[i] + 0.0 * height_integral[i] + 0.5 * height_derivative[i];//how to adjust?
+                
                 bulletList[i].GetComponent<Rigidbody>().AddForce(Vector3.up * (float)height_adjustment[i]);
                 height_error_pre[i] = height_error[i];
 
