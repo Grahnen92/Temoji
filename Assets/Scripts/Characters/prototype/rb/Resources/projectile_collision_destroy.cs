@@ -6,6 +6,7 @@ public class projectile_collision_destroy : MonoBehaviour {
 	// Use this for initialization
     private GameObject explosion_prefab;
     private GameObject explosion;
+
     void Start () {
         explosion_prefab = Resources.Load("Energy_explosion") as GameObject;
     }
@@ -26,7 +27,6 @@ public class projectile_collision_destroy : MonoBehaviour {
             Enemy1_Combat enemy1_combat = hit.GetComponent<Enemy1_Combat>();
             enemy1_combat.TakeDamage(10);
 
-
         }
 
         if (hit_base)
@@ -40,7 +40,7 @@ public class projectile_collision_destroy : MonoBehaviour {
         {
             print("hit collectable!");
             Collectable_Combat col_combat = hit.GetComponent<Collectable_Combat>();
-            col_combat.TakeDamage(10);
+            col_combat.TakeDamage(10, collision.contacts[0].point);
         }
 
         Destroy(gameObject);

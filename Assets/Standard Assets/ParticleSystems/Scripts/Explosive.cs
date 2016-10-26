@@ -9,7 +9,7 @@ namespace UnityStandardAssets.Effects
     {
         public Transform explosionPrefab;
         public float detonationImpactVelocity = 10;
-        public float sizeMultiplier = 0.1f;
+        public float sizeMultiplier = 1;
         public bool reset = true;
         public float resetTimeDelay = 10;
 

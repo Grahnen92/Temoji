@@ -28,9 +28,11 @@ public class TowerSelector : MonoBehaviour {
     // Just the model alone, without any additional components. 
     // Add additional fields as needed
     private const int nrOfModels = 3;
+    public GameObject model0;
     public GameObject model1;
+    public string tower_resource1 = "Towers\\ProjectileTower\\projectile_tower_base";
     public GameObject model2;
-    public GameObject model3;
+    public string tower_resource2 = "Towers\\SlowingTower\\slowing_tower_base";
     public GameObject uiRing;
 
     // Key to press that will show the holograms
@@ -78,44 +80,19 @@ public class TowerSelector : MonoBehaviour {
             //    tmp_color = r.material.color;
             //    tmp_color.a = transparency;
             //}
+            print("hi stone");
         }
         else if (col.tag == "Wood")
         {
             wood.Add(col.gameObject);
+            print("hi wood");
         }
         else
         {
             energy.Add(col.gameObject);
         }
 
-        if (wood.Count > 0 && stone.Count > 0)
-        {
-            if (activeModels[1] == 0)
-            {
-                showModel(1);
-                activeModels[1] = 1;
-            }
-             
-        }
-
-        if (energy.Count > 0 && stone.Count > 0)
-        {
-            if (activeModels[0] == 0)
-            {
-                showModel(0);
-                activeModels[0] = 1;
-            }
-
-        }
-        if (stone.Count > 0)
-        {
-            if (activeModels[2] == 0)
-            {
-                showModel(2);
-                activeModels[2] = 1;
-            }
-
-        }
+        checkActiveTowersAfterAdd();
 
 
     }
@@ -124,43 +101,19 @@ public class TowerSelector : MonoBehaviour {
         if (col.tag == "Stone")
         {
             stone.Remove(col.gameObject);
+            print("by stone");
         }
         else if (col.tag == "Wood")
         {
             wood.Remove(col.gameObject);
+            print("by Wood");
         }
         else
         {
             energy.Remove(col.gameObject);
         }
 
-        if (wood.Count < 1 || stone.Count < 1)
-        {
-            if (activeModels[1] == 1)
-            {
-                hideModel(1);
-                activeModels[1] = 0;
-            }
-
-        }
-        if (energy.Count < 1 || stone.Count < 1)
-        {
-            if (activeModels[0] == 1)
-            {
-                hideModel(0);
-                activeModels[0] = 0;
-            }
-
-        }
-        if (stone.Count < 1)
-        {
-            if (activeModels[2] == 1)
-            {
-                hideModel(2);
-                activeModels[2] = 0;
-            }
-
-        }
+        checkActiveTowersAfterRemove();
     }
 
     void Start () {
@@ -182,9 +135,9 @@ public class TowerSelector : MonoBehaviour {
         uiRingInstance.GetComponent<Renderer>().material.color = tmp_color;
 
 
+        modelList.Add(model0);
         modelList.Add(model1);
         modelList.Add(model2);
-        modelList.Add(model3);
 
         for(int i = 0; i < modelList.Count; i++)
         {
@@ -250,12 +203,32 @@ public class TowerSelector : MonoBehaviour {
                     //tmp_pos.y = 2.0f;
                     //tmp_pos = tmp_pos / 2.0f;
                     towerBuilderInstance.transform.position = transform.position + Vector3.up;
+                    towerBuilderInstance.GetComponent<TowerBuilder>().loadTower(tower_resource1);
+
+                    checkActiveTowersAfterRemove();
 
                 }
             }
             else if (Input.GetKeyDown(tower2Key))
             {
-               // switchModel(1);
+                // switchModel(0);
+                if (activeModels[2] > 0)
+                {
+
+                    GameObject tmpGO = stone[0];
+                    //tmp_pos += tmpGO.transform.position;
+                    stone.RemoveAt(0);
+                    Destroy(tmpGO);
+                    print("starting to build tower");
+                    GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
+                    //tmp_pos.y = 2.0f;
+                    //tmp_pos = tmp_pos / 2.0f;
+                    towerBuilderInstance.transform.position = transform.position + Vector3.up;
+                    towerBuilderInstance.GetComponent<TowerBuilder>().loadTower(tower_resource2);
+
+                    checkActiveTowersAfterRemove();
+
+                }
             }
             else if (Input.GetKeyDown(tower3key))
             {
@@ -266,13 +239,77 @@ public class TowerSelector : MonoBehaviour {
 
     void LateUpdate()
     {
-
         Vector3 tmpAng;
         tmpAng = transform.localEulerAngles;
         //tmpAng.x = 0;
         //tmpAng.y = -90;
         //tmpAng.z = 90;
         transform.localEulerAngles = tmpAng;
+    }
+
+    void checkActiveTowersAfterAdd()
+    {
+        print("hi check add");
+        if (wood.Count > 0 && stone.Count > 0)
+        {
+            if (activeModels[1] == 0)
+            {
+                showModel(1);
+                activeModels[1] = 1;
+            }
+
+        }
+
+        if (energy.Count > 0 && stone.Count > 0)
+        {
+            if (activeModels[0] == 0)
+            {
+                showModel(0);
+                activeModels[0] = 1;
+            }
+
+        }
+        if (stone.Count > 0)
+        {
+            if (activeModels[2] == 0)
+            {
+                showModel(2);
+                activeModels[2] = 1;
+            }
+
+        }
+    }
+
+    void checkActiveTowersAfterRemove()
+    {
+        print("hi check remove");
+        if (wood.Count < 1 || stone.Count < 1)
+        {
+            if (activeModels[1] == 1)
+            {
+                hideModel(1);
+                activeModels[1] = 0;
+            }
+
+        }
+        if (energy.Count < 1 || stone.Count < 1)
+        {
+            if (activeModels[0] == 1)
+            {
+                hideModel(0);
+                activeModels[0] = 0;
+            }
+
+        }
+        if (stone.Count < 1)
+        {
+            if (activeModels[2] == 1)
+            {
+                hideModel(2);
+                activeModels[2] = 0;
+            }
+
+        }
     }
 
     // Make the models visible
@@ -309,6 +346,7 @@ public class TowerSelector : MonoBehaviour {
         //{
         //    r.enabled = true;
         //}
+        print("show model" + model);
         var renderers = modInstances[model].GetComponentsInChildren<Renderer>();
         Color tmp_color;
         foreach (var r in renderers)

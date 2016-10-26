@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Base_Combat : MonoBehaviour {
+public class Base_Combat : Combat {
 
-    public const int maxHealth = 100;
+    // public const int maxHealth = 100;
 
-    public int health = maxHealth;
+    //public int health = maxHealth;
 
-    public void TakeDamage(int amount)
+    void Start()
+    {
+        health = maxHealth;
+    }
+
+    public override void TakeDamage(int amount)
     {
 
         health -= amount;
@@ -18,5 +23,7 @@ public class Base_Combat : MonoBehaviour {
             GameManager.base_alive = false;
             Destroy(gameObject);
         }
+
+        print("took damage");
     }
 }

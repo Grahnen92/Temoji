@@ -1,10 +1,17 @@
 fileFormatVersion: 2
 guid: 457abf35ebeef1c408833d20e95b64ad
-timeCreated: 1476158131
+timeCreated: 1477390610
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - spawnPt: {instanceID: 0}
+  - model0: {fileID: 1000013330621138, guid: 049936df4dee53e4b85ea5fcfe628dfc, type: 2}
+  - model1: {fileID: 1000012546023504, guid: b8fb8a3749882ee47b4ac77dd97a9d27, type: 2}
+  - model2: {fileID: 1000012098715436, guid: d772a7375b4b18440982aacc6229bc1e, type: 2}
+  - uiRing: {fileID: 1000011772732108, guid: 87bb7cf04f07c1247937592bf65ac6a4, type: 2}
+  - tower_builder: {fileID: 1000010213563896, guid: a1a28d52ae0992b488fcc687e56c78c1,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

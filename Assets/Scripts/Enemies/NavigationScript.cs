@@ -33,6 +33,7 @@ public class NavigationScript : MonoBehaviour
         navPath = new NavMeshPath();
         rb = GetComponent<Rigidbody>();
 
+        explosion_prefab = Resources.Load("bot_explosion") as GameObject;
     }
 
     public static void setBase(GameObject b)
@@ -57,6 +58,7 @@ public class NavigationScript : MonoBehaviour
             i++;
         }
 
+        print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
             GetComponent<NavMeshAgent>().SetDestination(spawn_destination);
@@ -112,7 +114,11 @@ public class NavigationScript : MonoBehaviour
         print("Attack target!");
         Destroy(gameObject);
         Base_Combat base_combat = baseObject.GetComponent<Base_Combat>();
-        base_combat.TakeDamage(10);
+       // base_combat.TakeDamage(10);
+        explosion = Instantiate(explosion_prefab) as GameObject;
+        explosion.transform.position = transform.position;
+        explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
 
 
     }
@@ -120,6 +126,12 @@ public class NavigationScript : MonoBehaviour
     void suicide()
     {
         print("Commit Suicide!");
+        Destroy(gameObject);
+    }
+
+    void stuck()
+    {
+        print(gameObject+" is stuck");
         Destroy(gameObject);
     }
 }
