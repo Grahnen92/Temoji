@@ -13,6 +13,8 @@ public class NavigationScript : MonoBehaviour
     private float attack_distance = 2.0f;
     const float MIN_VELOCITY = 0.01f;
 
+    public GameObject explosion_prefab;
+
     NavMeshAgent nav;
     NavMeshPath navPath;
     Vector3 direction;
@@ -115,7 +117,7 @@ public class NavigationScript : MonoBehaviour
         Destroy(gameObject);
         Base_Combat base_combat = baseObject.GetComponent<Base_Combat>();
        // base_combat.TakeDamage(10);
-        explosion = Instantiate(explosion_prefab) as GameObject;
+        GameObject explosion = Instantiate(explosion_prefab) as GameObject;
         explosion.transform.position = transform.position;
         explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
