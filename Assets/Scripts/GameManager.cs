@@ -32,7 +32,12 @@ public class GameManager : MonoBehaviour
     public GameObject rock2Object;
     public GameObject treeObject;
     public GameObject gateObject;
+    public ParticleSystem airParticles;
     public static bool base_alive = false;
+
+    private GameObject thePlayer;
+    private ParticleSystem theAirParticles;
+
 
     const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
@@ -40,8 +45,8 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-       
 
+        theAirParticles = airParticles.GetComponent<ParticleSystem>();
         generateMap();
 
         spawnPlayer();
@@ -49,7 +54,7 @@ public class GameManager : MonoBehaviour
 
         print("Welcome to this level.");
 
-        InvokeRepeating("spawnEnemy", 0, 1.0f);
+        InvokeRepeating("spawnEnemy", 0, 10.0f);
     }
 
     void spawnPlayer()
@@ -57,13 +62,13 @@ public class GameManager : MonoBehaviour
 
         Vector3 spawn_pos_player = NavigationScript.target_destination + new Vector3(1.5f, 3f, 0f);
 
-        Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
+        thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
 
     }
 
     void spawnEnemy()
     {
-        Instantiate(enemyObject, NavigationScript.spawn_destination, Quaternion.identity);
+        Instantiate(enemyObject, NavigationScript.spawn_destination + new Vector3(0,1,0), Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -73,6 +78,8 @@ public class GameManager : MonoBehaviour
         {
             CancelInvoke();
         }
+        theAirParticles.transform.position = GameObject.Find("final_prototype_neckjoint").transform.position + new Vector3(0,2,0);
+
     }
 
     public Vector3 initialBase(GameObject BasePrefab, float BaseSize)
@@ -306,6 +313,8 @@ public class GameManager : MonoBehaviour
     ------------------------------------------------   */
     void generateCollectibles()
     {
+
+        // Trees
         for (int y = 0; y < 10; y++)
         {
             Vector3 position = targetObject.transform.position; // game objects position
@@ -338,6 +347,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // Rocks
         for (int y = 0; y < 20; y++)
         {
             Vector3 position = targetObject.transform.position; // game objects position
@@ -348,13 +358,13 @@ public class GameManager : MonoBehaviour
                 position.y = 0f;
             }
 
+
             Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
             coll_sphere_position = position;
 
 
             coll_sphere_position.y += .4f;
             rock1Object.transform.localScale = new Vector3(10f, 10f, 10f);
-
             Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
             int i = 0;
             bool build = true;
@@ -366,7 +376,9 @@ public class GameManager : MonoBehaviour
 
             if (build) // Build if no collide
             {
-                Instantiate(rock1Object, position, Quaternion.identity);
+                Quaternion rotation = Quaternion.identity;
+                rotation.y = Random.value * 6.3f;
+                Instantiate(rock1Object, position, rotation);
             }
         }
     }
