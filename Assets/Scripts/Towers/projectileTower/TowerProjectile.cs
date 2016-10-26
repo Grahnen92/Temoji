@@ -82,14 +82,13 @@ public class TowerProjectile : MonoBehaviour {
     {
         if (hovering)
         {
-
             wanted_y = Mathf.Sin(Time.time*3.0f)*0.15;
-            wanted_x = Mathf.Cos(Time.time * 3.0f) * 0.15;
+            wanted_x = Mathf.Cos(Time.time * 3.0f) * 0.1;
 
             hight_error = wanted_hight - (transform.position.y - tower_base.transform.position.y);
             hight_integral = hight_integral + hight_error * Time.fixedDeltaTime;
             hight_derivative = (hight_error - previous_hight_error) / Time.fixedDeltaTime;
-            hight_adjustment = 3.0 * hight_error + 2.0 * hight_integral + 1.0 * hight_derivative;
+            hight_adjustment = 4.0 * hight_error + 2.0 * hight_integral + 2.0 * hight_derivative;
             //hight_adjustment = Math.Min(Math.Max(0.0, hight_adjustment), max_hight_adjustment);
             previous_hight_error = hight_error;
 
