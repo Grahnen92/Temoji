@@ -10,14 +10,23 @@ public class damaging_Tower : MonoBehaviour {
                                                         //always take the top one, if any one out/die, it will be removed from the list
     List<GameObject> bulletList = new List<GameObject>();
     ///height hovering
-    double[] height_target = new double[4] { 2.7, 1.8, 1.2, 0.7 };
-    double[] height_current = new double[4];
-    double[] height_error = new double[4];
-    double[] height_error_pre = new double[4] { 0.0, 0.0, 0.0, 0.0 };
-    double[] height_integral = new double[4] { 0.0, 0.0, 0.0, 0.0 };
-    double[] height_derivative = new double[4];
-    double[] height_adjustment = new double[4];
-    double[] height_adjustment_max = new double[4] { 0.04, 0.04, 0.04, 0.04 };
+    //double[] height_target = new double[4] { 2.7, 1.8, 1.2, 0.7 };
+    //double[] height_current = new double[4];
+    //double[] height_error = new double[4];
+    //double[] height_error_pre = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    //double[] height_integral = new double[4] { 0.0, 0.0, 0.0, 0.0 };
+    //double[] height_derivative = new double[4];
+    //double[] height_adjustment = new double[4];
+    //double[] height_adjustment_max = new double[4] { 0.04, 0.04, 0.04, 0.04 };
+
+    double[] height_target = new double[3] { 2.7, 1.8, 0.7 };
+    double[] height_current = new double[3];
+    double[] height_error = new double[3];
+    double[] height_error_pre = new double[3] { 0.0, 0.0, 0.0 };
+    double[] height_integral = new double[3] { 0.0, 0.0, 0.0 };
+    double[] height_derivative = new double[3];
+    double[] height_adjustment = new double[3];
+    double[] height_adjustment_max = new double[3] { 0.04, 0.04, 0.04 };
 
     /*//radius hovering
     double[] radius_target = new double[4] { 0, 2, 1, 0 };
@@ -31,7 +40,7 @@ public class damaging_Tower : MonoBehaviour {
     Vector2[] radius_normal_out = new Vector2[4];
     Vector2[] radius_normal_in = new Vector2[4];
     */
-    
+
 
     void Start()
     {
@@ -39,7 +48,7 @@ public class damaging_Tower : MonoBehaviour {
         bulletList.Add(Instantiate(dBullet, transform.GetChild(1).position, transform.GetChild(1).localRotation) as GameObject);//create an empty GameObject as a child of cannon
         bulletList.Add(Instantiate(dBullet, transform.GetChild(2).position, transform.GetChild(2).localRotation) as GameObject);
         bulletList.Add(Instantiate(dBullet, transform.GetChild(3).position, transform.GetChild(3).localRotation) as GameObject);
-        bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);
+        //bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);
     }
 
     void spawnBullet()
@@ -51,7 +60,8 @@ public class damaging_Tower : MonoBehaviour {
         bulletList[0].GetComponent<Rigidbody>().AddForce(direction * (float)bulletSpeed);
         bulletList.Remove(bulletList[0]);
 
-        bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);//create an empty GameObject as a child of cannon
+        //bulletList.Add(Instantiate(dBullet, transform.GetChild(4).position, transform.GetChild(4).localRotation) as GameObject);//create an empty GameObject as a child of cannon
+        bulletList.Add(Instantiate(dBullet, transform.GetChild(3).position, transform.GetChild(3).localRotation) as GameObject);//create an empty GameObject as a child of cannon
     }
 
     //SituationI[1 enemy OR 2 enemies(enemy[0] or enemy[1] escape/die first), 1 cannon]
@@ -130,8 +140,10 @@ public class damaging_Tower : MonoBehaviour {
         ///*
         if(bulletList[0] != null)
         {
-            transform.GetChild(5).Rotate(0, -80 * Time.deltaTime, 0);
-            for (int i = 0; i < 4; i++)
+            //transform.GetChild(5).Rotate(0, -80 * Time.deltaTime, 0);
+            //for (int i = 0; i < 4; i++)
+            transform.GetChild(4).Rotate(0, -80 * Time.deltaTime, 0);
+            for (int i = 0; i < 3; i++)
             {
                 //Rotation
                 bulletList[i].transform.Rotate(0, -90 * Time.deltaTime, 0);
