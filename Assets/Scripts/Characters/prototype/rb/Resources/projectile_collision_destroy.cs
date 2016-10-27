@@ -17,7 +17,7 @@ public class projectile_collision_destroy : MonoBehaviour {
         explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         GameObject hit = collision.gameObject;
 
-        NavigationScript hit_player = hit.GetComponent<NavigationScript>();
+        NavigationRoll hit_player = hit.GetComponent<NavigationRoll>();
         Base_Combat hit_base = hit.GetComponent<Base_Combat>();
         Collectable_Combat hit_collectable = hit.GetComponent<Collectable_Combat>();
 
