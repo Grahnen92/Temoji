@@ -27,3 +27,5 @@ sysinfo.txt
 *.apk
 *.unitypackage
 Assets/Models/Environment/Materials.meta
+*.meta
+Assets/Models/Enemies/explosion_bot2/inner_ring.fbx.meta

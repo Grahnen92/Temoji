@@ -32,6 +32,12 @@ public class GameManager : MonoBehaviour
     public GameObject rock2Object;
     public GameObject treeObject;
     public GameObject gateObject;
+    public ParticleSystem airParticles;
+    public static bool base_alive = false;
+
+    private GameObject thePlayer;
+    private ParticleSystem theAirParticles;
+
 
     const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
@@ -39,8 +45,8 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-       
 
+        theAirParticles = airParticles.GetComponent<ParticleSystem>();
         generateMap();
 
         spawnPlayer();
@@ -48,26 +54,34 @@ public class GameManager : MonoBehaviour
 
         print("Welcome to this level.");
 
-        InvokeRepeating("spawnEnemy", 0, 1.0f);
+        InvokeRepeating("spawnEnemy", 0, 10.0f);
     }
 
     void spawnPlayer()
     {
 
-        Vector3 spawn_pos_player = NavigationScript.target_destination + new Vector3(1.5f, 3f, 0f);
+        Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(1.5f, 3f, 0f);
 
-        Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
+        thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
 
     }
 
     void spawnEnemy()
     {
-        Instantiate(enemyObject, NavigationScript.spawn_destination, Quaternion.identity);
+        Quaternion rotation = Quaternion.identity;
+        rotation.SetLookRotation(NavigationRoll.spawn_destination.normalized);
+
+        GameObject newEnemy = (GameObject)Instantiate(enemyObject, NavigationRoll.spawn_destination + new Vector3(0,2,0), rotation);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!base_alive)
+        {
+            CancelInvoke();
+        }
+        theAirParticles.transform.position = GameObject.Find("final_prototype_neckjoint").transform.position + new Vector3(0,2,0);
 
     }
 
@@ -79,19 +93,15 @@ public class GameManager : MonoBehaviour
         float x = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         float z = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         Vector3 position = new Vector3(x, BaseSize / 2, z);
-
-
         GameObject hej = (GameObject)Instantiate(BasePrefab, position, Quaternion.identity);
-        NavigationScript.setBase(hej);
+        base_alive = true;
+        NavigationRoll.setBase(hej);
         return position;
     }
 
     public Vector3 initialEntry(GameObject EntryPrefab, Vector3 basePosition, float r, float EntrySize)
     {
-
-
         // Choose x or z
-
         Vector3 gatePos = new Vector3();
         bool first = true;
         int safe_counter = 0;
@@ -126,12 +136,17 @@ public class GameManager : MonoBehaviour
             print("Something wrong :(");
         }
 
-        //Vector3 currPosition = new Vector3(Random.Range((MAP_SIZE / 2 - EntrySize / 2) * -1, (MAP_SIZE / 2 - EntrySize / 2)), EntrySize / 2, Random.Range((MAP_SIZE / 2 - EntrySize / 2) * -1, (MAP_SIZE / 2 - EntrySize / 2)));
         if ((gatePos - basePosition).magnitude > r)
         {
-            Instantiate(EntryPrefab, gatePos, Quaternion.identity);
+            // rotate gate if placed on the x-axis
+            Quaternion rotation = Quaternion.identity;
+            if (Mathf.Abs(gatePos.z) > Mathf.Abs(gatePos.x))
+            {
+                rotation.SetLookRotation(new Vector3(1, 0, 0));
+            }
 
-
+            Vector3 offset = new Vector3(0.0f, 1.8f, 0.0f);
+            Instantiate(EntryPrefab, gatePos + offset, rotation);
         }
 
         return gatePos;
@@ -142,10 +157,10 @@ public class GameManager : MonoBehaviour
     {
 
         // Generate Base
-        NavigationScript.target_destination = initialBase(targetObject, 1);
+        NavigationRoll.target_destination = initialBase(targetObject, 1);
 
         // Generate Gate
-        NavigationScript.spawn_destination = initialEntry(gateObject, NavigationScript.target_destination, base_radius, ENTRY_SIZE);
+        NavigationRoll.spawn_destination = initialEntry(gateObject, NavigationRoll.target_destination, base_radius, ENTRY_SIZE);
         
         // Generate Indestructables
         ///generateIndestructables();
@@ -301,6 +316,8 @@ public class GameManager : MonoBehaviour
     ------------------------------------------------   */
     void generateCollectibles()
     {
+
+        // Trees
         for (int y = 0; y < 10; y++)
         {
             Vector3 position = targetObject.transform.position; // game objects position
@@ -333,6 +350,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // Rocks
         for (int y = 0; y < 20; y++)
         {
             Vector3 position = targetObject.transform.position; // game objects position
@@ -343,13 +361,13 @@ public class GameManager : MonoBehaviour
                 position.y = 0f;
             }
 
+
             Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
             coll_sphere_position = position;
 
 
             coll_sphere_position.y += .4f;
             rock1Object.transform.localScale = new Vector3(10f, 10f, 10f);
-
             Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
             int i = 0;
             bool build = true;
@@ -361,7 +379,9 @@ public class GameManager : MonoBehaviour
 
             if (build) // Build if no collide
             {
-                Instantiate(rock1Object, position, Quaternion.identity);
+                Quaternion rotation = Quaternion.identity;
+                rotation.y = Random.value * 6.3f;
+                Instantiate(rock1Object, position, rotation);
             }
         }
     }

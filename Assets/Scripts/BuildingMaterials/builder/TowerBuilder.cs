@@ -13,12 +13,19 @@ public class TowerBuilder : MonoBehaviour {
     // Use this for initialization
     void Start () {
 		buildTimer = 0;
-		buildTime = 10;
-        tower_prefab = Resources.Load("Tower") as GameObject;
+		buildTime = 2;
+       
         particle_system = gameObject.GetComponentInChildren<ParticleSystem>();
         Color tmp_color = GetComponent<Renderer>().material.color;
         tmp_color.a = 0.2f;
         GetComponent<Renderer>().material.color = tmp_color;
+
+    }
+
+    public void loadTower(String _tower_resource)
+    {
+        //tower_prefab = Resources.Load("Towers\\ProjectileTower\\projectile_tower_base") as GameObject;
+        tower_prefab = Resources.Load(_tower_resource) as GameObject;
 
     }
 	
