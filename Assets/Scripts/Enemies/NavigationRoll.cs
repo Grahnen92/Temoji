@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NavigationScript : MonoBehaviour
+public class NavigationRoll : MonoBehaviour
 {
 
     static public GameObject baseObject;

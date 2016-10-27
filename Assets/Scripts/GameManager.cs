@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
     void spawnPlayer()
     {
 
-        Vector3 spawn_pos_player = NavigationScript.target_destination + new Vector3(1.5f, 3f, 0f);
+        Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(1.5f, 3f, 0f);
 
         thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
 
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     void spawnEnemy()
     {
-        Instantiate(enemyObject, NavigationScript.spawn_destination + new Vector3(0,1,0), Quaternion.identity);
+        Instantiate(enemyObject, NavigationRoll.spawn_destination + new Vector3(0,1,0), Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour
 
         GameObject hej = (GameObject)Instantiate(BasePrefab, position, Quaternion.identity);
         base_alive = true;
-        NavigationScript.setBase(hej);
+        NavigationRoll.setBase(hej);
         return position;
     }
 
@@ -154,10 +154,10 @@ public class GameManager : MonoBehaviour
     {
 
         // Generate Base
-        NavigationScript.target_destination = initialBase(targetObject, 1);
+        NavigationRoll.target_destination = initialBase(targetObject, 1);
 
         // Generate Gate
-        NavigationScript.spawn_destination = initialEntry(gateObject, NavigationScript.target_destination, base_radius, ENTRY_SIZE);
+        NavigationRoll.spawn_destination = initialEntry(gateObject, NavigationRoll.target_destination, base_radius, ENTRY_SIZE);
         
         // Generate Indestructables
         ///generateIndestructables();
