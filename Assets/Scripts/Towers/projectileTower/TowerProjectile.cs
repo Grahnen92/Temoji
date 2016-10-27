@@ -128,4 +128,9 @@ public class TowerProjectile : MonoBehaviour {
     {
         hovering = _should_hover;
     }
+    public void setArmed(bool _armed)
+    {
+        armed = _armed;
+        gameObject.layer = 20;
+    }
 }

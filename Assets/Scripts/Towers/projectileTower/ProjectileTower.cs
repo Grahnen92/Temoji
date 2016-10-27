@@ -13,10 +13,12 @@ public class ProjectileTower : MonoBehaviour {
 
 
     int currentEnemy = -1;
-    private List<GameObject> enemies = new List<GameObject>();
+    private List<GameObject> enemyList = new List<GameObject>();
 
     List<GameObject> bulletList = new List<GameObject>();
     private int maxNrOfBullets = 4;
+    private bool activeReloading = false;
+    private float reloadTime = 1.5f;
     //height hovering
     private Vector3 TARGET_POSITION;
     Vector3[] pos_target;// = new Vector3[nrOfBullets] { 2.4, 1.5, 1, 0.6 };
@@ -28,6 +30,7 @@ public class ProjectileTower : MonoBehaviour {
     Vector3[] pos_adjustment;// = new Vector3[4];
     //Vector3[][] pid_constants;
     Vector3[,] pid_constants;
+
      
     // Use this for initialization
     void Start () {
@@ -60,32 +63,33 @@ public class ProjectileTower : MonoBehaviour {
         //loaded_projectiles = n2Zew GameObject[projectile_nr];
         //initiating the projectile prefab of the character
         projectile_prefab = Resources.Load("tower_projectile") as GameObject;
-        InvokeRepeating("spawnProjectile", 0, 2);
+        InvokeRepeating("spawnProjectile", 0, reloadTime);
+        activeReloading = true;
     }
 
     void OnTriggerEnter(Collider col)
     {
-        enemies.Add(col.gameObject);
+        enemyList.Add(col.gameObject);
         if(currentEnemy < 0)
-            currentEnemy = enemies.Count -1;
+            currentEnemy = enemyList.Count -1;
 
 
     }
 
     void OnTriggerExit(Collider col)
     {
-        int tmpIndex = enemies.IndexOf(col.gameObject);
-        enemies.RemoveAt(tmpIndex);
+        int tmpIndex = enemyList.IndexOf(col.gameObject);
+        enemyList.RemoveAt(tmpIndex);
         if (tmpIndex == currentEnemy)
         {
-            if(enemies.Count > 0)
+            if(enemyList.Count > 0)
             {
                 
-                for (int i = 0; i < enemies.Count; i++)
+                for (int i = 0; i < enemyList.Count; i++)
                 {
-                    if (enemies[i] == null)
+                    if (enemyList[i] == null)
                     {
-                        enemies.RemoveAt(i);
+                        enemyList.RemoveAt(i);
                     }
                     else
                     {
@@ -103,49 +107,32 @@ public class ProjectileTower : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        print(enemies.Count);
-        if(bulletList[0] == null)
-        {
 
-        }
-        //check if tower is loaded or if a new ball should be spawned
-        //if (loaded == 0)
-        if (false)
+        //check if there is an enemy to attack
+        if(currentEnemy != -1)
         {
-            current_projectile = Instantiate(projectile_prefab);
-            current_projectile.transform.position = transform.position + Vector3.up * 0.3f;
-            loaded = 1;
-            current_projectile.GetComponent<TowerProjectile>().setTowerBase(gameObject);
-        }
-       // else if(loaded == 2)
-        else if (false)
-        {
-            //tower is loaded. Check if there is an enemy to shoot at
-            if (currentEnemy != -1 && enemies[currentEnemy] != null)
+            //check if the current enemy has died
+            if(enemyList[currentEnemy] != null)
             {
-                current_projectile.GetComponent<TowerProjectile>().setHovering(false);
-                Vector3 shootVec = (enemies[currentEnemy].transform.position + enemies[currentEnemy].GetComponent<Rigidbody>().velocity) - current_projectile.transform.position;
-                current_projectile.GetComponent<Rigidbody>().AddForce(shootVec.normalized * 1000.0f);
-                loaded = 0;
-            }
-            else
-            {
-                for (int i = 0; i < enemies.Count; i++)
+                //check if there are bullets to shoot
+                if (bulletList.Count > 0 && bulletList[0].transform.position.y > transform.position.y + TARGET_POSITION.y*0.75f )
                 {
-                    if (enemies[i] == null)
-                    {
-                        enemies.RemoveAt(i);
-                    }
-                    else
-                    {
-                        currentEnemy = i;
-                        break;
-                    }
+                    shootProjectile();
                 }
             }
-           
+            else //current enemy is dead, search enemy list for a new target and enemies from the list if they are dead
+            {
+                enemyList.RemoveAt(currentEnemy);
+                currentEnemy = -1;
+                for(int i = 0; i < enemyList.Count; i++)
+                {
+                    if (enemyList[i] != null)
+                        currentEnemy = i;
+                    else
+                        enemyList.RemoveAt(i);
+                }
+            }
         }
-
     }
 
     void FixedUpdate()
@@ -184,12 +171,24 @@ public class ProjectileTower : MonoBehaviour {
         tmpBullet.GetComponent<Rigidbody>().AddForce(Vector3.right * 10);
         bulletList.Add(tmpBullet);//create an empty GameObject as a child of cannon
         if (bulletList.Count == maxNrOfBullets)
+        {
             CancelInvoke("spawnProjectile");
+            activeReloading = false;
+        }
+           
     }
 
-    void shoot()
+    void shootProjectile()
     {
-        //bulletList
+        Vector3 shootVec = enemyList[currentEnemy].transform.position - bulletList[0].transform.position + enemyList[currentEnemy].GetComponent<Rigidbody>().velocity;
+        bulletList[0].GetComponent<Rigidbody>().AddForce(shootVec * 100.0f);
+        bulletList[0].GetComponent<TowerProjectile>().setArmed(true);
+        bulletList.RemoveAt(0);
+        if (!activeReloading)
+        {
+            InvokeRepeating("spawnProjectile", reloadTime, reloadTime);
+            activeReloading = true;
+        }
     }
 
     public void setLoaded(int load_state)
