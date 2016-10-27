@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
     void spawnPlayer()
     {
 
-        Vector3 spawn_pos_player = NavigationScript.target_destination + new Vector3(1.5f, 3f, 0f);
+        Vector3 spawn_pos_player = NavigationScript.target_destination + new Vector3(4f, 1f, 0f);
 
         thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
 
@@ -90,8 +90,6 @@ public class GameManager : MonoBehaviour
         float x = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         float z = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         Vector3 position = new Vector3(x, BaseSize / 2, z);
-
-
         GameObject hej = (GameObject)Instantiate(BasePrefab, position, Quaternion.identity);
         base_alive = true;
         NavigationScript.setBase(hej);
@@ -154,7 +152,7 @@ public class GameManager : MonoBehaviour
     {
 
         // Generate Base
-        NavigationScript.target_destination = initialBase(targetObject, 1);
+        NavigationScript.target_destination = initialBase(targetObject, 2);
 
         // Generate Gate
         NavigationScript.spawn_destination = initialEntry(gateObject, NavigationScript.target_destination, base_radius, ENTRY_SIZE);
