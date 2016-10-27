@@ -46,7 +46,7 @@ public class NavigationRoll : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float distance = (target_destination - transform.position).magnitude;
+        float distance = (target_destination - transform.position).magnitude - 3.43f;
 
         nav.CalculatePath(target_destination, navPath);
         int i = 1;

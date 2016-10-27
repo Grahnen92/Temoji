@@ -90,8 +90,6 @@ public class GameManager : MonoBehaviour
         float x = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         float z = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         Vector3 position = new Vector3(x, BaseSize / 2, z);
-
-
         GameObject hej = (GameObject)Instantiate(BasePrefab, position, Quaternion.identity);
         base_alive = true;
         NavigationRoll.setBase(hej);
