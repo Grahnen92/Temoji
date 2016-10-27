@@ -12,8 +12,9 @@ public class MakePlateRings : MonoBehaviour {
     public float rotationSpeed;
     public Axis ringAxis;
     public Axis rotationAxis;
+    public float offset = 0;
 
-    public enum Direction { Clockwise, CounterClock };
+    public enum Direction { Clockwise, CounterClock, None };
     public enum Axis { x, y, z };
 
     Vector3 rotationVec = new Vector3();
@@ -24,6 +25,9 @@ public class MakePlateRings : MonoBehaviour {
         Vector3 pos = transform.position;
 
         Vector3[] points = GenerateCirclePts(pos, radius, plateCount, ringAxis);
+        Vector3 forward = transform.forward;
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+      
         foreach (Vector3 pt in points)
         {
             newPlate = Instantiate(plate);
@@ -31,6 +35,8 @@ public class MakePlateRings : MonoBehaviour {
             newPlate.transform.position = pt;
             if(lookAtCenter) newPlate.transform.LookAt(pos);
         }
+
+        transform.forward = forward;
     }
 
     // Update is called once per frame
@@ -38,8 +44,10 @@ public class MakePlateRings : MonoBehaviour {
         int direction;
         if (rotation == Direction.Clockwise)
             direction = 1;
-        else
+        else if (rotation == Direction.CounterClock)
             direction = -1;
+        else
+            direction = 0;
         float velocity = direction * rotationSpeed;
 
         switch (rotationAxis)
@@ -65,6 +73,7 @@ public class MakePlateRings : MonoBehaviour {
         {
             float first = (float)(radius * Math.Cos(theta * i));
             float sec = (float)(radius * Math.Sin(theta * i));
+            //Vector3.
 
             switch (axis)
             {

@@ -7,11 +7,11 @@ public class Bullet : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        GetComponent<Rigidbody>().velocity = transform.forward * 10;
+        GetComponent<Rigidbody>().velocity = transform.forward * 40;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        Destroy(this.gameObject, 2);
+        Destroy(this.gameObject, 0.5f);
 	}
 }
