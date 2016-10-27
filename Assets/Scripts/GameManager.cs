@@ -100,10 +100,7 @@ public class GameManager : MonoBehaviour
 
     public Vector3 initialEntry(GameObject EntryPrefab, Vector3 basePosition, float r, float EntrySize)
     {
-
-
         // Choose x or z
-
         Vector3 gatePos = new Vector3();
         bool first = true;
         int safe_counter = 0;
@@ -138,12 +135,17 @@ public class GameManager : MonoBehaviour
             print("Something wrong :(");
         }
 
-        //Vector3 currPosition = new Vector3(Random.Range((MAP_SIZE / 2 - EntrySize / 2) * -1, (MAP_SIZE / 2 - EntrySize / 2)), EntrySize / 2, Random.Range((MAP_SIZE / 2 - EntrySize / 2) * -1, (MAP_SIZE / 2 - EntrySize / 2)));
         if ((gatePos - basePosition).magnitude > r)
         {
-            Instantiate(EntryPrefab, gatePos, Quaternion.identity);
+            // rotate gate if placed on the x-axis
+            Quaternion rotation = Quaternion.identity;
+            if (Mathf.Abs(gatePos.z) > Mathf.Abs(gatePos.x))
+            {
+                rotation.SetLookRotation(new Vector3(1, 0, 0));
+            }
 
-
+            Vector3 offset = new Vector3(0.0f, 1.8f, 0.0f);
+            Instantiate(EntryPrefab, gatePos + offset, rotation);
         }
 
         return gatePos;
