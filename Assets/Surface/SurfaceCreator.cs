@@ -87,7 +87,7 @@ public class SurfaceCreator : MonoBehaviour {
                 // lower in middle
                 float d1 = 0.332f;
                 float d2 = 0.43f;
-                float floorLevel = -0.0666f;
+                float floorLevel = -0.0706f;
 
                 if (Mathf.Abs(vertices[v].x) < d1 && Mathf.Abs(vertices[v].z) < d1)
                 {
@@ -120,10 +120,11 @@ public class SurfaceCreator : MonoBehaviour {
                     //vertices[v].y = floorLevel + realX * sample / length;
 
 
-
                 }
+                vertices[v].y += 1.5f / 150.0f;
+
             }
-		}
+        }
 		mesh.vertices = vertices;
 		mesh.colors = colors;
 		mesh.RecalculateNormals();

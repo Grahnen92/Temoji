@@ -27,7 +27,7 @@ public class PlayerCamera : MonoBehaviour {
         player = GameObject.Find("final_prototype_head");
         distance = 10.0f;
         rb = GetComponent<Rigidbody> ();
-        offset = new Vector3(0, 8, -5);
+        offset = new Vector3(0, 6, -5);
         offset.Normalize();
         offset *= distance;
         transform.position = player.transform.position + offset;
