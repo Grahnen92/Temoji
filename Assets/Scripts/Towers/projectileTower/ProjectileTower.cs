@@ -43,19 +43,20 @@ public class ProjectileTower : MonoBehaviour {
         pos_derivative = new Vector3[maxNrOfBullets];
         pos_adjustment = new Vector3[maxNrOfBullets];
 
-        Vector3 TARGET_POSITION = new Vector3(0.0f, 2.4f, 0.0f);
+        TARGET_POSITION = new Vector3(0.0f, 3.0f, 0.0f);
         pid_constants = new Vector3[maxNrOfBullets, 3];
 
         for (int i = 0; i < maxNrOfBullets; i++)
         {
-            pos_target[i] = TARGET_POSITION + transform.position;
+            pos_target[i] = ((float)(maxNrOfBullets - i)) * TARGET_POSITION /((float)maxNrOfBullets) + transform.position;
+            pos_target[i].y = pos_target[i].y + 0.5f;
             pos_error_pre[i] = TARGET_POSITION - Vector3.up*0.25f;
             pos_integral[i] = Vector3.zero;
 
             //x
             pid_constants[i, 0] = new Vector3(5.0f, 0.0f, 1.0f);
             //height
-            pid_constants[i, 1] = new Vector3(10.0f, 0.0f, 2.0f);
+            pid_constants[i, 1] = new Vector3(3.0f, 1.0f, 2.0f);
             //z
             pid_constants[i, 2] = new Vector3(5.0f, 0.0f, 1.0f);
         }
@@ -115,7 +116,7 @@ public class ProjectileTower : MonoBehaviour {
             if(enemyList[currentEnemy] != null)
             {
                 //check if there are bullets to shoot
-                if (bulletList.Count > 0 && bulletList[0].transform.position.y > transform.position.y + TARGET_POSITION.y*0.75f )
+                if (bulletList.Count > 0 && bulletList[0].transform.position.y > (transform.position.y + TARGET_POSITION.y) )
                 {
                     shootProjectile();
                 }
@@ -144,9 +145,12 @@ public class ProjectileTower : MonoBehaviour {
     {
         for(int i = 0; i < bulletList.Count; i++)
         {
-            pos_target[i].x  = transform.position.x + Mathf.Sin((Time.time) + i)*Mathf.Cos((Time.time) + i+ transform.position.x) *0.3f;
-            pos_target[i].y = transform.position.y + Mathf.Sin((Time.time) + i)*Mathf.Sin((Time.time) + i + transform.position.x) * 0.3f + 2.4f;
-            pos_target[i].z = transform.position.z + Mathf.Cos((Time.time) + i + transform.position.x) * 0.3f;
+            //pos_target[i].x  = transform.position.x + Mathf.Sin((Time.time) + i)*Mathf.Cos((Time.time) + i+ transform.position.x) *0.3f;
+            //pos_target[i].y = transform.position.y + Mathf.Sin((Time.time) + i)*Mathf.Sin((Time.time) + i + transform.position.x) * 0.3f + TARGET_POSITION.y;
+            //pos_target[i].z = transform.position.z + Mathf.Cos((Time.time) + i + transform.position.x) * 0.3f;
+            pos_target[i].x = transform.position.x + Mathf.Cos((Time.time *4) + i + transform.position.x) * 0.3f;
+            //pos_target[i].y = transform.position.y + Mathf.Sin((Time.time) + i) * Mathf.Sin((Time.time) + i + transform.position.x) * 0.3f + TARGET_POSITION.y;
+            pos_target[i].z = transform.position.z + Mathf.Sin((Time.time * 4) + i + transform.position.x) * 0.3f;
             //pos_error[i] = pos_target[i] - (bulletList[i].transform.position - transform.position);
             pos_error[i] = pos_target[i] - bulletList[i].transform.position;
             pos_integral[i] = pos_integral[i] + pos_error[i] * Time.fixedDeltaTime;
@@ -184,11 +188,23 @@ public class ProjectileTower : MonoBehaviour {
         bulletList[0].GetComponent<Rigidbody>().AddForce(shootVec * 100.0f);
         bulletList[0].GetComponent<TowerProjectile>().setArmed(true);
         bulletList.RemoveAt(0);
+        resetPid();
         if (!activeReloading)
         {
             InvokeRepeating("spawnProjectile", reloadTime, reloadTime);
             activeReloading = true;
         }
+    }
+
+    void resetPid()
+    {
+        for(int i = 0; i < bulletList.Count; i++)
+        {
+            pos_error_pre[i] = pos_target[i] - bulletList[i].transform.position;
+            pos_integral[i] = pos_integral[i + 1];
+        }
+        pos_error_pre[bulletList.Count] = TARGET_POSITION - Vector3.up * 0.25f;
+        pos_integral[bulletList.Count] = Vector3.zero;
     }
 
     public void setLoaded(int load_state)

@@ -328,7 +328,7 @@ public class GameManager : MonoBehaviour
 
 
             coll_sphere_position.y += .4f;
-            treeObject.transform.localScale = new Vector3(30f, 40f, 30f);
+            //treeObject.transform.localScale = new Vector3(30f, 40f, 30f);
 
             Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
             int i = 0;
@@ -362,7 +362,7 @@ public class GameManager : MonoBehaviour
 
 
             coll_sphere_position.y += .4f;
-            rock1Object.transform.localScale = new Vector3(10f, 10f, 10f);
+           // rock1Object.transform.localScale = new Vector3(10f, 10f, 10f);
             Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
             int i = 0;
             bool build = true;

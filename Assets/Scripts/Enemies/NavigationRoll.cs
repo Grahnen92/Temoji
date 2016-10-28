@@ -71,8 +71,6 @@ public class NavigationRoll : MonoBehaviour
             }
         }
 
-
-
         // Distance from target
 
         if (distance <= attack_distance)
@@ -85,8 +83,6 @@ public class NavigationRoll : MonoBehaviour
 
     void FixedUpdate()
     {
-
-        
 
         Vector3 curr_forward = transform.forward;
         curr_forward.y = 0;
@@ -105,16 +101,16 @@ public class NavigationRoll : MonoBehaviour
 
         rb.AddRelativeTorque(Vector3.right * (float)body_rot_adjustment);
 
-
         //gameObject.GetComponent<Rigidbody>().AddForce(direction*100000.0f);
 
     }
 
     void attack()
     {
+
+        Destroy(gameObject);
         // Attack target
         print("Attack target!");
-        Destroy(gameObject);
         Base_Combat base_combat = baseObject.GetComponent<Base_Combat>();
        // base_combat.TakeDamage(10);
         GameObject explosion = Instantiate(explosion_prefab) as GameObject;
@@ -122,6 +118,40 @@ public class NavigationRoll : MonoBehaviour
         explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
 
+        GameObject tmpParent = transform.parent.gameObject;
+
+        //outer child right
+        GameObject tmpChildRight = tmpParent.transform.GetChild(1).GetChild(1).gameObject;
+        tmpChildRight.transform.parent = null;
+        tmpChildRight.AddComponent<SphereCollider>();
+        tmpChildRight.AddComponent<Rigidbody>();
+        tmpChildRight.layer = 22;
+        tmpChildRight.AddComponent<DestroyTimer>().destructionTime = 4.0f;
+        
+
+        //outer child left
+        GameObject tmpChildLeft = tmpParent.transform.GetChild(1).GetChild(0).gameObject;
+        tmpChildLeft.transform.parent = null;
+        tmpChildLeft.AddComponent<SphereCollider>();
+        tmpChildLeft.AddComponent<Rigidbody>();
+        tmpChildLeft.layer = 22;
+        tmpChildLeft.AddComponent<DestroyTimer>().destructionTime = 4.0f;
+
+        //outer child right
+        tmpChildRight = tmpParent.transform.GetChild(0).GetChild(1).gameObject;
+        tmpChildRight.transform.parent = null;
+        tmpChildRight.AddComponent<SphereCollider>();
+        tmpChildRight.AddComponent<Rigidbody>();
+        tmpChildRight.layer = 22;
+        tmpChildRight.AddComponent<DestroyTimer>().destructionTime = 4.0f;
+
+        //outer child left
+        tmpChildLeft = tmpParent.transform.GetChild(0).GetChild(0).gameObject;
+        tmpChildLeft.transform.parent = null;
+        tmpChildLeft.AddComponent<SphereCollider>();
+        tmpChildLeft.AddComponent<Rigidbody>();
+        tmpChildLeft.layer = 22;
+        tmpChildLeft.AddComponent<DestroyTimer>().destructionTime = 4.0f;
 
     }
 

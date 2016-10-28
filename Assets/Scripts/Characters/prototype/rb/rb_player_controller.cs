@@ -80,7 +80,7 @@ using System;
 
 	//projectile
 	private GameObject wing_projectile_prefab;
-	public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18);
+	public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18) | (1 << 21);
 
 	void Start()
 	{

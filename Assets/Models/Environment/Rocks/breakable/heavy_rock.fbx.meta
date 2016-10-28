@@ -1,52 +1,33 @@
 fileFormatVersion: 2
-guid: 05e18dc857cd02b4484d8f2a3ead7592
-timeCreated: 1477475835
+guid: 36259a8a3dcf1dd44bf887dbdcbf3760
+timeCreated: 1477630493
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: pCone2_pCone3_pCone4_pCone5
-    100004: pCube9
-    100006: pCylinder2
-    100008: pCylinder5
-    100010: polySurface5_polySurface10
-    100012: polySurface5_polySurface11
-    100014: polySurface5_polySurface12
-    100016: polySurface9_polySurface5
+    100002: rock_part1
+    100004: rock_part2
+    100006: rock_part3
+    100008: rock_part4
     400000: //RootNode
-    400002: pCone2_pCone3_pCone4_pCone5
-    400004: pCube9
-    400006: pCylinder2
-    400008: pCylinder5
-    400010: polySurface5_polySurface10
-    400012: polySurface5_polySurface11
-    400014: polySurface5_polySurface12
-    400016: polySurface9_polySurface5
-    2300000: pCone2_pCone3_pCone4_pCone5
-    2300002: pCube9
-    2300004: pCylinder2
-    2300006: pCylinder5
-    2300008: polySurface5_polySurface10
-    2300010: polySurface5_polySurface11
-    2300012: polySurface5_polySurface12
-    2300014: polySurface9_polySurface5
-    3300000: pCone2_pCone3_pCone4_pCone5
-    3300002: pCube9
-    3300004: pCylinder2
-    3300006: pCylinder5
-    3300008: polySurface5_polySurface10
-    3300010: polySurface5_polySurface11
-    3300012: polySurface5_polySurface12
-    3300014: polySurface9_polySurface5
-    4300000: pCone2_pCone3_pCone4_pCone5
-    4300002: pCube9
-    4300004: pCylinder2
-    4300006: pCylinder5
-    4300008: polySurface5_polySurface10
-    4300010: polySurface5_polySurface11
-    4300012: polySurface5_polySurface12
-    4300014: polySurface9_polySurface5
+    400002: rock_part1
+    400004: rock_part2
+    400006: rock_part3
+    400008: rock_part4
+    2300000: rock_part1
+    2300002: rock_part2
+    2300004: rock_part3
+    2300006: rock_part4
+    3300000: rock_part1
+    3300002: rock_part2
+    3300004: rock_part3
+    3300006: rock_part4
+    4300000: rock_part1
+    4300002: rock_part2
+    4300004: rock_part3
+    4300006: rock_part4
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -71,7 +52,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 10
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -105,7 +86,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

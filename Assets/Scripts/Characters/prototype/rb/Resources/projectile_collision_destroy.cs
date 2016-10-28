@@ -17,33 +17,46 @@ public class projectile_collision_destroy : MonoBehaviour {
         explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         GameObject hit = collision.gameObject;
 
-        NavigationRoll hit_player = hit.GetComponent<NavigationRoll>();
-        Base_Combat hit_base = hit.GetComponent<Base_Combat>();
-        Collectable_Combat hit_collectable = hit.GetComponent<Collectable_Combat>();
+        Combat DamageHit = hit.GetComponent<Combat>();
 
-        if (hit_player)
+        if (DamageHit)
+            DamageHit.TakeDamage(10);
+
+        if(hit.layer == 21)
         {
-            print("hitplayer!=null");
-            Enemy1_Combat enemy1_combat = hit.GetComponent<Enemy1_Combat>();
-            enemy1_combat.TakeDamage(10);
-
+            if(hit.tag == "Stone")
+            {
+                GameObject tmpMaterialPart = hit.transform.parent.gameObject;
+                tmpMaterialPart.AddComponent<Rigidbody>();
+                tmpMaterialPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
+                tmpMaterialPart.layer = 12;
+                //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)
+                //{
+                //    tmpMaterialPart.transform.GetChild(i).gameObject.layer = 12;
+                //}
+                tmpMaterialPart.transform.GetChild(0).gameObject.layer = 12;
+            }
+            else if(hit.tag == "Wood")
+            {
+                GameObject tmpMaterialParent = hit.transform.parent.parent.gameObject;
+                for(int i = 0; i < tmpMaterialParent.transform.childCount; i++)
+                {
+                    GameObject tmpMaterialPart = tmpMaterialParent.transform.GetChild(i).gameObject;
+                    tmpMaterialPart.AddComponent<Rigidbody>();
+                    tmpMaterialPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
+                    tmpMaterialPart.layer = 12;
+                    //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)
+                    //{
+                    //    tmpMaterialPart.transform.GetChild(i).gameObject.layer = 12;
+                    //}
+                    tmpMaterialPart.transform.GetChild(0).gameObject.layer = 12;
+                }
+                
+            }
+            
         }
 
-        if (hit_base)
-        {
-            print("hit base!");
-            Base_Combat base_combat = hit.GetComponent<Base_Combat>();
-            base_combat.TakeDamage(10);
-        }
-
-        if (hit_collectable)
-        {
-            print("hit collectable!");
-            Collectable_Combat col_combat = hit.GetComponent<Collectable_Combat>();
-            col_combat.TakeDamage(10, collision.contacts[0].point);
-        }
-
-        Destroy(gameObject);
+            Destroy(gameObject);
     }
 
     // Update is called once per frame
