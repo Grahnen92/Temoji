@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class SurfaceCreator : MonoBehaviour {
 
-	[Range(1, 200)]
+	[Range(1, 512)]
 	public int resolution = 10;
 
 	public Vector3 offset;
@@ -48,9 +49,11 @@ public class SurfaceCreator : MonoBehaviour {
 			GetComponent<MeshFilter>().mesh = mesh;
 		}
 		Refresh();
-	}
 
-	public void Refresh () {
+
+    }
+
+    public void Refresh () {
 		if (resolution != currentResolution) {
 			CreateGrid();
 		}
@@ -82,15 +85,53 @@ public class SurfaceCreator : MonoBehaviour {
 
 
                 // lower in middle
+                float d1 = 0.332f;
+                float d2 = 0.43f;
+                float floorLevel = -0.0666f;
 
-			}
+                if (Mathf.Abs(vertices[v].x) < d1 && Mathf.Abs(vertices[v].z) < d1)
+                {
+                    vertices[v].y = floorLevel + sample*0.2f;
+
+                }else if (Mathf.Abs(vertices[v].x) < d2 && Mathf.Abs(vertices[v].z) < d2)
+                {
+
+                    // interpolate between florlevel -> sample
+                    float realX = (Mathf.Abs(vertices[v].x) - d1);
+                    float realZ = (Mathf.Abs(vertices[v].z) - d1);
+                    float length = d2 - d1;
+                    //float m = floorLevel/150.0 + d1 * (d2 + d1);
+                    float k = (1.0f - floorLevel)/((d2-d1));
+                    float kFactor = 22.0f;
+                    float diff = 0.0f;
+                    float mountainOffset = -0.082f;
+                    if(Mathf.Abs(vertices[v].x) < Mathf.Abs(vertices[v].z))
+                    {
+                        float height = k * d2 / kFactor + mountainOffset;
+                        diff = height - k * realZ / kFactor + mountainOffset;
+                        vertices[v].y = sample - diff;
+                    }
+                    else if (Mathf.Abs(vertices[v].z) < Mathf.Abs(vertices[v].x))
+                    {
+                        float height = k * d2 / kFactor + mountainOffset;
+                        diff = height - k * realX / kFactor + mountainOffset;
+                        vertices[v].y = sample - diff;
+                    }
+                    //vertices[v].y = floorLevel + realX * sample / length;
+
+
+
+                }
+            }
 		}
 		mesh.vertices = vertices;
 		mesh.colors = colors;
 		mesh.RecalculateNormals();
-	}
 
-	private void CreateGrid () {
+        gameObject.AddComponent<MeshCollider>();
+    }
+
+    private void CreateGrid () {
 		currentResolution = resolution;
 		mesh.Clear();
 		vertices = new Vector3[(resolution + 1) * (resolution + 1)];
@@ -123,5 +164,7 @@ public class SurfaceCreator : MonoBehaviour {
 			}
 		}
 		mesh.triangles = triangles;
+        
 	}
+    
 }
