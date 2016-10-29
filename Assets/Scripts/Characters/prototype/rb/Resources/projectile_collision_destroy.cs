@@ -35,6 +35,19 @@ public class projectile_collision_destroy : MonoBehaviour {
                 //    tmpMaterialPart.transform.GetChild(i).gameObject.layer = 12;
                 //}
                 tmpMaterialPart.transform.GetChild(0).gameObject.layer = 12;
+
+                GameObject tmpTopPart = hit.transform.parent.parent.GetChild(0).gameObject;
+                if (tmpTopPart.layer != 12)
+                {
+                    tmpTopPart.AddComponent<Rigidbody>();
+                    tmpTopPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
+                    tmpTopPart.layer = 12;
+                    //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)
+                    //{
+                    //    tmpMaterialPart.transform.GetChild(i).gameObject.layer = 12;
+                    //}
+                    tmpTopPart.transform.GetChild(0).gameObject.layer = 12;
+                }
             }
             else if(hit.tag == "Wood")
             {
@@ -42,7 +55,9 @@ public class projectile_collision_destroy : MonoBehaviour {
                 for(int i = 0; i < tmpMaterialParent.transform.childCount; i++)
                 {
                     GameObject tmpMaterialPart = tmpMaterialParent.transform.GetChild(i).gameObject;
-                    tmpMaterialPart.AddComponent<Rigidbody>();
+                    Rigidbody tmpRB = tmpMaterialPart.AddComponent<Rigidbody>();
+                    tmpRB.drag = 1f;
+                    tmpRB.angularDrag = 1f;
                     tmpMaterialPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
                     tmpMaterialPart.layer = 12;
                     //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)

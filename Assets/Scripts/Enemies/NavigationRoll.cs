@@ -47,6 +47,7 @@ public class NavigationRoll : MonoBehaviour
     void Update()
     {
         float distance = (target_destination - transform.position).magnitude - 3.43f;
+        GetComponent<NavMeshAgent>().nextPosition = transform.position;
 
         nav.CalculatePath(target_destination, navPath);
         int i = 1;
@@ -95,7 +96,7 @@ public class NavigationRoll : MonoBehaviour
         body_rot_integral = body_rot_integral + body_rot_error * Time.deltaTime;
         body_rot_derivative = (body_rot_error - prev_body_rot_error) / Time.deltaTime;
 
-        body_rot_adjustment = 0.017f * body_rot_error + 0.02f * body_rot_integral + 0.01f * body_rot_derivative;
+        body_rot_adjustment = 0.01f * body_rot_error + 0.0f * body_rot_integral + 0.01f * body_rot_derivative;
         prev_body_rot_error = body_rot_error;
 
 
