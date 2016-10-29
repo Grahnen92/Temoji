@@ -138,7 +138,6 @@ public class SurfaceCreator : MonoBehaviour {
         MeshCollider tmpCol = gameObject.AddComponent<MeshCollider>();
         tmpCol.sharedMesh = null;
         tmpCol.sharedMesh = mesh;
-        tmpCol.convex = true;
 
         //gameObject.layer = 0;
             
@@ -160,6 +159,7 @@ public class SurfaceCreator : MonoBehaviour {
 				uv[v] = new Vector2(x * stepSize, z * stepSize);
 			}
 		}
+       // mesh.setV
 		mesh.vertices = vertices;
 		mesh.colors = colors;
 		mesh.normals = normals;
