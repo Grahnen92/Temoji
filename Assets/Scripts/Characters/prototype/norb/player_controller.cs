@@ -28,7 +28,7 @@ public class player_controller : MonoBehaviour {
 	private double hight_derivative;
 	private double hight_adjustment;
 	private const double max_hight_adjustment = 1000.0;
-	private const double wanted_hight = 4;
+	private const double wanted_hight = 4.1;
 
 	//rotational variables
 	private float current_mouse_angle;

@@ -65,8 +65,9 @@ public class projectile_collision_destroy : MonoBehaviour {
                     //    tmpMaterialPart.transform.GetChild(i).gameObject.layer = 12;
                     //}
                     tmpMaterialPart.transform.GetChild(0).gameObject.layer = 12;
+                    tmpMaterialPart.transform.parent = null;
                 }
-                
+                Destroy(tmpMaterialParent);
             }
             
         }

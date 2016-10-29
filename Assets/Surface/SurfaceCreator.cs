@@ -41,20 +41,22 @@ public class SurfaceCreator : MonoBehaviour {
 	private Color[] colors;
 
 	private int currentResolution;
+    private bool refreshing = false;
 
 	private void OnEnable () {
 		if (mesh == null) {
 			mesh = new Mesh();
 			mesh.name = "Surface Mesh";
 			GetComponent<MeshFilter>().mesh = mesh;
-		}
+            
+        }
 		Refresh();
-
 
     }
 
     public void Refresh () {
-		if (resolution != currentResolution) {
+        
+        if (resolution != currentResolution) {
 			CreateGrid();
 		}
 		Quaternion q = Quaternion.Euler(rotation);
@@ -81,7 +83,7 @@ public class SurfaceCreator : MonoBehaviour {
 					sample *= amplitude;
 					colors[v] = coloring.Evaluate(sample + 0.5f);
 				}
-				vertices[v].y = sample;
+                vertices[v].y = sample;
 
 
                 // lower in middle
@@ -128,8 +130,16 @@ public class SurfaceCreator : MonoBehaviour {
 		mesh.vertices = vertices;
 		mesh.colors = colors;
 		mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        //mesh.Optimize();
+        // gameObject.GetComponent<MeshCollider>().sharedMesh = null;
+        MeshCollider tmpCol = gameObject.AddComponent<MeshCollider>();
+        tmpCol.sharedMesh = null;
+        tmpCol.sharedMesh = mesh;
+        tmpCol.convex = true;
 
-        gameObject.AddComponent<MeshCollider>();
+        //gameObject.layer = 0;
+            
     }
 
     private void CreateGrid () {
