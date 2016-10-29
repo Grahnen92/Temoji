@@ -16,6 +16,7 @@ public class NavigationRoll : MonoBehaviour
     public GameObject explosion_prefab;
 
     NavMeshAgent nav;
+    //GameObject roller;
     NavMeshPath navPath;
     Vector3 direction;
     Rigidbody rb;
@@ -26,12 +27,15 @@ public class NavigationRoll : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        GetComponent<NavMeshAgent>().SetDestination(target_destination);
+
+        //roller = transform.parent.GetChild(0).gameObject;
+        nav = GetComponent<NavMeshAgent>();
+
+       
         GetComponent<NavMeshAgent>().avoidancePriority = (int)Random.value * 100;
         GetComponent<NavMeshAgent>().updatePosition = false;
         GetComponent<NavMeshAgent>().updateRotation = false;
 
-        nav = GetComponent<NavMeshAgent>();
         navPath = new NavMeshPath();
         rb = GetComponent<Rigidbody>();
 
@@ -46,20 +50,23 @@ public class NavigationRoll : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GetComponent<NavMeshAgent>().SetDestination(target_destination);
         float distance = (target_destination - transform.position).magnitude - 3.43f;
         GetComponent<NavMeshAgent>().nextPosition = transform.position;
 
-        nav.CalculatePath(target_destination, navPath);
-        int i = 1;
-        while (i < navPath.corners.Length)
-        {
-            if (Vector3.Distance(transform.position, navPath.corners[i]) > 0.5f)
-            {
-                direction = navPath.corners[i] - transform.position;
-                break;
-            }
-            i++;
-        }
+        //nav.CalculatePath(target_destination, navPath);
+        //int i = 1;
+        //while (i < navPath.corners.Length)
+        //{
+        //    if (Vector3.Distance(transform.position, navPath.corners[i]) > 0.5f)
+        //    {
+        //        direction = navPath.corners[i] - transform.position;
+        //        break;
+        //    }
+        //    i++;
+        //}
+        direction = GetComponent<NavMeshAgent>().steeringTarget - transform.position;
+        direction.Normalize();
 
         print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
@@ -96,7 +103,7 @@ public class NavigationRoll : MonoBehaviour
         body_rot_integral = body_rot_integral + body_rot_error * Time.deltaTime;
         body_rot_derivative = (body_rot_error - prev_body_rot_error) / Time.deltaTime;
 
-        body_rot_adjustment = 0.01f * body_rot_error + 0.0f * body_rot_integral + 0.01f * body_rot_derivative;
+        body_rot_adjustment = 0.05f * body_rot_error + 0.0f * body_rot_integral + 0.01f * body_rot_derivative;
         prev_body_rot_error = body_rot_error;
 
 
