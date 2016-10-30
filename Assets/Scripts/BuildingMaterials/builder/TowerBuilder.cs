@@ -33,7 +33,8 @@ public class TowerBuilder : MonoBehaviour {
 	void Update () {
 
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 100.0f, 1))
+        if (Physics.SphereCast(transform.position, 0.05f, Vector3.down, out hit, 100.0f, 1))
+        //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100.0f, 1))
         {
 
             finalSpeed = (hit.distance / 0.3f) + 1;

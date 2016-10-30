@@ -10,7 +10,7 @@ public class SlowingTower: MonoBehaviour
     public LayerMask mask = (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18);
     public float radius = 5.0f;
 
-    private float slowAmount = 100;
+    private float slowAmount = 10;
 
 
     //private List<GameObject> Entities = new List<GameObject>();
@@ -27,17 +27,19 @@ public class SlowingTower: MonoBehaviour
         if (tmpRB)
         {
             tmpRB.drag += slowAmount;
+            tmpRB.angularDrag += slowAmount;
         }
-        var pRBs = GetComponentsInParent<Rigidbody>();
+        var pRBs = col.GetComponentsInParent<Rigidbody>();
         foreach (var pRB in pRBs)
         {
             pRB.drag += slowAmount;
+            pRB.angularDrag += slowAmount;
         }
-        var cRBs = GetComponentsInChildren<Rigidbody>();
-        foreach (var cRB in cRBs)
-        {
-            cRB.drag += slowAmount;
-        }
+        //var cRBs = GetComponentsInChildren<Rigidbody>();
+        //foreach (var cRB in cRBs)
+        //{
+        //    cRB.drag += slowAmount;
+        //}
 
         print("hej!");
     }
@@ -48,17 +50,19 @@ public class SlowingTower: MonoBehaviour
         if (tmpRB)
         {
             tmpRB.drag -= slowAmount;
+            tmpRB.angularDrag -= slowAmount;
         }
-        var pRBs = GetComponentsInParent<Rigidbody>();
+        var pRBs = col.GetComponentsInParent<Rigidbody>();
         foreach (var pRB in pRBs)
         {
             pRB.drag -= slowAmount;
+            pRB.angularDrag -= slowAmount;
         }
-        var cRBs = GetComponentsInChildren<Rigidbody>();
-        foreach (var cRB in cRBs)
-        {
-            cRB.drag -= slowAmount;
-        }
+        //var cRBs = GetComponentsInChildren<Rigidbody>();
+       // foreach (var cRB in cRBs)
+        //{
+         //   cRB.drag -= slowAmount;
+        //}
         print("hejdå!");
     }
 
@@ -72,6 +76,16 @@ public class SlowingTower: MonoBehaviour
             {
                 rigidbodies.Add(col.attachedRigidbody);
             }
+            
+            if (col.transform.parent.gameObject.GetComponent<Rigidbody>() != null && !rigidbodies.Contains(col.transform.parent.gameObject.GetComponent<Rigidbody>()))
+            {
+                rigidbodies.Add(col.transform.parent.gameObject.GetComponent<Rigidbody>());
+            }
+        }
+        foreach (var rb in rigidbodies)
+        {
+            rb.drag -= slowAmount;
+            rb.angularDrag -= slowAmount;
         }
     }
 

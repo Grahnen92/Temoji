@@ -10,10 +10,14 @@ public class Player_Combat : Combat
     //public int health = maxHealth;
 
     private GameObject head;
+    private GameObject rWing;
+    private GameObject lWing;
+    private GameObject fWing;
+    private GameObject bWing;
     private ParticleSystem smoke;
     private ParticleSystem sparks;
-    private Material head_mat;
-    private Material head_damaged_mat;
+    public  Material head_mat;
+    public Material head_damaged_mat;
 
     void Start()
     {
@@ -22,8 +26,13 @@ public class Player_Combat : Combat
         sparks = head.transform.Find("Sparks").gameObject.GetComponent<ParticleSystem>();
         health = maxHealth;
 
-        head_mat =  Resources.Load("head", typeof(Material)) as Material;
-        head_damaged_mat = Resources.Load("head_damaged", typeof(Material)) as Material;
+        rWing = GameObject.Find("final_prototype_rwing");
+        lWing = GameObject.Find("final_prototype_lwing");
+        fWing = GameObject.Find("final_prototype_fwing");
+        bWing = GameObject.Find("final_prototype_bwing");
+
+        //head_mat =  Resources.Load("head", typeof(Material)) as Material;
+       // head_damaged_mat = Resources.Load("head_damaged", typeof(Material)) as Material;
     }
 
     public override void TakeDamage(int amount)
@@ -54,7 +63,11 @@ public class Player_Combat : Combat
 
         if (health < maxHealth / 2)
         {
-            var rend = head.GetComponent<Renderer>().material = head_damaged_mat;
+            head.GetComponent<Renderer>().material = head_damaged_mat;
+            rWing.GetComponent<Renderer>().material = head_damaged_mat;
+            lWing.GetComponent<Renderer>().material = head_damaged_mat;
+            fWing.GetComponent<Renderer>().material = head_damaged_mat;
+            bWing.GetComponent<Renderer>().material = head_damaged_mat;
         }
 
         print("player took damage");
