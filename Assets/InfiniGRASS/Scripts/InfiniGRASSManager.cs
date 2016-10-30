@@ -252,7 +252,7 @@ namespace Artngame.INfiniDy
         public bool ApplyInteractive = false;//apply interactive to specific grass selector type
         public bool apply_to_all = false;//apply to all types !!!
 
-        public int Grass_selector;
+        public int Grass_selector = 0;
 
         public void Apply_Interactive()
         {
@@ -324,8 +324,8 @@ namespace Artngame.INfiniDy
 
         public float fence_scale = 1;
 
-        public float min_scale = 0.5f;
-        public float max_scale = 1;
+        public float min_scale = 0.1f;
+        public float max_scale = 0.2f;
 
         public List<Transform> Fence_poles = new List<Transform>();
         public List<Transform> Fence_poles_tmp = new List<Transform>();
@@ -365,8 +365,8 @@ namespace Artngame.INfiniDy
         // Use this for initialization
         void Start()
         {
-            Interactor = GameObject.Find("final_prototype_head").transform;
-            applyInteractor = true;
+            
+
             //v1.7 - restore !grow_tree mode, when ungrown, relates to ungrow in editor option and line 390 in grassfield script
             if (UnGrown)
             {
@@ -552,23 +552,44 @@ namespace Artngame.INfiniDy
         void genGrassPatch()
         {
 
-            
+            int grassType = Grass_selector;
+
             GameObject Mountains = GameObject.Find("Mountains");
             int resolution = Mountains.GetComponent<SurfaceCreator>().resolution;
 
-            for(int v = 0; v < resolution*resolution; v ++)
+            for(int v = 0; v < resolution*resolution; v += UnityEngine.Random.Range(300,400))
             {
                 Vector3 vert = Mountains.GetComponent<SurfaceCreator>().getVertex(v) * 150;
                 vert.y += 10.0f;
-                if(vert.y > 0.0f)
+                Vector3 normal = Mountains.GetComponent<SurfaceCreator>().getNormal(v);
+                // Under water
+                if (vert.y < 0.0f)
                 {
-                    Vector3 normal = Mountains.GetComponent<SurfaceCreator>().getNormal(v);
-                    instantiateGrass(vert, normal, Mountains.transform);
+                    grassType = 3;
                 }
-                
+                // Above water
+                else if (vert.y > 0.0f)
+                {
+                    int percentChance = UnityEngine.Random.Range(0, 100);
+
+
+                    if (percentChance <= 20) grassType = 0; // Tree
+                    else if (percentChance <= 30) grassType = 5; // Tree
+                    else if (percentChance <= 50) grassType = 4; // Tree
+                    else grassType = 29; // Tree
+
+                    grassType = 5;
+                }
+
+
+                instantiateGrass(vert, normal, Mountains.transform, grassType);
 
             }
 
+
+
+
+            // Make sure all materials are created properly
             for (int i = 0; i < GrassMaterials.Count; i++)
             {
 
@@ -610,28 +631,15 @@ namespace Artngame.INfiniDy
 
                 }
 
-                //target circle - removed in v1.4 
-                //				if(Grass_painting & 1==0){
-                //					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-                //					RaycastHit hit = new RaycastHit ();
-                //					if (Physics.Raycast (ray, out hit, Mathf.Infinity)) {
-                //						Gizmos.DrawCube (hit.point, Gizmo_scale *3* Vector3.one);
-                //						if(MassErase){
-                //							Gizmos.DrawWireSphere(hit.point,SphereCastRadius);
-                //						}else{
-                //							Gizmos.DrawWireSphere(hit.point,15);
-                //						}
-                //					}
-                //				}
             }
         }
 
 
         // BAJS
-        void instantiateGrass(Vector3 pos, Vector3 normal, Transform hitTransform)
+        void instantiateGrass(Vector3 pos, Vector3 normal, Transform hitTransform, int grassType)
         {
-            GameObject grassType = GrassPrefabs[Grass_selector];
-            GameObject TEMP = Instantiate(grassType);
+
+            GameObject TEMP = Instantiate(GrassPrefabs[grassType]); //  Grass_selector = Selected in GrassManager (instead of grassType)
             TEMP.transform.position = pos;
 
             INfiniDyGrassField TREE = TEMP.GetComponent<INfiniDyGrassField>();
@@ -639,9 +647,8 @@ namespace Artngame.INfiniDy
             TREE.Intial_Up_Vector = normal;
 
             TREE.Grow_tree = true;
-
             //v1.1 - terrain adapt
-            if (AdaptOnTerrain & true) // is_Terrain
+            if (AdaptOnTerrain & false) // is_Terrain
             {
                 int Xpos = (int)(((pos.x - Tpos.x) * Tdata.alphamapWidth / Tdata.size.x));
                 int Zpos = (int)(((pos.z - Tpos.z) * Tdata.alphamapHeight / Tdata.size.z));
@@ -1506,8 +1513,8 @@ namespace Artngame.INfiniDy
                                 {
 
 
-
-                                    genGrassPatch();
+                                    instantiateGrass(hit.point, hit.normal, hit.transform, 1);
+                                    //genGrassPatch();
 
 
                                 }
@@ -1616,6 +1623,9 @@ namespace Artngame.INfiniDy
 
                 if (Input.GetButtonUp("Fire1"))
                 {
+                    Interactor = GameObject.Find("final_prototype_head").transform;
+                    windzone = GameObject.Find("final_prototype_head").transform;
+                    applyInteractor = true;
                     print("iheiheihie");
                     genGrassPatch();
                 }
