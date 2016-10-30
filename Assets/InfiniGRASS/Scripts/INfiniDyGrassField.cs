@@ -983,12 +983,13 @@ namespace Artngame.INfiniDy {
 						}
 
 					}
-				//rotation_over = true;
-			//}
+            //rotation_over = true;
+            //}
 
-		}
 
-		[HideInInspector]
+        }
+
+        [HideInInspector]
 		public bool Grow_angles = false; 
 		
 		[HideInInspector]

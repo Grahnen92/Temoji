@@ -179,5 +179,11 @@ public class SurfaceCreator : MonoBehaviour {
 		mesh.triangles = triangles;
         
 	}
+
+    public float getSwag()
+    {
+        print("yoloswag");
+        return 0.0f;
+    }
     
 }

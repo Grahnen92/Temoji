@@ -362,7 +362,6 @@ namespace Artngame.INfiniDy
         public List<GameObject> RockPrefabs = new List<GameObject>();
         public List<GameObject> FencePrefabs = new List<GameObject>();
         public List<GameObject> FenceMidPrefabs = new List<GameObject>();
-
         // Use this for initialization
         void Start()
         {
@@ -542,7 +541,39 @@ namespace Artngame.INfiniDy
                     }
                 }
             }
-        }
+
+            
+
+        }// END START
+
+
+        //KISS
+        void genGrassPatch()
+        {
+
+
+            GameObject Mountains = GameObject.Find("Terrain");
+            //Mountains.GetComponent<SurfaceCreator>().getSwag();
+            print("yolooo");
+            int N = 50;
+
+            for (int y = -N/2; y < N/2; y++)
+            {
+                for (int x = -N / 2; x < N / 2; x++)
+                {
+                    instantiateGrass(new Vector3(3*x, 0, 3*y), new Vector3(0, 1, 0), Mountains.transform);
+
+                }
+            }
+
+            for (int i = 0; i < GrassMaterials.Count; i++)
+            {
+
+                //v1.4
+                UpdateMaterial(GrassMaterials[i], i);
+
+            }
+         }
 
 
         public void EnableColliders()
@@ -704,6 +735,7 @@ namespace Artngame.INfiniDy
         // Update is called once per frame
         public void Update()
         {
+           
 
             //v1.4
             if (Application.isPlaying)
@@ -1471,7 +1503,18 @@ namespace Artngame.INfiniDy
 
 
                                     // BAJS
-                                    instantiateGrass(hit.point, hit.normal, hit.transform);
+                                    //instantiateGrass(hit.point, hit.normal, hit.transform);
+                                    int N = 10;
+                                    //for (int y = -N / 2; y < N / 2; y++)
+                                    //{
+                                    //    for (int x = -N / 2; x < N / 2; x++)
+                                    //    {
+                                    //        instantiateGrass(new Vector3(10 * x, 0, 10 * y), new Vector3(0, 1, 0), hit.transform);
+
+                                    //    }
+                                    //}
+                                    genGrassPatch();
+
 
                                 }
                             }
@@ -1576,6 +1619,12 @@ namespace Artngame.INfiniDy
                     }//END IF ERASING MOUSE CLICK CHECK
 
                 }//END PAINTING
+
+                if (Input.GetButtonUp("Fire1"))
+                {
+                    print("iheiheihie");
+                    genGrassPatch();
+                }
 
                 ///////////////////////////////////// FENCE PAINT			
 
@@ -2111,6 +2160,7 @@ namespace Artngame.INfiniDy
                     UpdateMaterial(ExtraGrassMaterials[i].ExtraMaterials[j], i);
                 }
             }
+
 
 
         }//END UPDATE
