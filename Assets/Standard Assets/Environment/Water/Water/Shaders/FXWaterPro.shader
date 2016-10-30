@@ -125,7 +125,7 @@ half4 frag( v2f i ) : SV_Target
 	
 	#if HAS_REFLECTION
 	float4 uv1 = i.ref; uv1.xy += bump * _ReflDistort;
-	half4 refl = tex2Dproj( _ReflectionTex, UNITY_PROJ_COORD(uv1) );
+	half4 refl = 2.0*tex2Dproj( _ReflectionTex, UNITY_PROJ_COORD(uv1) );
 	#endif
 	#if HAS_REFRACTION
 	float4 uv2 = i.ref; uv2.xy -= bump * _RefrDistort;

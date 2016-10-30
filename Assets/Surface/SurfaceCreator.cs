@@ -127,7 +127,7 @@ public class SurfaceCreator : MonoBehaviour {
 
                 }
                 vertices[v].y += 1.5f / 150.0f;
-
+                
             }
         }
 		mesh.vertices = vertices;
@@ -180,5 +180,14 @@ public class SurfaceCreator : MonoBehaviour {
 		mesh.triangles = triangles;
         
 	}
-    
+
+    public Vector3 getVertex(int v)
+    {
+        return vertices[v];
+    }
+
+    public Vector3 getNormal(int v)
+    {
+        return normals[v];
+    }
 }
