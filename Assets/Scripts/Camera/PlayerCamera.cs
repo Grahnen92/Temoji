@@ -24,7 +24,7 @@ public class PlayerCamera : MonoBehaviour {
 
 
     void Start () {
-        player = GameObject.Find("final_prototype_head");
+        player = GameObject.Find("Ring_character_Final(Clone)");
         distance = 10.0f;
         rb = GetComponent<Rigidbody> ();
         offset = new Vector3(0, 6, -5);

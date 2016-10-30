@@ -192,12 +192,12 @@ public class TowerSelector : MonoBehaviour {
                     GameObject tmpGO = wood[0];
                     //tmp_pos = tmpGO.transform.position;
                     wood.RemoveAt(0);
-                    Destroy(tmpGO.transform.parent.gameObject);
+                    Destroy(tmpGO);
 
                     tmpGO = stone[0];
                     //tmp_pos += tmpGO.transform.position;
                     stone.RemoveAt(0);
-                    Destroy(tmpGO.transform.parent.gameObject);
+                    Destroy(tmpGO);
                     print("starting to build tower");
                     GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
                     //tmp_pos.y = 2.0f;
@@ -218,7 +218,7 @@ public class TowerSelector : MonoBehaviour {
                     GameObject tmpGO = stone[0];
                     //tmp_pos += tmpGO.transform.position;
                     stone.RemoveAt(0);
-                    Destroy(tmpGO.transform.parent.gameObject);
+                    Destroy(tmpGO);
                     print("starting to build tower");
                     GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
                     //tmp_pos.y = 2.0f;

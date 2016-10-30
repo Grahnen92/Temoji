@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
         {
             CancelInvoke();
         }
-        theAirParticles.transform.position = GameObject.Find("final_prototype_neckjoint").transform.position + new Vector3(0,2,0);
+        //theAirParticles.transform.position = GameObject.Find("final_prototype_neckjoint").transform.position + new Vector3(0,2,0);
 
     }
 
