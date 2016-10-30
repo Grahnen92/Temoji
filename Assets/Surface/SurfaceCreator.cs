@@ -41,14 +41,15 @@ public class SurfaceCreator : MonoBehaviour {
 	private Color[] colors;
 
 	private int currentResolution;
-    private bool refreshing = false;
 
 	private void OnEnable () {
 		if (mesh == null) {
 			mesh = new Mesh();
 			mesh.name = "Surface Mesh";
 			GetComponent<MeshFilter>().mesh = mesh;
-            
+            GetComponent<MeshFilter>().mesh.MarkDynamic();
+
+
         }
 		Refresh();
 

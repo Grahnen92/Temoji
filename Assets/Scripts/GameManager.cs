@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         Quaternion rotation = Quaternion.identity;
         rotation.SetLookRotation(NavigationRoll.spawn_destination.normalized);
 
-        GameObject newEnemy = (GameObject)Instantiate(enemyObject, NavigationRoll.spawn_destination + new Vector3(0,0,0), rotation);
+        GameObject newEnemy = (GameObject)Instantiate(enemyObject, NavigationRoll.spawn_destination + new Vector3(0,1,0), rotation);
     }
 
     // Update is called once per frame

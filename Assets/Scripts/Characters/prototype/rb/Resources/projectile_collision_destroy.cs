@@ -6,6 +6,7 @@ public class projectile_collision_destroy : MonoBehaviour {
 	// Use this for initialization
     private GameObject explosion_prefab;
     private GameObject explosion;
+    public AudioClip rockHit;
 
     void Start () {
         explosion_prefab = Resources.Load("Energy_explosion") as GameObject;
@@ -27,19 +28,22 @@ public class projectile_collision_destroy : MonoBehaviour {
             if(hit.tag == "Stone")
             {
                 GameObject tmpMaterialPart = hit.transform.parent.gameObject;
-                tmpMaterialPart.AddComponent<Rigidbody>();
+                tmpMaterialPart.AddComponent<Rigidbody>().mass = 4.0f;
                 tmpMaterialPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
                 tmpMaterialPart.layer = 12;
                 //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)
                 //{
                 //    tmpMaterialPart.transform.GetChild(i).gameObject.layer = 12;
                 //}
+           
                 tmpMaterialPart.transform.GetChild(0).gameObject.layer = 12;
-
+               
                 GameObject tmpTopPart = hit.transform.parent.parent.GetChild(0).gameObject;
+                tmpMaterialPart.transform.parent = null;
                 if (tmpTopPart.layer != 12)
+                //if (tmpTopPart.transform.parent.childCount < 2 && tmpTopPart.ToString() == "shard1")
                 {
-                    tmpTopPart.AddComponent<Rigidbody>();
+                    tmpTopPart.AddComponent<Rigidbody>().mass = 4.0f; ;
                     tmpTopPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
                     tmpTopPart.layer = 12;
                     //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)
@@ -48,6 +52,7 @@ public class projectile_collision_destroy : MonoBehaviour {
                     //}
                     tmpTopPart.transform.GetChild(0).gameObject.layer = 12;
                 }
+                
             }
             else if(hit.tag == "Wood")
             {

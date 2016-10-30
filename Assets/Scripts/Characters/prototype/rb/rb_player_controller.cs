@@ -59,6 +59,8 @@ using System;
 	private const double max_hight_adjustment = 1000.0;
 	private double wanted_hight = 2.4;
 
+    GameObject mountains;
+
     //controls the rise speed when the wings was recently closed
     private bool wings_closed_recently;
     private float wings_closed_timer = 0.0f;
@@ -80,12 +82,12 @@ using System;
 
 	//projectile
 	private GameObject wing_projectile_prefab;
-	public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18) | (1 << 21);
+	public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18) | (1 << 21) | (1 << 4);
+    public LayerMask hover_mask = (1 << 1) | (1 << 4);
 
-	void Start()
+    void Start()
 	{
-
-
+        mountains = GameObject.Find("Mountains");
 
         //Initiating the different action states of the character
         characterStates = new state[nrOfStates];
@@ -229,7 +231,8 @@ using System;
         //mouse ray tracing =====================================================================
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit mouse_hit;
-		Physics.Raycast (ray, out mouse_hit, 100, mouse_mask);
+        //Physics.Raycast (ray, out mouse_hit, 100, mouse_mask);
+        Physics.SphereCast(ray, 0.05f, out mouse_hit, 100, mouse_mask);
         curr_mouse_hit = mouse_hit.point;
         curr_mouse_dir = mouse_hit.point - transform.position;
         curr_mouse_dir_noy = curr_mouse_dir;
@@ -284,7 +287,12 @@ using System;
         }
 
         RaycastHit hit;
-		if (Physics.Raycast (rb_head.transform.position, Vector3.down, out hit, 100.0f, 1)) {
+        //Ray tmpRay = new Ray();
+        //tmpRay.origin = rb_head.transform.position;
+        //tmpRay.direction = Vector3.down;
+        //if (mountains.GetComponent<MeshCollider>().Raycast(tmpRay, out hit, 100)) {
+        if(Physics.SphereCast(rb_head.transform.position, 0.2f, Vector3.down, out hit, 100.0f, hover_mask)) {
+		//if (Physics.Raycast (rb_head.transform.position, Vector3.down, out hit, 100.0f, 1)) {
 			hight_error = wanted_hight - hit.distance;
 			hight_integral = hight_integral + hight_error * Time.deltaTime;
 			hight_derivative = (hight_error - previous_hight_error) / Time.deltaTime;
