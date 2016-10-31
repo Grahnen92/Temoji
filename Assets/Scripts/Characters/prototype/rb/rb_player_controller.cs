@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 
-    public class rb_player_controller : MonoBehaviour {
+    public class rb_player_controller : NetworkBehaviour {
 
     
     //0 = aim
@@ -94,7 +95,7 @@ using System;
         characterStates[2].playerController = gameObject.GetComponent<rb_player_controller>();
 
         //initiating the different parts of the character
-        rb_head = transform.Find("final_prototype_head").GetComponent<Rigidbody> ();
+        rb_head = GameObject.Find("final_prototype_head").GetComponent<Rigidbody> ();
 		neck = transform.Find("final_prototype_neckjoint").gameObject;
 		
 		rwing = GameObject.Find("final_prototype_rwing");
@@ -126,6 +127,8 @@ using System;
     }
 
 	void Update(){
+        if (!isLocalPlayer)
+            return;
 
         //charing the weapon
         if (!weapon_charged)
@@ -224,6 +227,9 @@ using System;
 
 	void FixedUpdate()
 	{
+        if (!isLocalPlayer)
+            return;
+
         // === Turn functions =====================================================================
         //mouse ray tracing =====================================================================
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -495,7 +501,7 @@ using System;
 
         wings_closed_recently = true;
         if (!Input.GetButton("Jump"))
-            wanted_hight = 2.1f;
+            wanted_hight = 2.4f;
     }
     void raiseShield()
     {
