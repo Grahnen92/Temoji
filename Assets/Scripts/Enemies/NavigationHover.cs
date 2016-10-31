@@ -109,7 +109,7 @@ public class NavigationHover : MonoBehaviour
 
         GetComponent<Rigidbody>().AddForce(direction * speed_factor);
 
-        gameObject.transform.LookAt(target_destination);
+        //gameObject.transform.LookAt(target_destination);
 
 
         print("basealive: " + GameManager.base_alive);
@@ -175,7 +175,7 @@ public class NavigationHover : MonoBehaviour
     }
     void spawnBullet()
     {
-        Vector3 add_En_Bu_position = new Vector3(-0.3f, 0, 0.3f);
+        Vector3 add_En_Bu_position = new Vector3(0.0f, 0, 0.0f);
         En_Bu_position = gameObject.transform.position + add_En_Bu_position;
         Quaternion Bu_rotation = gameObject.transform.localRotation;
         enemy_hover_bullet = (GameObject)Instantiate(bullet_prefab, En_Bu_position, Bu_rotation);
