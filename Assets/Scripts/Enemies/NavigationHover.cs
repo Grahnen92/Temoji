@@ -124,7 +124,8 @@ public class NavigationHover : MonoBehaviour
         }
 
         hover();
-//        stuck();
+        print(gameObject.GetComponent<Rigidbody>().velocity.magnitude);
+        //stuck();
 
         //check if there is an enemy to attack
         if (currentTower != -1)
