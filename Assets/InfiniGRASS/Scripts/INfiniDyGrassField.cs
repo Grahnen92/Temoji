@@ -76,7 +76,7 @@ namespace Artngame.INfiniDy {
 		public Vector2 PosSpread = new Vector2 (8, 8);
 		public bool ScaleWhole = false;//scale whole grass than individual, may have Y offset problem
 
-		public float max_ray_dist = 10;
+		public float max_ray_dist = 10;  
 		public Transform PaintedOnOBJ;//object grass is painted on
 		public bool GridOnNormal = false;//rotate grass paint grid based on hit normal
 
@@ -949,11 +949,13 @@ namespace Artngame.INfiniDy {
 								RaycastLayers = -1;
 							}
 
-							if (Physics.Raycast (ray, out hit, Mathf.Infinity,RaycastLayers)) { //v1.1
+							//if (Physics.Raycast (ray, out hit, Mathf.Infinity,RaycastLayers)) { //v1.1 // xchange
+                            if (Physics.SphereCast(ray, 0.1f, out hit, Mathf.Infinity, RaycastLayers))
+                            {
 
-								//Registered_Brances [i].up = hit.normal;
+                            //Registered_Brances [i].up = hit.normal;
 
-								if(RotTowards & hit.normal.y <=0){
+                            if (RotTowards & hit.normal.y <=0){
 									//Registered_Brances[i].Rotate(Registered_Brances[i].up,RotVector);
 									//Registered_Brances[i].forward = RotVector;
 									Registered_Brances[i].LookAt(hit.point + RotVector,hit.normal);
@@ -1155,11 +1157,12 @@ namespace Artngame.INfiniDy {
 								RaycastLayers = -1;
 							}
 							
-							if (Physics.Raycast (ray, out hit, Mathf.Infinity,RaycastLayers)) { //v1.1
-								
-								//Registered_Brances [i].up = hit.normal;
-								
-								if(RotTowards & hit.normal.y <=0){
+                            //if (Physics.Raycast (ray, out hit, Mathf.Infinity,RaycastLayers)) { //v1.1 // xchange
+                            if (Physics.SphereCast(ray, 0.1f, out hit, Mathf.Infinity, RaycastLayers))
+                            {
+                                //Registered_Brances [i].up = hit.normal;
+
+                                if (RotTowards & hit.normal.y <=0){
 									//Registered_Brances[i].Rotate(Registered_Brances[i].up,RotVector);
 									//Registered_Brances[i].forward = RotVector;
 									Registered_Brances[i].LookAt(hit.point + RotVector,hit.normal);

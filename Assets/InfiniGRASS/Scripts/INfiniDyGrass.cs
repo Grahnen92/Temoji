@@ -182,9 +182,10 @@ namespace Artngame.INfiniDy {
 					ray = new Ray (Start_pos, -sign*Vector3.up);
 				}
 				RaycastHit hit = new RaycastHit ();
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist)) {
-					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
-					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
+                //if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist)) { // xchange
+                if (Physics.SphereCast(ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist)) { 
+                //if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
+                if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						return;
 					}
 				}
@@ -195,7 +196,8 @@ namespace Artngame.INfiniDy {
 				if(!INfiniDyForestC.GridOnNormal){
 					ray = new Ray (Start_pos + new Vector3(MOD1,0,MOD1), -sign*Vector3.up);
 				}
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { // xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						return;
@@ -208,7 +210,8 @@ namespace Artngame.INfiniDy {
 					if(!INfiniDyForestC.GridOnNormal){
 						ray = new Ray (Start_pos + new Vector3(-MOD1,0,-MOD1), -sign*Vector3.up);
 					}
-				if (Physics.Raycast (ray, out hit,INfiniDyForestC.max_ray_dist*2)) {
+				//if (Physics.Raycast (ray, out hit,INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit,INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						return;
@@ -221,7 +224,8 @@ namespace Artngame.INfiniDy {
 						if(!INfiniDyForestC.GridOnNormal){
 							ray = new Ray (Start_pos + new Vector3(MOD1,0,-MOD1), -sign*Vector3.up);
 						}
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { // xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						return;
@@ -234,7 +238,8 @@ namespace Artngame.INfiniDy {
 				if(!INfiniDyForestC.GridOnNormal){
 					ray = new Ray (Start_pos + new Vector3(-MOD1,0,MOD1), -sign*Vector3.up);
 				}
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						return;
@@ -248,7 +253,8 @@ namespace Artngame.INfiniDy {
 				if(!INfiniDyForestC.GridOnNormal){
 					ray = new Ray (Start_pos + new Vector3(MOD1,0,MOD1), -sign*Vector3.up);
 				}
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f,  out hit, INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						//return;
@@ -262,7 +268,8 @@ namespace Artngame.INfiniDy {
 				if(!INfiniDyForestC.GridOnNormal){
 				ray = new Ray (Start_pos + new Vector3(-MOD1,0,-MOD1), -sign*Vector3.up);
 				}
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						//return;
@@ -276,7 +283,8 @@ namespace Artngame.INfiniDy {
 				if(!INfiniDyForestC.GridOnNormal){
 					ray = new Ray (Start_pos + new Vector3(MOD1,0,-MOD1), -sign*Vector3.up);
 				}
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						//return;
@@ -290,7 +298,8 @@ namespace Artngame.INfiniDy {
 				if(!INfiniDyForestC.GridOnNormal){
 					ray = new Ray (Start_pos + new Vector3(-MOD1,0,MOD1), -sign*Vector3.up);
 				}
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 					//if (hit.collider.gameObject != Terrain.activeTerrain.gameObject & hit.collider.gameObject.tag != "PPaint") {
 					if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject != INfiniDyForestC.PaintedOnOBJ.gameObject) {
 						//return;
@@ -312,7 +321,8 @@ namespace Artngame.INfiniDy {
 					ray = new Ray (Start_pos, -sign*Vector3.up);
 				}
 				hit = new RaycastHit ();
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 
 					if(!INfiniDyForestC.GridOnNormal){
 						if (INfiniDyForestC.PaintedOnOBJ != null && hit.collider.gameObject == INfiniDyForestC.PaintedOnOBJ.gameObject) {
@@ -476,7 +486,8 @@ namespace Artngame.INfiniDy {
 				}
 
 				RaycastHit hit = new RaycastHit ();
-				if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) {
+				// if (Physics.Raycast (ray, out hit, INfiniDyForestC.max_ray_dist*2)) { //xchange
+                if (Physics.SphereCast (ray, 0.1f, out hit, INfiniDyForestC.max_ray_dist*2)) {
 
 					//Debug.DrawRay(INfiniDyForestC.root_tree.transform.position+Quaternion.FromToRotation(Vector3.up,-INfiniDyForestC.Intial_Up_Vector) * Start_pos 
 					//              + (INfiniDyForestC.max_ray_dist*INfiniDyForestC.Intial_Up_Vector), -INfiniDyForestC.Intial_Up_Vector);
