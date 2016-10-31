@@ -1384,15 +1384,16 @@ public class InfiniGRASSManager : MonoBehaviour {
 				}//END PAINTING
 
                 // procedural grass painter
-                if (Grass_painting & Enable_real_time_paint && !originalGrassPainter) // xchange
-                {
-
+                //if (Grass_painting & Enable_real_time_paint && !originalGrassPainter) // xchange
+                    if (Grass_painting & Enable_real_time_paint && !originalGrassPainter) // 
+                    {
+                      
                     if (Input.GetButtonDown("genGrass") & !Input.GetKeyDown(KeyCode.LeftShift)
                         //& (Camera.main != null | Camera.current != null)
                         //& !Tag_based_player
                         )
                     {
-
+                      //for(int v = 0; v < moun)  
                         Ray ray = new Ray();
 
                         //v1.4c
@@ -1441,7 +1442,7 @@ public class InfiniGRASSManager : MonoBehaviour {
                         box.transform.position += Vector3.right;
 
                         RaycastHit hit = new RaycastHit();
-                        hit.point = Vector3.right*60;
+                        hit.point = Vector3.right*40;
                         hit.normal = Vector3.up;
 
                         //if (found_cam && Physics.Raycast(ray, out hit, Mathf.Infinity)) // xchange
