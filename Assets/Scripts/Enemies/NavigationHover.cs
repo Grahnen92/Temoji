@@ -5,38 +5,33 @@ using System.Collections.Generic;
 
 public class NavigationHover : MonoBehaviour
 {
-
-    static public GameObject baseObject;
-    public GameObject bulletPrefab;
-    List<GameObject> towerlist = new List<GameObject>();
-    public GameObject attactTrigger;
-
-
-    public static Vector3 target_destination;
-    public static Vector3 spawn_destination;
-
-    public float speed_factor;
-//    const float MIN_VELOCITY = 0.01f;
-    bool activeShooting = false;//Must have this flag, otherwise "spawnBullet" will be invoked many times, actually increasing frequency!!!
-    GameObject enemy_hover_bullet;
-    Vector3 En_Bu_position;
+    public GameObject bullet_prefab;
+    private int currentTower = -1;
+    private List<GameObject> towerList = new List<GameObject>();
+    private bool activeReloading = false;
+    private float reloadTime = 2.0f;
+    private GameObject enemy_hover_bullet;
+    private Vector3 En_Bu_position;
     public float bulletSpeed;
-    int currentTower = 0;
+
+    double height_target = 8.1d;//飘多高
+    double height_current;
+    double height_error;
+    double height_error_pre = 0.0;
+    double height_integral = 0.0;
+    double height_derivative;
+    double height_adjustment;
 
     public GameObject explosion_prefab;
-
+    public static GameObject baseObject;
+    public float speed_factor;
+    public static Vector3 target_destination;
+    public static Vector3 spawn_destination;
     NavMeshAgent nav;
     NavMeshPath navPath;
     Vector3 direction;
     Rigidbody rb;
-
-    double height_target = 8.1d;//飘多高
-    double height_current ;
-    double height_error ;
-    double height_error_pre = 0.0;
-    double height_integral = 0.0;
-    double height_derivative ;
-    double height_adjustment ;
+    private float homedistance=2.0f;
 
 
     // Use this for initialization
@@ -52,49 +47,41 @@ public class NavigationHover : MonoBehaviour
         navPath = new NavMeshPath();
         rb = GetComponent<Rigidbody>();
 
-        
+
+      //  bullet_prefab = Resources.Load("enemy_hover_bullet") as GameObject;
 
         explosion_prefab = Resources.Load("bot_explosion") as GameObject;
-    }
-        void enemyShoot(){
-            Vector3 targetDirection;
-            targetDirection = target_destination - En_Bu_position;
-            enemy_hover_bullet.GetComponent<Rigidbody>().AddForce(targetDirection * bulletSpeed);
-
-            print("----------------bullet shoot");
-    }
-        void spawnBullet()
-    {
-        Vector3 add_En_Bu_position = new Vector3(-0.3f, 0, 0.3f);
-        En_Bu_position = gameObject.transform.position + add_En_Bu_position;
-        Quaternion Bu_rotation = gameObject.transform.localRotation;
-        enemy_hover_bullet = (GameObject)Instantiate(bulletPrefab, En_Bu_position, Bu_rotation);
-        enemy_hover_bullet.SetActive(false);
     }
 
     void OnTriggerEnter(Collider col)
     {
-        towerlist.Add(col.gameObject);
+        print("there is a trigger happened");
+        towerList.Add(col.gameObject);
         if (currentTower < 0)
-            currentTower = towerlist.Count - 1;
-
-
+            currentTower = towerList.Count - 1;
+        if (!activeReloading)
+        {
+            InvokeRepeating("spawnBullet", 0, reloadTime);
+            activeReloading = true;
+        }
     }
 
     void OnTriggerExit(Collider col)
     {
-        int tmpIndex = towerlist.IndexOf(col.gameObject);
-        towerlist.RemoveAt(tmpIndex);
+        print("exit the collision ");
+
+        int tmpIndex = towerList.IndexOf(col.gameObject);
+        towerList.RemoveAt(tmpIndex);
         if (tmpIndex == currentTower)
         {
-            if (towerlist.Count > 0)
+            if (towerList.Count > 0)
             {
 
-                for (int i = 0; i < towerlist.Count; i++)
+                for (int i = 0; i < towerList.Count; i++)
                 {
-                    if (towerlist[i] == null)
+                    if (towerList[i] == null)
                     {
-                        towerlist.RemoveAt(i);
+                        towerList.RemoveAt(i);
                     }
                     else
                     {
@@ -109,78 +96,94 @@ public class NavigationHover : MonoBehaviour
             }
         }
     }
-    // Update is called once per frame
+
     void Update()
     {
-        //float distance = (target_destination - transform.position).magnitude - 3.43f;
+        // navmesh working
+        float distance = (target_destination - transform.position).magnitude - 3.43f;
         GetComponent<NavMeshAgent>().nextPosition = transform.position;
         nav.SetDestination(target_destination);
 
         direction = GetComponent<NavMeshAgent>().steeringTarget - transform.position;
         direction.Normalize();
 
-        GetComponent<Rigidbody>().AddForce(direction*1.0f);
+        GetComponent<Rigidbody>().AddForce(direction * 1.0f);
 
         //gameObject.transform.LookAt(target_destination);
 
-        
+
         print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
             GetComponent<NavMeshAgent>().SetDestination(spawn_destination);
 
-            if (activeShooting==true)
+            if (distance <= homedistance)
             {
                 Destroy(gameObject); // They are home again
             }
         }
 
-
         hover();
-        // Distance from target
 
- /*       if (distance <= attack_distance)
+        //check if there is an enemy to attack
+        if (currentTower != -1)
         {
-            attack();
+            //check if the current enemy has died
+            if (towerList[currentTower] != null)
+            {
+                print("there is a tower should be attacted");
+                enemyShoot();
+            }
+            else //current enemy is dead, search enemy list for a new target and enemies from the list if they are dead
+            {
+                towerList.RemoveAt(currentTower);
+                currentTower = -1;
+                CancelInvoke("spawnBullet");
+                activeReloading = false;
+                for (int i = 0; i < towerList.Count; i++)
+                {
+                    if (towerList[i] != null)
+                    {
+                        currentTower = i;
+                        InvokeRepeating("spawnBullet", 0, reloadTime);
+                        activeReloading = true;
+                    }
+                    else
+                        towerList.RemoveAt(i);
+                }
+            }
         }
-        */
+        else
+        {
+            CancelInvoke("spawnBullet");
+            activeReloading = false;
+        }
 
     }
-
-    
-
-    void attack()
-    {
-        // Attack target
-        print("Attack target!");
-
-        Vector3 add_En_Bu_position = new Vector3 (-0.3f,0,0.3f);
-        Vector3 En_Bu_position = gameObject.transform.position + add_En_Bu_position;
-        Quaternion Bu_rotation = gameObject.transform.localRotation;
-        GameObject enemy_hover_bullet = (GameObject)Instantiate(bulletPrefab, En_Bu_position, Bu_rotation);
-        float bulletSpeed = 30.0f;
-
+    void enemyShoot(){
         Vector3 targetDirection;
-        targetDirection = target_destination - En_Bu_position;
+        targetDirection = towerList[0].transform.position - En_Bu_position;
         enemy_hover_bullet.GetComponent<Rigidbody>().AddForce(targetDirection * bulletSpeed);
-
         print("----------------bullet shoot");
-
-        //Destroy(gameObject);
-        //Base_Combat base_combat = baseObject.GetComponent<Base_Combat>();
-        // base_combat.TakeDamage(10);
-        //GameObject explosion = Instantiate(explosion_prefab) as GameObject;
-        //explosion.transform.position = transform.position;
-        //explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-
-
-
+        if (!activeReloading)
+        {
+            InvokeRepeating("spawnBullet", reloadTime, reloadTime);
+            activeReloading = true;
+        }
     }
-
-    void spawnbullet()
+    void spawnBullet()
     {
-
+        Vector3 add_En_Bu_position = new Vector3(-0.3f, 0, 0.3f);
+        En_Bu_position = gameObject.transform.position + add_En_Bu_position;
+        Quaternion Bu_rotation = gameObject.transform.localRotation;
+        enemy_hover_bullet = (GameObject)Instantiate(bullet_prefab, En_Bu_position, Bu_rotation);
     }
+    
+    public static void setBase(GameObject b)
+    {
+        baseObject = b;
+    }
+    // Update is called once per frame
 
     void hover()
     {
@@ -194,5 +197,4 @@ public class NavigationHover : MonoBehaviour
         gameObject .GetComponent<Rigidbody>().AddForce(Vector3.up * (float)height_adjustment);//add force to enemy to let it hover
         height_error_pre  = height_error;
     }
-
 }
