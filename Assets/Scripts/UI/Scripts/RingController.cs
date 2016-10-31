@@ -8,6 +8,8 @@ public class RingController : MonoBehaviour {
     public float displacement;
     public float rotateShoulders;
 
+    public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18) | (1 << 21);
+
     GameObject backOuterRing;
     GameObject backInnerRing;
     GameObject rightRing;
@@ -73,6 +75,15 @@ public class RingController : MonoBehaviour {
         animate();
     }
 
+    Vector3 curr_mouse_dir;
+    Vector3 curr_mouse_dir_noy;
+    Vector3 curr_mouse_hit;
+
+    double prev_rot_error = 0.0;
+    double rot_error;
+    double rot_integral = 0.0;
+    double rot_derivative;
+    double rot_adjustment;
 
     double hight_error;
     double wanted_hight = 2.4;
@@ -97,6 +108,24 @@ public class RingController : MonoBehaviour {
         curr_mouse_dir_noy = curr_mouse_dir;
         curr_mouse_dir_noy.y = 0;
         curr_mouse_dir_noy.Normalize();
+
+        //head turning =====================================================================
+        Vector3 curr_forward = transform.up;
+        curr_forward.y = 0;
+        curr_forward.Normalize();
+
+        rot_error = -Vector3.Angle(curr_mouse_dir_noy, curr_forward);
+        if (Vector3.Cross(curr_mouse_dir_noy, curr_forward).y < 0)
+            rot_error = -rot_error;
+
+        rot_integral = rot_integral + rot_error * Time.deltaTime;
+        rot_derivative = (rot_error - prev_rot_error) / Time.deltaTime;
+
+        rot_adjustment = 0.07 * rot_error + 0.0 * rot_integral + 0.04 * rot_derivative;
+        prev_rot_error = rot_error;
+        head.AddRelativeTorque(Vector3.forward * (float)rot_adjustment);
+        //head.AddRelativeTorque(Vector3.forward * -100);
+        Debug.Log(rot_adjustment);
 
         //Hovering ============================================================================
         RaycastHit hit;

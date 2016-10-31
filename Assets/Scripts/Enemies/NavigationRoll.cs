@@ -61,7 +61,7 @@ public class NavigationRoll : MonoBehaviour
             i++;
         }
 
-        print("basealive: " + GameManager.base_alive);
+        //print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
             GetComponent<NavMeshAgent>().SetDestination(spawn_destination);

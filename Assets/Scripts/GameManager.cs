@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         theAirParticles = airParticles.GetComponent<ParticleSystem>();
         generateMap();
 
-        spawnPlayer();
+        //spawnPlayer();
 
 
         print("Welcome to this level.");
