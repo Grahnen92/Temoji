@@ -14,7 +14,7 @@ public class NavigationHover : MonoBehaviour
     private Vector3 En_Bu_position;
     public float bulletSpeed;
 
-    double height_target = 8.1d;//飘多高
+    double height_target = 1.5d;
     double height_current;
     double height_error;
     double height_error_pre = 0.0;
@@ -107,9 +107,9 @@ public class NavigationHover : MonoBehaviour
         direction = GetComponent<NavMeshAgent>().steeringTarget - transform.position;
         direction.Normalize();
 
-        GetComponent<Rigidbody>().AddForce(direction * 1.0f);
+        GetComponent<Rigidbody>().AddForce(direction * speed_factor);
 
-        //gameObject.transform.LookAt(target_destination);
+        gameObject.transform.LookAt(target_destination);
 
 
         print("basealive: " + GameManager.base_alive);
@@ -124,6 +124,7 @@ public class NavigationHover : MonoBehaviour
         }
 
         hover();
+//        stuck();
 
         //check if there is an enemy to attack
         if (currentTower != -1)
@@ -192,7 +193,7 @@ public class NavigationHover : MonoBehaviour
         height_integral  += height_error * Time.deltaTime;//buyongdong
         height_derivative  = (height_error - height_error_pre) / Time.deltaTime;//buyongdong
 
-        height_adjustment  = 2.0 * height_error + 0.0 * height_integral + 0.5 * height_derivative;//how to adjust?//调权重
+        height_adjustment  = 1.0 * height_error + 0.0 * height_integral + 0.5 * height_derivative;//how to adjust?//调权重
 
         gameObject .GetComponent<Rigidbody>().AddForce(Vector3.up * (float)height_adjustment);//add force to enemy to let it hover
         height_error_pre  = height_error;
