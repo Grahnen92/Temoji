@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 
-    public class rb_player_controller : NetworkBehaviour {
+    public class rb_player_controller : MonoBehaviour {
 
     
     //0 = aim
@@ -81,11 +80,10 @@ using System;
 
 	//projectile
 	private GameObject wing_projectile_prefab;
-	public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18) | (1 << 21);
+	public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18);
 
 	void Start()
 	{
-
         //Initiating the different action states of the character
         characterStates = new state[nrOfStates];
         characterStates[0] = new aim();
@@ -98,7 +96,7 @@ using System;
         //initiating the different parts of the character
         rb_head = transform.Find("final_prototype_head").GetComponent<Rigidbody> ();
 		neck = transform.Find("final_prototype_neckjoint").gameObject;
-        Debug.Log(rb_head);
+		
 		rwing = GameObject.Find("final_prototype_rwing");
         shoot_euler_angles = new Vector3(-10, 85, -92);
         shoot_position = new Vector3(1.05f, -0.331f, -0.9f);
@@ -128,9 +126,6 @@ using System;
     }
 
 	void Update(){
-
-        if (!isLocalPlayer)
-            return;
 
         //charing the weapon
         if (!weapon_charged)
@@ -229,9 +224,6 @@ using System;
 
 	void FixedUpdate()
 	{
-        if (!isLocalPlayer)
-            return;
-
         // === Turn functions =====================================================================
         //mouse ray tracing =====================================================================
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -258,7 +250,6 @@ using System;
 		head_rot_adjustment = 0.07 * head_rot_error + 0.0 * head_rot_integral + 0.04 * head_rot_derivative;
 		prev_head_rot_error = head_rot_error;
 		rb_head.AddRelativeTorque(Vector3.forward * (float)head_rot_adjustment);
-        Debug.Log(head_rot_adjustment);
 
         //Body turning =====================================================================
         curr_forward = neck.transform.forward;
@@ -311,7 +302,6 @@ using System;
 			
 		//Planar movement ===================================================================
 		planar_velocity = rb_head.velocity; planar_velocity.y = 0.0f;
-        //Debug.Log(planar_velocity);
 
 		float moveH = Input.GetAxis ("Horizontal");
 		float moveV = Input.GetAxis ("Vertical");
@@ -466,7 +456,7 @@ using System;
     }
     void shoot()
     {
-        rb_head.AddForce(rwing.transform.up * 200.0f);
+        GetComponent<Rigidbody>().AddForce(rwing.transform.up * 200.0f);
         GameObject wing_projectile = Instantiate(wing_projectile_prefab) as GameObject;
         wing_projectile.transform.position = rwing.transform.position;
         wing_projectile.transform.rotation = rwing.transform.rotation;
