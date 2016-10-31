@@ -41,7 +41,7 @@ public class projectile_collision_destroy : MonoBehaviour {
                 GameObject tmpTopPart = hit.transform.parent.parent.GetChild(0).gameObject;
                 tmpMaterialPart.transform.parent = null;
                 if (tmpTopPart.layer != 12)
-                //if (tmpTopPart.transform.parent.childCount < 2 && tmpTopPart.ToString() == "shard1")
+                //if (tmpTopPart.transform.parent.childCount < 2 && tmpT    §opPart.ToString() == "shard1")
                 {
                     tmpTopPart.AddComponent<Rigidbody>().mass = 4.0f; ;
                     tmpTopPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;

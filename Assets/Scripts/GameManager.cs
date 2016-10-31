@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
     void spawnPlayer()
     {
 
-        Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(1.5f, 3f, 0f);
+        Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(3.0f, 3f, 0f);
 
         thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
 

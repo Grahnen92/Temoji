@@ -23,18 +23,23 @@ public class SlowingTower: MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
+
         Rigidbody tmpRB = col.gameObject.GetComponent<Rigidbody>();
         if (tmpRB)
         {
             tmpRB.drag += slowAmount;
             tmpRB.angularDrag += slowAmount;
         }
-        var pRBs = col.GetComponentsInParent<Rigidbody>();
-        foreach (var pRB in pRBs)
-        {
-            pRB.drag += slowAmount;
-            pRB.angularDrag += slowAmount;
-        }
+        var pRB = col.gameObject.GetComponentInParent<Rigidbody>();
+        //foreach (var pRB in pRBs)
+        //{
+        //ugly solution to neckjoint triggering a trigger collision while aiming
+        if (pRB == tmpRB || pRB.gameObject.layer == 8)
+            return;
+
+        pRB.drag += slowAmount;
+        pRB.angularDrag += slowAmount;
+       // }
         //var cRBs = GetComponentsInChildren<Rigidbody>();
         //foreach (var cRB in cRBs)
         //{
@@ -52,12 +57,15 @@ public class SlowingTower: MonoBehaviour
             tmpRB.drag -= slowAmount;
             tmpRB.angularDrag -= slowAmount;
         }
-        var pRBs = col.GetComponentsInParent<Rigidbody>();
-        foreach (var pRB in pRBs)
-        {
-            pRB.drag -= slowAmount;
-            pRB.angularDrag -= slowAmount;
-        }
+        var pRB = col.gameObject.GetComponentInParent<Rigidbody>();
+        //foreach (var pRB in pRBs)
+        // {
+        //ugly solution to neckjoint triggering a trigger collision while aiming
+        if (pRB == tmpRB || pRB.gameObject.layer == 8)
+            return;
+        pRB.drag -= slowAmount;
+        pRB.angularDrag -= slowAmount;
+       // }
         //var cRBs = GetComponentsInChildren<Rigidbody>();
        // foreach (var cRB in cRBs)
         //{
@@ -72,15 +80,20 @@ public class SlowingTower: MonoBehaviour
         var rigidbodies = new List<Rigidbody>();
         foreach (var col in cols)
         {
-            if (col.attachedRigidbody != null && !rigidbodies.Contains(col.attachedRigidbody))
+            Rigidbody tmpRB = col.gameObject.GetComponent<Rigidbody>();
+            if (tmpRB != null && !rigidbodies.Contains(tmpRB)) {
+                rigidbodies.Add(tmpRB);
+            }
+            if(col.transform.parent != null)
             {
-                rigidbodies.Add(col.attachedRigidbody);
+                Rigidbody pRB = col.transform.parent.gameObject.GetComponent<Rigidbody>();
+                                                                //ugly solution to neckjoint triggering a trigger collision while aiming
+                if (pRB != null && !rigidbodies.Contains(pRB) && pRB.gameObject.layer != 8)
+                {
+                    rigidbodies.Add(pRB);
+                }
             }
             
-            if (col.transform.parent.gameObject.GetComponent<Rigidbody>() != null && !rigidbodies.Contains(col.transform.parent.gameObject.GetComponent<Rigidbody>()))
-            {
-                rigidbodies.Add(col.transform.parent.gameObject.GetComponent<Rigidbody>());
-            }
         }
         foreach (var rb in rigidbodies)
         {

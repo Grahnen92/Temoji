@@ -107,7 +107,7 @@ using System;
         shoot_position = new Vector3(1.05f, -0.331f, -0.9f);
         relaxed_euler_angles = new Vector3(0, 90, 0);
         relaxed_position = new Vector3(0.66f, -0.131f, 0.0f);
-        rwingParticles = rwing.GetComponentInChildren<ParticleSystem>();
+        //rwingParticles = rwing.GetComponentInChildren<ParticleSystem>();
 
         lwing = GameObject.Find("final_prototype_lwing");
         fwing = GameObject.Find("final_prototype_fwing");
@@ -151,8 +151,8 @@ using System;
         }
         else if (Input.GetButton("Fire2") && currentState == 0)
         {           
-            var em = rwingParticles.emission;//.rate = chargeRatio * 500;
-            em.rate = chargeRatio * 500;
+            //var em = rwingParticles.emission;//.rate = chargeRatio * 500;
+            //em.rate = chargeRatio * 500;
             //vacker - DO NOT BREAK LINE
             rwing.transform.localPosition = shoot_position + new Vector3(Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio, Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio, 0.45f * chargeRatio * chargeRatio + Mathf.Sin(Time.time * 150) * 0.03f * chargeRatio * chargeRatio);
 
@@ -164,9 +164,9 @@ using System;
 
                     weapon_charged = false;
                     charge_timer = 0.0f;
-                    var em2 = rwingParticles.emission;//.rate = chargeRatio * 500;
-                    em2.rate = 0;
-                    rwingParticles.Clear();
+                    //var em2 = rwingParticles.emission;//.rate = chargeRatio * 500;
+                    //em2.rate = 0;
+                   // rwingParticles.Clear();
                 }
             }
         }
@@ -440,6 +440,7 @@ using System;
         Destroy(rwing.GetComponent<Rigidbody>());
         rwing.transform.localEulerAngles = shoot_euler_angles;
         rwing.transform.localPosition = shoot_position;
+        //rwing.transform.GetChild(0).gameObject.layer = 8;
     }
     void stopAim()
     {
@@ -459,9 +460,11 @@ using System;
         tmp_spring.spring = 50;
         tmp_hj.spring = tmp_spring;
 
-        var em3 = rwingParticles.emission;//.rate = chargeRatio * 500;
-        em3.rate = 0;
-        rwingParticles.Clear();
+        //rwing.transform.GetChild(0).gameObject.layer = 9;
+
+        // var em3 = rwingParticles.emission;//.rate = chargeRatio * 500;
+        // em3.rate = 0;
+        //rwingParticles.Clear();
     }
     void shoot()
     {

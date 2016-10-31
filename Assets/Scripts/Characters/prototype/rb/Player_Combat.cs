@@ -49,9 +49,6 @@ public class Player_Combat : Combat
 
         float healthNorm = (((float)maxHealth - (float)health) / (float)maxHealth);
         healthNorm = healthNorm * healthNorm;
-        print(healthNorm);
-        print(maxHealth);
-        print(health);
         var em = smoke.emission;//.rate = chargeRatio * 500;
         em.rate = healthNorm * 6;
         

@@ -1,0 +1,187 @@
+fileFormatVersion: 2
+guid: bd64a69efc808f1458d25ed3de272581
+timeCreated: 1477883986
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: antennaDamage
+    100002: antennaNoDamage
+    100004: //RootNode
+    100006: engine1
+    100008: engine2
+    100010: engine3
+    100012: engine4
+    100014: hull
+    100016: hullNoDamage
+    100018: antenna
+    100020: antennaDamaged
+    100022: health1
+    100024: health2
+    100026: health3
+    100028: health4
+    100030: health5
+    100032: healthbars
+    100034: hullDamaged1
+    100036: hullDamaged2
+    100038: hullUndamaged
+    100040: engineSocket1
+    100042: engineSocket2
+    100044: engineSocket3
+    100046: engineSocket4
+    400000: antennaDamage
+    400002: antennaNoDamage
+    400004: //RootNode
+    400006: engine1
+    400008: engine2
+    400010: engine3
+    400012: engine4
+    400014: hull
+    400016: hullNoDamage
+    400018: antenna
+    400020: antennaDamaged
+    400022: health1
+    400024: health2
+    400026: health3
+    400028: health4
+    400030: health5
+    400032: healthbars
+    400034: hullDamaged1
+    400036: hullDamaged2
+    400038: hullUndamaged
+    400040: engineSocket1
+    400042: engineSocket2
+    400044: engineSocket3
+    400046: engineSocket4
+    2300000: antennaDamage
+    2300002: antennaNoDamage
+    2300004: engine1
+    2300006: engine2
+    2300008: engine3
+    2300010: engine4
+    2300012: hull
+    2300014: hullNoDamage
+    2300016: antenna
+    2300018: antennaDamaged
+    2300020: health1
+    2300022: health2
+    2300024: health3
+    2300026: health4
+    2300028: health5
+    2300030: hullDamaged1
+    2300032: hullDamaged2
+    2300034: hullUndamaged
+    2300036: engineSocket1
+    2300038: engineSocket2
+    2300040: engineSocket3
+    2300042: engineSocket4
+    3300000: antennaDamage
+    3300002: antennaNoDamage
+    3300004: engine1
+    3300006: engine2
+    3300008: engine3
+    3300010: engine4
+    3300012: hull
+    3300014: hullNoDamage
+    3300016: antenna
+    3300018: antennaDamaged
+    3300020: health1
+    3300022: health2
+    3300024: health3
+    3300026: health4
+    3300028: health5
+    3300030: hullDamaged1
+    3300032: hullDamaged2
+    3300034: hullUndamaged
+    3300036: engineSocket1
+    3300038: engineSocket2
+    3300040: engineSocket3
+    3300042: engineSocket4
+    4300000: hull
+    4300002: hullNoDamage
+    4300004: engine1
+    4300006: engine2
+    4300008: engine3
+    4300010: engine4
+    4300012: antennaDamage
+    4300014: antennaNoDamage
+    4300016: health1
+    4300018: health2
+    4300020: health3
+    4300022: health4
+    4300024: health5
+    4300026: hullUndamaged
+    4300028: antenna
+    4300030: hullDamaged2
+    4300032: hullDamaged1
+    4300034: antennaDamaged
+    4300036: engineSocket1
+    4300038: engineSocket2
+    4300040: engineSocket3
+    4300042: engineSocket4
+    7400000: Take 001
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 20
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
