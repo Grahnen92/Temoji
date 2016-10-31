@@ -107,7 +107,7 @@ using System;
         lwing = GameObject.Find("final_prototype_lwing");
         fwing = GameObject.Find("final_prototype_fwing");
 		bwing = GameObject.Find("final_prototype_bwing");
-
+        Debug.Log(lwing);
         //initiating the projectile prefab of the character
 		wing_projectile_prefab = Resources.Load ("final_prototype_wing_projectile") as GameObject;
 
@@ -266,7 +266,7 @@ using System;
 		body_rot_adjustment = 50.0 * body_rot_error + 0.0 * body_rot_integral + 0.5 * body_rot_derivative;
 		prev_body_rot_error = body_rot_error;
 		neck.GetComponent<Rigidbody>().AddRelativeTorque(Vector3.up * (float)body_rot_adjustment);
-
+        Debug.Log(prev_body_rot_error);
         // Hover function ===================================================================
 
         //lowers the character if it's trying to pick something up
@@ -456,7 +456,7 @@ using System;
     }
     void shoot()
     {
-        GetComponent<Rigidbody>().AddForce(rwing.transform.up * 200.0f);
+        rb_head.AddForce(rwing.transform.up * 200.0f);
         GameObject wing_projectile = Instantiate(wing_projectile_prefab) as GameObject;
         wing_projectile.transform.position = rwing.transform.position;
         wing_projectile.transform.rotation = rwing.transform.rotation;
