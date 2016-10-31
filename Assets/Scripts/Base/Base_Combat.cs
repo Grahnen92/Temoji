@@ -11,6 +11,9 @@ public class Base_Combat : Combat {
     void Start()
     {
         health = maxHealth;
+        ParticleSystem ps = transform.GetChild(13).gameObject.GetComponent<ParticleSystem>();
+        var em = ps.emission;//.rate = chargeRatio * 500;
+        em.rate = 0.0f;
     }
 
     public override void TakeDamage(int amount)
