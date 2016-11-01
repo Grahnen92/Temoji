@@ -188,6 +188,6 @@ public class SurfaceCreator : MonoBehaviour {
 
     public Vector3 getNormal(int v)
     {
-        return normals[v];
+        return mesh.normals[v];
     }
 }

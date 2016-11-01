@@ -1426,7 +1426,7 @@ public class InfiniGRASSManager : MonoBehaviour {
 
                             //if (found_cam && Physics.Raycast(ray, out hit, Mathf.Infinity)) // xchange
                             //if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1))
-                            if (hit.point.y > 0.0f) // xchange
+                            if (hit.point.y > 0.1f) // xchange
                             {
 
                                 bool is_Terrain = false;

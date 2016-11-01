@@ -38,6 +38,10 @@ public class GameManager : MonoBehaviour
     private GameObject thePlayer;
     private ParticleSystem theAirParticles;
 
+    private int vertX;
+    private int vertY;
+
+
 
     const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
@@ -162,153 +166,12 @@ public class GameManager : MonoBehaviour
         // Generate Gate
         NavigationRoll.spawn_destination = initialEntry(gateObject, NavigationRoll.target_destination, base_radius, ENTRY_SIZE);
         
-        // Generate Indestructables
-        ///generateIndestructables();
-
         // Generate Collectables
         generateCollectibles();
 
-        // Generate Environment
-        //generateEnvironment();
 
-        // Scale Ground
-        //groundObject.transform.localScale = new Vector3(MAP_SIZE/10.0f, MAP_SIZE/10.0f, MAP_SIZE/10.0f);
     }
 
-
-    /*------------------------------------------------
-    In this function indestructable objects are generated
-     ------------------------------------------------   */
-    void generateIndestructables()
-    {
-
-        // Ruin grid
-        const int N_CELLS = 10;
-        const float CELL_SIZE = MAP_SIZE / N_CELLS;
-        int[,] ruinGrid = new int[N_CELLS, N_CELLS];
-        for (int x_cell = 0; x_cell < N_CELLS; x_cell++)
-        {
-            for (int z_cell = 0; z_cell < N_CELLS; z_cell++)
-            {
-                // Generate peice of inner ruin
-                float build_chance = Random.value;
-
-                if (x_cell > 0 && x_cell < N_CELLS - 1 && z_cell > 0 && z_cell < N_CELLS - 1)
-                {
-                    if (ruinGrid[x_cell - 1, z_cell] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.INNER_CHANCE_INCREMENT;
-                    }
-                    if (ruinGrid[x_cell + 1, z_cell] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.INNER_CHANCE_INCREMENT;
-                    }
-                    if (ruinGrid[x_cell, z_cell - 1] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.INNER_CHANCE_INCREMENT;
-                    }
-                    if (ruinGrid[x_cell, z_cell + 1] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.INNER_CHANCE_INCREMENT;
-                    }
-                }
-
-                if (build_chance > (1.0 - RUIN.INNER_CHANCE) && RUIN.count < RUIN.N_MAX)
-                {
-                    Vector3 position = new Vector3();
-                    position.x = (x_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
-                    position.y = 0;
-                    position.z = (z_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
-                    innerRuinObject.transform.localScale = new Vector3(60f, 60f, 60f);
-                    Instantiate(innerRuinObject, position, Quaternion.identity);
-                    ruinGrid[x_cell, z_cell] = RUIN.INNER;
-                    RUIN.count++;
-                }
-                else
-                {
-                    ruinGrid[x_cell, z_cell] = RUIN.EMPTY;
-                }
-
-
-            }
-        }
-
-
-        for (int x_cell = 0; x_cell < N_CELLS; x_cell++)
-        {
-            for (int z_cell = 0; z_cell < N_CELLS; z_cell++)
-            {
-                // Generate peice of inner ruin
-                float build_chance = Random.value;
-
-                if (x_cell > 0 && x_cell < N_CELLS - 1 && z_cell > 0 && z_cell < N_CELLS - 1)
-                {
-                    if (ruinGrid[x_cell - 1, z_cell] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.OUTER_CHANCE_INCREMENT;
-                    }
-                    if (ruinGrid[x_cell + 1, z_cell] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.OUTER_CHANCE_INCREMENT;
-                    }
-                    if (ruinGrid[x_cell, z_cell - 1] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.OUTER_CHANCE_INCREMENT;
-                    }
-                    if (ruinGrid[x_cell, z_cell + 1] == RUIN.INNER)
-                    {
-                        build_chance += RUIN.OUTER_CHANCE_INCREMENT;
-                    }
-                }
-
-                if (build_chance > (1.0 - RUIN.OUTER_CHANCE) && RUIN.count < RUIN.N_MAX && ruinGrid[x_cell, z_cell] == RUIN.EMPTY)
-                {
-                    Vector3 position = new Vector3();
-                    position.x = (x_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
-                    position.y = 0;
-                    position.z = (z_cell + 0.5f) * CELL_SIZE - MAP_SIZE / 2;
-                    outerRuinObject.transform.localScale = new Vector3(60f, 60f, 60f);
-                    Instantiate(outerRuinObject, position, Quaternion.identity);
-                    ruinGrid[x_cell, z_cell] = RUIN.OUTER;
-                    RUIN.count++;
-                }
-                else
-                {
-                    ruinGrid[x_cell, z_cell] = RUIN.EMPTY;
-                }
-
-
-            }
-        }
-
-        // Random Indestructables
-        //for (int y = 0; y < N_CELLS; y++)
-        {
-            Vector3 position = new Vector3(); // game objects position
-            position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-            position.z = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-            position.y = 0f;
-
-            Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
-            coll_sphere_position = position;
-            coll_sphere_position.y += .4f;
-            indestructObject.transform.localScale = new Vector3(.4f, .4f, .4f);
-
-            Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.30f);
-            int i = 0;
-            bool build = true;
-            while (i < hitColliders.Length) // Check collision
-            {
-                i++;
-                build = false;
-            }
-
-            if (build) // Build if no collide
-            {
-                Instantiate(indestructObject, position, Quaternion.identity);
-            }
-        }
-    }
 
     /*------------------------------------------------
     In this function collectables objects are generated
@@ -316,83 +179,65 @@ public class GameManager : MonoBehaviour
     ------------------------------------------------   */
     void generateCollectibles()
     {
+        SurfaceCreator mountains = GameObject.Find("Mountains").GetComponent<SurfaceCreator>();
+        int resolution = mountains.resolution;
+        int sqrdResolution = resolution * resolution;
 
-        // Trees
-        for (int y = 0; y < 10; y++)
+        int minSpread = 10;
+        int maxSpread = 30;
+
+        for (vertX = 0; vertX < resolution; vertX += Random.Range(minSpread, maxSpread))
         {
-            Vector3 position = targetObject.transform.position; // game objects position
-            while ((targetObject.transform.position - position).magnitude < 2.0f)
+
+            for (vertY = 0; vertY < resolution; vertY += Random.Range(minSpread, maxSpread))
             {
-                position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-                position.z = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-                position.y = 0f;
+                int v = vertX + vertY * resolution;
+                Vector3 position = mountains.getVertex(v) * 150;
+                position.y += 10;
+                Vector3 normal = mountains.getNormal(v);
+
+                if(position.y > 0)
+                {
+                    Quaternion rotation = Quaternion.identity;
+                    GameObject collectible;
+
+                    int chancePercentage = Random.Range(0, 100);
+
+                    if(chancePercentage < 40){
+                        int maxRotate = 8;
+                        //rotation *= Quaternion.Euler(Random.Range(-maxRotate, maxRotate), Random.Range(0, 360), Random.Range(-maxRotate, maxRotate));
+
+                        collectible = (GameObject)Instantiate(rock1Object, position, Quaternion.identity);
+                        
+                        collectible.transform.rotation = Quaternion.FromToRotation(collectible.transform.up, normal) * collectible.transform.rotation;
+                        collectible.transform.Rotate(Random.Range(-maxRotate, maxRotate), Random.Range(0, 360), Random.Range(-maxRotate, maxRotate));
+
+                        float scale = Random.Range(0.8f, 1.2f);
+                        collectible.transform.localScale *= scale;
+                    }
+                    else
+                    {
+                        int maxRotate = 8;
+                        rotation *= Quaternion.Euler(Random.Range(-maxRotate, maxRotate), Random.Range(0, 360), Random.Range(-maxRotate, maxRotate));
+
+                        collectible = (GameObject)Instantiate(treeObject, position, rotation);
+
+                        float scale = Random.Range(0.8f, 1.2f);
+                        collectible.transform.localScale *= scale;
+                    }
+                }
+
+                    
+    
+                
             }
 
-            Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
-            coll_sphere_position = position;
-
-
-            coll_sphere_position.y += .4f;
-            //treeObject.transform.localScale = new Vector3(30f, 40f, 30f);
-
-            Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
-            int i = 0;
-            bool build = true;
-            while (i < hitColliders.Length) // Check collision
-            {
-                i++;
-                build = false;
-            }
-
-            if (build) // Build if no collide
-            {
-                Instantiate(treeObject, position, Quaternion.identity);
-            }
         }
-
-        // Rocks
-        for (int y = 0; y < 20; y++)
-        {
-            Vector3 position = targetObject.transform.position; // game objects position
-            while ((targetObject.transform.position - position).magnitude < 2.0f)
-            {
-                position.x = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-                position.z = (Random.value - 0.5f) * MAP_SIZE * 0.9f;
-                position.y = 0f;
-            }
-
-
-            Vector3 coll_sphere_position = new Vector3(); // Collision sphere position
-            coll_sphere_position = position;
-
-
-            coll_sphere_position.y += .4f;
-           // rock1Object.transform.localScale = new Vector3(10f, 10f, 10f);
-            Collider[] hitColliders = Physics.OverlapSphere(coll_sphere_position, 0.35f);
-            int i = 0;
-            bool build = true;
-            while (i < hitColliders.Length) // Check collision
-            {
-                i++;
-                build = false;
-            }
-
-            if (build) // Build if no collide
-            {
-                Quaternion rotation = Quaternion.identity;
-                rotation.y = Random.value * 6.3f;
-                Instantiate(rock1Object, position, rotation);
-            }
-        }
+        //Instantiate(treeObject, position, Quaternion.identity);
+        //Quaternion rotation = Quaternion.identity;
+        //rotation.y = Random.value * 6.3f;
+        //Instantiate(rock1Object, position, rotation);
+        
     }
 
-
-    /*------------------------------------------------
-    In this function environment objects are generated
-    Enemies and players can move through these objects
-    ------------------------------------------------   */
-    void generateEnvironment()
-    {
-
-    }
 }
