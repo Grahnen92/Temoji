@@ -51,10 +51,9 @@ public class GameManager : MonoBehaviour
     {
         mainCamera = GameObject.Find("Main Camera");
         theAirParticles = airParticles.GetComponent<ParticleSystem>();
+
         generateMap();
-
         spawnPlayer();
-
 
         print("Welcome to this level.");
 
@@ -64,11 +63,13 @@ public class GameManager : MonoBehaviour
     void spawnPlayer()
     {
 
-        Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(3.0f, 3f, 0f);
+        Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(5.0f, 3f, 0f);
 
         thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
-        mainCamera.GetComponent<PlayerCamera>().setCameraTarget(thePlayer);
-
+        if(thePlayer.name == "rb_character_prototype(Clone)")
+            mainCamera.GetComponent<PlayerCamera>().setCameraTarget(thePlayer.transform.GetChild(0).gameObject); // TODO: Fix ugly fix
+        else
+            mainCamera.GetComponent<PlayerCamera>().setCameraTarget(thePlayer);
     }
 
     void spawnEnemy()
@@ -86,7 +87,7 @@ public class GameManager : MonoBehaviour
         {
             CancelInvoke();
         }
-        theAirParticles.transform.position = GameObject.Find("final_prototype_neckjoint").transform.position + new Vector3(0,2,0);
+        theAirParticles.transform.position = thePlayer.transform.position + new Vector3(0,2,0);
 
     }
 

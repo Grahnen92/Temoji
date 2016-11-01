@@ -57,9 +57,10 @@ public class ArmProjectile : MonoBehaviour {
             else if(hit.tag == "Wood")
             {
                 GameObject tmpMaterialParent = hit.transform.parent.parent.gameObject;
-                for(int i = 0; i < tmpMaterialParent.transform.childCount; i++)
+                //for (int i = 0; i < tmpMaterialParent.transform.childCount; i++)
+                while (tmpMaterialParent.transform.childCount > 0)
                 {
-                    GameObject tmpMaterialPart = tmpMaterialParent.transform.GetChild(i).gameObject;
+                    GameObject tmpMaterialPart = tmpMaterialParent.transform.GetChild(0).gameObject;
                     Rigidbody tmpRB = tmpMaterialPart.AddComponent<Rigidbody>();
                     tmpRB.drag = 1f;
                     tmpRB.angularDrag = 1f;

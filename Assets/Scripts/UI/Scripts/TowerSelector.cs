@@ -127,12 +127,13 @@ public class TowerSelector : MonoBehaviour {
         uiRingInstance =  Instantiate(uiRing);
         uiRingInstance.transform.parent = transform;
         uiRingInstance.transform.position = spawnPt.position;
-        uiRingInstance.transform.localScale = new Vector3(7.8f, 7.8f, 7.8f);
+        uiRingInstance.transform.localScale *= 4.4f;
         Renderer tmp_renderer = uiRingInstance.GetComponent<Renderer>();
         tmp_renderer.enabled = false;
         Color tmp_color = tmp_renderer.material.color;
         tmp_color.a = transparency;
         uiRingInstance.GetComponent<Renderer>().material.color = tmp_color;
+
 
 
         modelList.Add(model0);
@@ -143,7 +144,8 @@ public class TowerSelector : MonoBehaviour {
         {
             GameObject modInst = Instantiate(modelList[i]);
             modInstances.Add(modInst);
-            modInst.transform.parent = this.transform;
+            modInst.transform.parent = uiRingInstance.transform;
+            modInst.transform.Rotate(90, 0, 0);
             Vector3 tmpVec = new Vector3(Mathf.Cos((2.0f*Mathf.PI / modelList.Count) * i), 0.0f, Mathf.Sin((2.0f * Mathf.PI / modelList.Count) * i)) * 2;
             modInst.transform.position = spawnPt.position + tmpVec;
 
@@ -157,10 +159,15 @@ public class TowerSelector : MonoBehaviour {
                 r.enabled = false;
 
                 // Making the object transparent NOTE: Material for model must support transparency
-                Color c = r.material.color;
-                //c.a = transparency;
-                c.a = 0.0f;
-                r.material.color = c;
+                var mats = r.materials;
+                foreach (var m in mats)
+                {
+                    Color c = r.material.color;
+                    //c.a = transparency;
+                    c.a = 0.0f;
+                    r.material.color = c;
+                }
+                    
             }
         }
     }

@@ -22,8 +22,8 @@ public class Player_Combat : Combat
     void Start()
     {
         head = GameObject.Find("final_prototype_head");
-        smoke = head.transform.Find("Smoke").gameObject.GetComponent<ParticleSystem>();
-        sparks = head.transform.Find("Sparks").gameObject.GetComponent<ParticleSystem>();
+        smoke = transform.GetChild(3).gameObject.GetComponent<ParticleSystem>();
+        sparks = transform.GetChild(4).gameObject.GetComponent<ParticleSystem>();
         health = maxHealth;
 
         rWing = GameObject.Find("final_prototype_rwing");

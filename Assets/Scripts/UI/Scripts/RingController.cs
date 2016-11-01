@@ -39,7 +39,7 @@ public class RingController : NetworkBehaviour {
         originalLeft = leftShoulder.transform.localRotation;
         head = GetComponent<Rigidbody>();
 
-        transform.position = NavigationRoll.target_destination + new Vector3(1.5f, 1f, 0f);
+       // transform.position = NavigationRoll.target_destination + new Vector3(1.5f, 1f, 0f);
     }
 
 
@@ -48,8 +48,8 @@ public class RingController : NetworkBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (!isLocalPlayer)
-            return;
+       // if (!isLocalPlayer)
+            //return;
 
         if (Input.GetButton("Fire1"))
         {
@@ -92,7 +92,7 @@ public class RingController : NetworkBehaviour {
     double rot_adjustment;
 
     double hight_error;
-    double wanted_hight = 1.0;
+    double wanted_hight = 2.0f;
     double hight_integral = 0.0;
     double hight_derivative;
     double previous_hight_error = 0.0;
@@ -104,11 +104,11 @@ public class RingController : NetworkBehaviour {
 
     void FixedUpdate()
     {
-        if (!isLocalPlayer)
-        {
-            Debug.Log("Not local");
-            return;
-        }
+        //if (!isLocalPlayer)
+        //{
+        //    Debug.Log("Not local");
+        //    return;
+        //}
         // === Turn functions =====================================================================
         //mouse ray tracing =====================================================================
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -142,7 +142,7 @@ public class RingController : NetworkBehaviour {
 
         //Hovering ============================================================================
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 100.0f, 1))
+        if (Physics.SphereCast(transform.position, 0.1f, Vector3.down, out hit, 100.0f, 1))
         {
             hight_error = wanted_hight - hit.distance;
             hight_integral = hight_integral + hight_error * Time.deltaTime;
@@ -175,7 +175,7 @@ public class RingController : NetworkBehaviour {
 
         if (planar_velocity.magnitude < curr_speed)
         {
-            head.AddForce(velocity_diff * diff_magnitude * diff_magnitude * Time.deltaTime * 60);
+            head.AddForce(velocity_diff * diff_magnitude * diff_magnitude * Time.deltaTime * 10);
         }
 
         //var x = Input.GetAxis("Horizontal") * Time.deltaTime * 3.0f;
@@ -187,7 +187,7 @@ public class RingController : NetworkBehaviour {
         bodyRing2.transform.Rotate(moveV * 100 + moveH * 100, moveH * 25 + moveV * 25, moveV * 50 + moveH * 50);
     }
 
-    [Command]
+    //[Command]
     void CmdFire()
     {
         randPt = UnityEngine.Random.insideUnitCircle;
@@ -198,9 +198,10 @@ public class RingController : NetworkBehaviour {
         shot = Instantiate(bullet);
         shot.transform.position = backInnerRing.transform.position + new Vector3(randPt.x, randPt.y, 0) * bulletRadius;
         shot.transform.forward = backInnerRing.transform.forward;
-        shot.transform.LookAt(transform.Find("Target"));
-
-        NetworkServer.Spawn(shot);
+        //shot.transform.LookAt(transform.Find("Target"));
+        shot.transform.LookAt(curr_mouse_hit);
+    
+      //  NetworkServer.Spawn(shot);
     }
 
     float time = 0f;
