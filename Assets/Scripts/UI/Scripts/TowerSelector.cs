@@ -20,7 +20,8 @@ using System.Collections.Generic;
  *      - Alternatively, can just register models that are already transparent, and set this transparency to 1.0
  * */
 
-public class TowerSelector : MonoBehaviour {
+public class TowerSelector : MonoBehaviour
+{
 
     // Transform that indicates where hologram will spawn
     public Transform spawnPt;
@@ -116,7 +117,8 @@ public class TowerSelector : MonoBehaviour {
         checkActiveTowersAfterRemove();
     }
 
-    void Start () {
+    void Start()
+    {
         // Add additional lines here if adding additional models
 
         for (int i = 0; i < nrOfModels; i++)
@@ -124,10 +126,10 @@ public class TowerSelector : MonoBehaviour {
             activeModels[i] = 0;
         }
 
-        uiRingInstance =  Instantiate(uiRing);
+        uiRingInstance = Instantiate(uiRing);
         uiRingInstance.transform.parent = transform;
         uiRingInstance.transform.position = spawnPt.position;
-        uiRingInstance.transform.localScale *= 4.4f;
+        uiRingInstance.transform.localScale = new Vector3(7.8f, 7.8f, 7.8f);
         Renderer tmp_renderer = uiRingInstance.GetComponent<Renderer>();
         tmp_renderer.enabled = false;
         Color tmp_color = tmp_renderer.material.color;
@@ -135,18 +137,16 @@ public class TowerSelector : MonoBehaviour {
         uiRingInstance.GetComponent<Renderer>().material.color = tmp_color;
 
 
-
         modelList.Add(model0);
         modelList.Add(model1);
         modelList.Add(model2);
 
-        for(int i = 0; i < modelList.Count; i++)
+        for (int i = 0; i < modelList.Count; i++)
         {
             GameObject modInst = Instantiate(modelList[i]);
             modInstances.Add(modInst);
-            modInst.transform.parent = uiRingInstance.transform;
-            modInst.transform.Rotate(90, 0, 0);
-            Vector3 tmpVec = new Vector3(Mathf.Cos((2.0f*Mathf.PI / modelList.Count) * i), 0.0f, Mathf.Sin((2.0f * Mathf.PI / modelList.Count) * i)) * 2;
+            modInst.transform.parent = this.transform;
+            Vector3 tmpVec = new Vector3(Mathf.Cos((2.0f * Mathf.PI / modelList.Count) * i), 0.0f, Mathf.Sin((2.0f * Mathf.PI / modelList.Count) * i)) * 2;
             modInst.transform.position = spawnPt.position + tmpVec;
 
             print(tmpVec);
@@ -159,20 +159,16 @@ public class TowerSelector : MonoBehaviour {
                 r.enabled = false;
 
                 // Making the object transparent NOTE: Material for model must support transparency
-                var mats = r.materials;
-                foreach (var m in mats)
-                {
-                    Color c = r.material.color;
-                    //c.a = transparency;
-                    c.a = 0.0f;
-                    r.material.color = c;
-                }
-                    
+                Color c = r.material.color;
+                //c.a = transparency;
+                c.a = 0.0f;
+                r.material.color = c;
             }
         }
     }
-	
-	void Update () {
+
+    void Update()
+    {
         if (Input.GetKeyDown(startBuildKey))
         {
             if (!showing)
@@ -199,12 +195,12 @@ public class TowerSelector : MonoBehaviour {
                     GameObject tmpGO = wood[0];
                     //tmp_pos = tmpGO.transform.position;
                     wood.RemoveAt(0);
-                    Destroy(tmpGO);
+                    Destroy(tmpGO.transform.parent.gameObject);
 
                     tmpGO = stone[0];
                     //tmp_pos += tmpGO.transform.position;
                     stone.RemoveAt(0);
-                    Destroy(tmpGO);
+                    Destroy(tmpGO.transform.parent.gameObject);
                     print("starting to build tower");
                     GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
                     //tmp_pos.y = 2.0f;
@@ -225,7 +221,7 @@ public class TowerSelector : MonoBehaviour {
                     GameObject tmpGO = stone[0];
                     //tmp_pos += tmpGO.transform.position;
                     stone.RemoveAt(0);
-                    Destroy(tmpGO);
+                    Destroy(tmpGO.transform.parent.gameObject);
                     print("starting to build tower");
                     GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
                     //tmp_pos.y = 2.0f;
@@ -239,10 +235,10 @@ public class TowerSelector : MonoBehaviour {
             }
             else if (Input.GetKeyDown(tower3key))
             {
-               // switchModel(2);
+                // switchModel(2);
             }
         }
-	}
+    }
 
     void LateUpdate()
     {
@@ -325,7 +321,7 @@ public class TowerSelector : MonoBehaviour {
         uiRingInstance.GetComponent<Renderer>().enabled = true;
         showing = true;
         showModels();
- 
+
     }
 
     // Make the models invisible
@@ -365,7 +361,7 @@ public class TowerSelector : MonoBehaviour {
     }
     void showModels()
     {
-        
+
         foreach (var mod in modInstances)
         {
             var renderers = mod.GetComponentsInChildren<Renderer>();
@@ -374,7 +370,7 @@ public class TowerSelector : MonoBehaviour {
                 r.enabled = true;
             }
         }
-        
+
     }
 
     // Hide a model

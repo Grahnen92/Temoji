@@ -23,9 +23,9 @@ public class NavigationHover : MonoBehaviour
     double height_derivative;
     double height_adjustment;
 
-    public static GameObject baseObject;
-    public static Vector3 target_destination;
-    public static Vector3 spawn_destination;
+    private GameObject baseObject;
+    private Vector3 target_destination;
+    private Vector3 spawn_destination;
     NavMeshAgent nav;
     NavMeshPath navPath;
     Vector3 direction;
@@ -121,6 +121,7 @@ public class NavigationHover : MonoBehaviour
         //print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
+            
             GetComponent<NavMeshAgent>().SetDestination(spawn_destination);
 
             if (distance <= homedistance)
@@ -184,9 +185,11 @@ public class NavigationHover : MonoBehaviour
         //print("----------------bullet shoot");
     }
 
-    public static void setBase(GameObject b)
+    public void setBase(GameObject b, GameObject g)
     {
         baseObject = b;
+        target_destination = baseObject.transform.position;
+        spawn_destination = g.transform.position;
     }
 
     void hover()

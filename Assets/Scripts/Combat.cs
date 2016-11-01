@@ -4,10 +4,10 @@ using UnityEngine.Networking;
 
 public class Combat : NetworkBehaviour {
 
-    public int maxHealth = 10;
+    public float maxHealth = 10;
 
     //[SyncVar]
-    protected int health;
+    protected float health;
 
     public Combat()
     {

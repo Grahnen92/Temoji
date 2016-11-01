@@ -45,6 +45,12 @@ public class Player_Combat : Combat
         {
             health = 0;
             Debug.Log("Player Dead!");
+            Destroy(head.transform.parent.GetChild(1).gameObject, 0.1f);
+            head.transform.parent.GetChild(1).GetChild(0).parent = null;
+            head.transform.parent.GetChild(1).GetChild(1).parent = null;
+            head.transform.parent.GetChild(1).GetChild(2).parent = null;
+            head.transform.parent.GetChild(1).GetChild(3).parent = null;
+            
         }
 
         float healthNorm = (((float)maxHealth - (float)health) / (float)maxHealth);
@@ -68,5 +74,10 @@ public class Player_Combat : Combat
         }
 
         print("player took damage");
+    }
+
+    void Update()
+    {
+        health += 2 * Time.deltaTime;
     }
 }

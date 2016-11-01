@@ -4,10 +4,10 @@ using System.Collections;
 public class NavigationRoll : MonoBehaviour
 {
 
-    static public GameObject baseObject;
+    private GameObject baseObject;
 
-    public static Vector3 target_destination;
-    public static Vector3 spawn_destination;
+    private Vector3 target_destination;
+    private Vector3 spawn_destination;
 
     public float speed_factor;
     private float attack_distance = 2.0f;
@@ -42,9 +42,11 @@ public class NavigationRoll : MonoBehaviour
         explosion_prefab = Resources.Load("bot_explosion") as GameObject;
     }
 
-    public static void setBase(GameObject b)
+    public void setBase(GameObject b, GameObject g)
     {
         baseObject = b;
+        target_destination = baseObject.transform.position;
+        spawn_destination = g.transform.position;
     }
 
     // Update is called once per frame

@@ -23,7 +23,7 @@ public class ArmProjectile : MonoBehaviour {
         if (DamageHit)
             DamageHit.TakeDamage(10);
 
-        if(hit.layer == 21)
+        if(hit.layer == 21 && hit.transform.parent != null)
         {
             if(hit.tag == "Stone")
             {
@@ -54,7 +54,7 @@ public class ArmProjectile : MonoBehaviour {
                 }
                 
             }
-            else if(hit.tag == "Wood")
+            else if(hit.tag == "Wood" && hit.transform.parent != null)
             {
                 GameObject tmpMaterialParent = hit.transform.parent.parent.gameObject;
                 //for (int i = 0; i < tmpMaterialParent.transform.childCount; i++)

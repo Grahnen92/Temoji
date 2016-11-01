@@ -21,23 +21,21 @@ public class RUIN
 public class GameManager : MonoBehaviour
 {
     public GameObject mainCamera;
-    public static GameObject groundObject;
-    public GameObject targetObject;
-    public GameObject playerObject;
-    public GameObject enemyObject;
-    public GameObject innerRuinObject;
-    public GameObject outerRuinObject;
-    public GameObject indestructObject;
-    public GameObject rock1Object;
-    public GameObject rock2Object;
-    public GameObject treeObject;
-    public GameObject gateObject;
+    public GameObject groundPrefab;
+    public GameObject BasePrefab;
+    private GameObject Base;
+
+    public GameObject playerPrefab;
+    private GameObject player;
+    public GameObject enemyPrefab;
+    public GameObject rock1Prefab;
+    public GameObject treePrefab;
+    public GameObject gatePrefab;
+    private GameObject Gate;
     public ParticleSystem airParticles;
     public static bool base_alive = false;
-    public Vector3 BasePosition;
-    public Vector3 GatePosition;
 
-    private GameObject thePlayer;
+    
     private ParticleSystem theAirParticles;
 
     private int vertX;
@@ -53,9 +51,10 @@ public class GameManager : MonoBehaviour
     {
         mainCamera = GameObject.Find("Main Camera");
         theAirParticles = airParticles.GetComponent<ParticleSystem>();
-
         generateMap();
         spawnPlayer();
+        
+       
 
         print("Welcome to this level.");
 
@@ -65,21 +64,21 @@ public class GameManager : MonoBehaviour
     void spawnPlayer()
     {
 
-        Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(5.0f, 3f, 0f);
+        Vector3 spawn_pos_player = Base.transform.position + new Vector3(5.0f, 3f, 0f);
 
-        thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
-        if(thePlayer.name == "rb_character_prototype(Clone)")
-            mainCamera.GetComponent<PlayerCamera>().setCameraTarget(thePlayer.transform.GetChild(0).gameObject); // TODO: Fix ugly fix
+        player = (GameObject)Instantiate(playerPrefab, spawn_pos_player, Quaternion.identity);
+        if(player.name == "rb_character_prototype(Clone)")
+            mainCamera.GetComponent<PlayerCamera>().setCameraTarget(player.transform.GetChild(0).gameObject); // TODO: Fix ugly fix
         else
-            mainCamera.GetComponent<PlayerCamera>().setCameraTarget(thePlayer);
+            mainCamera.GetComponent<PlayerCamera>().setCameraTarget(player);
     }
 
     void spawnEnemy()
     {
         Quaternion rotation = Quaternion.identity;
-        rotation.SetLookRotation(NavigationRoll.spawn_destination.normalized);
 
-        GameObject newEnemy = (GameObject)Instantiate(enemyObject, NavigationRoll.spawn_destination + new Vector3(0,1,0), rotation);
+        GameObject newEnemy = (GameObject)Instantiate(enemyPrefab, Gate.transform.position + new Vector3(0,1,0), rotation);
+        newEnemy.GetComponentInChildren<NavigationRoll>().setBase(Base, Gate);
     }
 
     // Update is called once per frame
@@ -89,11 +88,11 @@ public class GameManager : MonoBehaviour
         {
             CancelInvoke();
         }
-        theAirParticles.transform.position = thePlayer.transform.position + new Vector3(0,2,0);
+        theAirParticles.transform.position = player.transform.position + new Vector3(0,2,0);
 
     }
 
-    public Vector3 initialBase(GameObject BasePrefab, float BaseSize)
+    private void initialBase(float BaseSize)
     {
 
         float allowed_spawn_area = 0.8f; // 80%
@@ -101,22 +100,21 @@ public class GameManager : MonoBehaviour
         float x = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         float z = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         Vector3 BasePosition = new Vector3(x, BaseSize, z);
-        GameObject hej = (GameObject)Instantiate(BasePrefab, BasePosition, Quaternion.identity);
+        Base = (GameObject)Instantiate(BasePrefab, BasePosition, Quaternion.identity);
         base_alive = true;
-        NavigationRoll.setBase(hej);
-        NavigationHover.setBase(hej);
+        //NavigationRoll.setBase(hej);
+        //NavigationHover.setBase(hej);
 
         print("target_destination in initial" + BasePosition);
-        return BasePosition;
     }
 
-    public Vector3 initialEntry(GameObject EntryPrefab, Vector3 basePosition, float r, float EntrySize)
+    private void initialEntry(float r, float EntrySize)
     {
         // Choose x or z
         Vector3 gatePos = new Vector3();
         bool first = true;
         int safe_counter = 0;
-        while ((gatePos - basePosition).magnitude < r || first || safe_counter > 1000)
+        while ((gatePos - Base.transform.position).magnitude < r || first || safe_counter > 1000)
         {
             safe_counter++;
             first = false;
@@ -144,10 +142,11 @@ public class GameManager : MonoBehaviour
 
         if(safe_counter > 1000)
         {
+            return;
             print("Something wrong :(");
         }
 
-        if ((gatePos - basePosition).magnitude > r)
+        if ((gatePos - Base.transform.position).magnitude > r)
         {
             // rotate gate if placed on the x-axis
             Quaternion rotation = Quaternion.identity;
@@ -157,10 +156,8 @@ public class GameManager : MonoBehaviour
             }
 
             Vector3 offset = new Vector3(0.0f, 1.8f, 0.0f);
-            Instantiate(EntryPrefab, gatePos + offset, rotation);
+            Gate = Instantiate(gatePrefab, gatePos + offset, rotation) as GameObject;
         }
-
-        return gatePos;
 
     }
 
@@ -168,12 +165,10 @@ public class GameManager : MonoBehaviour
     {
 
         // Generate Base
-        BasePosition= initialBase(targetObject, 1);
-        //NavigationRoll.target_destination = BasePosition;
-        NavigationHover.target_destination = BasePosition;
+        initialBase(1);
 
         // Generate Gate
-        NavigationRoll.spawn_destination = initialEntry(gateObject, NavigationRoll.target_destination, base_radius, ENTRY_SIZE);
+        initialEntry( base_radius, ENTRY_SIZE);
         
         // Generate Collectables
         generateCollectibles();
@@ -216,7 +211,7 @@ public class GameManager : MonoBehaviour
                         int maxRotate = 8;
                         //rotation *= Quaternion.Euler(Random.Range(-maxRotate, maxRotate), Random.Range(0, 360), Random.Range(-maxRotate, maxRotate));
 
-                        collectible = (GameObject)Instantiate(rock1Object, position, Quaternion.identity);
+                        collectible = (GameObject)Instantiate(rock1Prefab, position, Quaternion.identity);
                         
                         collectible.transform.rotation = Quaternion.FromToRotation(collectible.transform.up, normal) * collectible.transform.rotation;
                         collectible.transform.Rotate(Random.Range(-maxRotate, maxRotate), Random.Range(0, 360), Random.Range(-maxRotate, maxRotate));
@@ -229,7 +224,7 @@ public class GameManager : MonoBehaviour
                         int maxRotate = 8;
                         rotation *= Quaternion.Euler(Random.Range(-maxRotate, maxRotate), Random.Range(0, 360), Random.Range(-maxRotate, maxRotate));
 
-                        collectible = (GameObject)Instantiate(treeObject, position, rotation);
+                        collectible = (GameObject)Instantiate(treePrefab, position, rotation);
 
                         float scale = Random.Range(0.8f, 1.2f);
                         collectible.transform.localScale *= scale;
