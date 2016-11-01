@@ -9,7 +9,7 @@ public class NavigationHover : MonoBehaviour
     private int currentTower = -1;
     private List<GameObject> towerList = new List<GameObject>();
     private bool activeReloading = false;
-    private float reloadTime = 2.0f;
+    private float reloadTime = 1.5f;
     private Vector3 En_Bu_position;
     private float bulletSpeed = 30.0f;
     private bool tangentForce = false;
@@ -108,7 +108,7 @@ public class NavigationHover : MonoBehaviour
         direction.Normalize();
 
 
-        if (distance < 2.8)
+        if (distance < 4)
         {
             GetComponent<Rigidbody>().AddForce(direction * speed_factor * 2 + Vector3.Cross(direction, transform.up) * speed_factor * 2);
         }
