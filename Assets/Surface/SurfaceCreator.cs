@@ -109,8 +109,6 @@ public class SurfaceCreator : MonoBehaviour {
                     float kFactor = 22.0f;
                     float diff = 0.0f;
                     float mountainOffset = -0.082f;
-
-
                     if(Mathf.Abs(vertices[v].x) < Mathf.Abs(vertices[v].z))
                     {
                         float height = k * d2 / kFactor + mountainOffset;
@@ -192,5 +190,4 @@ public class SurfaceCreator : MonoBehaviour {
     {
         return normals[v];
     }
-
 }

@@ -216,7 +216,7 @@ public class InfiniGRASSManager : MonoBehaviour {
 		public float Grow_speed = 2;//pass custom growth speed on instantiated
 		public float Editor_view_dist = 300;//disablr far away in editor
 
-		public bool originalGrassPainter = true;
+		public bool originalGrassPainter = false;
 		public bool Grass_painting = false;
         public bool Rock_painting = false;
 		public bool Fence_painting = false;
@@ -345,9 +345,11 @@ public class InfiniGRASSManager : MonoBehaviour {
 		public List<GameObject> RockPrefabs = new List<GameObject>();
 		public List<GameObject> FencePrefabs = new List<GameObject>();
 		public List<GameObject> FenceMidPrefabs = new List<GameObject>();
+        private int vertX = 0;
+        private int vertY = 0;
 
-	// Use this for initialization
-	void Start() {
+        // Use this for initialization
+        void Start() {
 
 			//v1.7 - restore !grow_tree mode, when ungrown, relates to ungrow in editor option and line 390 in grassfield script
 			if (UnGrown) {
@@ -489,8 +491,8 @@ public class InfiniGRASSManager : MonoBehaviour {
 		}
 
    
-        Interactor = GameObject.Find("final_prototype_head").transform;
-        windzone = GameObject.Find("final_prototype_head").transform;
+        //Interactor = GameObject.Find("final_prototype_head").transform;
+        // windzone = GameObject.Find("final_prototype_head").transform;
 
 	}
         // END START
@@ -1384,201 +1386,196 @@ public class InfiniGRASSManager : MonoBehaviour {
 				}//END PAINTING
 
                 // procedural grass painter
-                //if (Grass_painting & Enable_real_time_paint && !originalGrassPainter) // xchange
-                    if (Grass_painting & Enable_real_time_paint && !originalGrassPainter) // 
+                if (Grass_painting & Enable_real_time_paint && !originalGrassPainter) // xchange
+                    //if (Grass_painting & Enable_real_time_paint) // 
                     {
                       
-                    if (Input.GetButtonDown("genGrass") & !Input.GetKeyDown(KeyCode.LeftShift)
-                        //& (Camera.main != null | Camera.current != null)
-                        //& !Tag_based_player
-                        )
+                    if (true)
                     {
-                      //for(int v = 0; v < moun)  
-                        Ray ray = new Ray();
-
-                        //v1.4c
-                        // box ray // xchange
-                        bool found_cam = false; 
-                        if (Tag_based_player)
-                        {
-                            if (player != null)
-                            {
-                                Camera[] playerCams = player.GetComponentsInChildren<Camera>(false);
-                                //Debug.Log(playerCams.Length);
-                                if (playerCams != null && playerCams.Length > 0 && playerCams[0] != null)
-                                {
-                                    ray = playerCams[0].ScreenPointToRay(Input.mousePosition);
-                                    found_cam = true;
-                                }
-                                else
-                                {
-                                    if (Camera.main != null)
-                                    {
-                                        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                                        found_cam = true;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (Camera.main != null)
-                            {
-                                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                                found_cam = true;
-                            }
-                            else if (Camera.current != null)
-                            {
-                                ray = Camera.current.ScreenPointToRay(Input.mousePosition);
-                                found_cam = true;
-                            }
-                        }
-
-                        // box ray // xchange
-                        GameObject box = GameObject.Find("GrassGenBox");
                         GameObject mountains = GameObject.Find("Mountains");
-                        ray.origin = box.transform.position;
-                        ray.direction = Vector3.down + Vector3.left;
-                        box.transform.position += Vector3.right;
 
-                        RaycastHit hit = new RaycastHit();
-                        hit.point = Vector3.right*40;
-                        hit.normal = Vector3.up;
+                        SurfaceCreator surfaceCreator = mountains.GetComponent<SurfaceCreator>();
+                        int SqrdResolution = surfaceCreator.resolution * surfaceCreator.resolution;
 
-                        //if (found_cam && Physics.Raycast(ray, out hit, Mathf.Infinity)) // xchange
-                        //if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1))
-                        if(true) // xchange
+                        vertX += UnityEngine.Random.Range(5, 5);
+                        if (vertX > surfaceCreator.resolution) {
+                            vertY += UnityEngine.Random.Range(5, 5);
+                            vertX = 0;
+                        }
+                            
+
+                        int v = vertY* surfaceCreator.resolution + vertX;
+                        //for (int v = 0; v < 1; v += UnityEngine.Random.Range(100, 300)) // loop vertices
+                        //for (int v = 0; v < 5; v += 1) // loop vertices
+                        if (v < SqrdResolution)
                         {
+                            //Ray ray = new Ray();
 
-                            bool is_Terrain = false;
-                            if ((Terrain.activeTerrain != null && hit.collider.gameObject != null && hit.collider.gameObject == Terrain.activeTerrain.gameObject))
+
+                            // box ray // xchange
+                            //GameObject box = GameObject.Find("GrassGenBox");
+
+                            //ray.origin = box.transform.position;
+                            //ray.direction = Vector3.down + Vector3.left;
+                            //box.transform.position += Vector3.right;
+
+                            RaycastHit hit = new RaycastHit();
+                            hit.point = surfaceCreator.getVertex(v)*150.0f;
+                            hit.point += Vector3.up * 10.0f; ;
+                            hit.normal = surfaceCreator.getNormal(v);
+
+                            //if (found_cam && Physics.Raycast(ray, out hit, Mathf.Infinity)) // xchange
+                            //if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1))
+                            if (hit.point.y > 0.0f) // xchange
                             {
-                                is_Terrain = true;
-                            }
 
-                            //if (is_Terrain | (hit.collider.gameObject != null && hit.collider.gameObject.tag == "PPaint")) //xchange
-                            if (is_Terrain | (mountains != null && mountains.tag == "PPaint"))
-                            {//v1.1						
-
-
-                                //DONT PLANT if hit another grass collider
-                                //if (hit.collider.GetComponent<GrassChopCollider>() != null)
-                                if (false)
+                                bool is_Terrain = false;
+                                if ((Terrain.activeTerrain != null && hit.collider.gameObject != null && hit.collider.gameObject == Terrain.activeTerrain.gameObject))
                                 {
-
-
+                                    is_Terrain = true;
                                 }
-                                else
-                                {
 
-                                    // hejsan
-                                    GameObject TEMP = Instantiate(GrassPrefabs[Grass_selector]);
-                                    //TEMP.transform.position = hit.point;
-                                    TEMP.transform.position = hit.point;
+                                //if (is_Terrain | (hit.collider.gameObject != null && hit.collider.gameObject.tag == "PPaint")) //xchange
+                                if (is_Terrain | (mountains != null && mountains.tag == "PPaint"))
+                                {//v1.1						
 
-                                    INfiniDyGrassField TREE = TEMP.GetComponent<INfiniDyGrassField>();
 
-                                    TREE.Intial_Up_Vector = hit.normal;
-
-                                    TREE.Grow_tree = true;
-
-                                    //v1.1 - terrain adapt
-                                    if (AdaptOnTerrain & is_Terrain)
+                                    //DONT PLANT if hit another grass collider
+                                    //if (hit.collider.GetComponent<GrassChopCollider>() != null)
+                                    if (false)
                                     {
-                                        int Xpos = (int)(((hit.point.x - Tpos.x) * Tdata.alphamapWidth / Tdata.size.x));
-                                        int Zpos = (int)(((hit.point.z - Tpos.z) * Tdata.alphamapHeight / Tdata.size.z));
-                                        float[,,] splats = Tdata.GetAlphamaps(Xpos, Zpos, 1, 1);
-                                        float[] Tarray = new float[splats.GetUpperBound(2) + 1];
-                                        for (int j = 0; j < Tarray.Length; j++)
-                                        {
-                                            Tarray[j] = splats[0, 0, j];
-                                            //Debug.Log(Tarray[j]); // ScalePerTexture
-                                        }
-                                        float Scaling = 0;
-                                        for (int j = 0; j < Tarray.Length; j++)
-                                        {
-                                            if (j > ScalePerTexture.Count - 1)
-                                            {
-                                                Scaling = Scaling + (1 * Tarray[j]);
-                                            }
-                                            else
-                                            {
-                                                Scaling = Scaling + (ScalePerTexture[j] * Tarray[j]);
-                                            }
-                                        }
-                                        TREE.End_scale = Scaling * UnityEngine.Random.Range(min_scale, max_scale);
-                                        //Debug.Log(Tarray);
+
+
                                     }
                                     else
                                     {
-                                        TREE.End_scale = UnityEngine.Random.Range(min_scale, max_scale);
+
+                                        int grassType = Grass_selector; // selected from GrassManager
+                                        // hejsan
+
+
+                                        // Nice grass: 0,1,8    
+                                        // Grass 1
+                                        grassType = 0;
+                                        // Grass 2
+
+                                        // Grass 3
+
+                                        // Trees
+
+                                        // Rocks
+
+
+
+                                        GameObject TEMP = Instantiate(GrassPrefabs[grassType]);
+                                        //TEMP.transform.position = hit.point;
+                                        TEMP.transform.position = hit.point;
+                                        TEMP.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+                                        INfiniDyGrassField TREE = TEMP.GetComponent<INfiniDyGrassField>();
+
+                                        TREE.Intial_Up_Vector = hit.normal;
+
+                                        TREE.Grow_tree = true;
+
+                                        //v1.1 - terrain adapt
+                                        if (AdaptOnTerrain & is_Terrain)
+                                        {
+                                            int Xpos = (int)(((hit.point.x - Tpos.x) * Tdata.alphamapWidth / Tdata.size.x));
+                                            int Zpos = (int)(((hit.point.z - Tpos.z) * Tdata.alphamapHeight / Tdata.size.z));
+                                            float[,,] splats = Tdata.GetAlphamaps(Xpos, Zpos, 1, 1);
+                                            float[] Tarray = new float[splats.GetUpperBound(2) + 1];
+                                            for (int j = 0; j < Tarray.Length; j++)
+                                            {
+                                                Tarray[j] = splats[0, 0, j];
+                                                //Debug.Log(Tarray[j]); // ScalePerTexture
+                                            }
+                                            float Scaling = 0;
+                                            for (int j = 0; j < Tarray.Length; j++)
+                                            {
+                                                if (j > ScalePerTexture.Count - 1)
+                                                {
+                                                    Scaling = Scaling + (1 * Tarray[j]);
+                                                }
+                                                else
+                                                {
+                                                    Scaling = Scaling + (ScalePerTexture[j] * Tarray[j]);
+                                                }
+                                            }
+                                            TREE.End_scale = Scaling * UnityEngine.Random.Range(min_scale, max_scale);
+                                            //Debug.Log(Tarray);
+                                        }
+                                        else
+                                        {
+                                            TREE.End_scale = UnityEngine.Random.Range(min_scale, max_scale);
+                                        }
+
+                                        TREE.Max_interact_holder_items = Max_interactive_group_members;//Define max number of trees grouped in interactive batcher that opens up. 
+                                                                                                       //Increase to lower draw calls, decrease to lower spikes when group is opened for interaction
+                                        TREE.Max_trees_per_group = Max_static_group_members;
+
+                                        TREE.Interactive_tree = Interactive;
+                                        TREE.transform.localScale *= TREE.End_scale * Collider_scale;
+
+                                        if (Override_spread)
+                                        {
+                                            TREE.PosSpread = new Vector2(UnityEngine.Random.Range(Min_spread, Max_spread), UnityEngine.Random.Range(Min_spread, Max_spread));
+                                        }
+                                        if (Override_density)
+                                        {
+                                            TREE.Min_Max_Branching = new Vector2(Min_density, Max_density);
+                                        }
+                                        //TREE.PaintedOnOBJ = hit.transform.gameObject.transform; 
+                                        TREE.PaintedOnOBJ = mountains.transform; // xchange
+                                        TREE.GridOnNormal = GridOnNormal;
+                                        TREE.max_ray_dist = rayCastDist;
+                                        TREE.MinAvoidDist = MinAvoidDist;
+                                        TREE.MinScaleAvoidDist = MinScaleAvoidDist;
+                                        TREE.InteractionSpeed = InteractionSpeed;
+                                        TREE.InteractSpeedThres = InteractSpeedThres;
+
+                                        //v1.4
+                                        TREE.Interaction_thres = Interaction_thres;
+                                        TREE.Max_tree_dist = Max_tree_dist;//v1.4.6
+                                        TREE.Disable_after_growth = Disable_after_growth;//v1.5
+                                        TREE.WhenCombinerFull = WhenCombinerFull;//v1.5
+                                        TREE.Eliminate_original_mesh = Eliminate_original_mesh;//v1.5
+                                        TREE.Interaction_offset = Interaction_offset;
+
+                                        TREE.LOD_distance = LOD_distance;
+                                        TREE.LOD_distance1 = LOD_distance1;
+                                        TREE.LOD_distance2 = LOD_distance2;
+                                        TREE.Cutoff_distance = Cutoff_distance;
+
+                                        TREE.Tag_based = false;
+                                        TREE.GrassManager = this;
+                                        TREE.Type = Grass_selector + 1;
+                                        TREE.Start_tree_scale = TREE.End_scale / 4;
+
+                                        TREE.RandomRot = RandomRot;
+                                        TREE.RandRotMin = RandRotMin;
+                                        TREE.RandRotMax = RandRotMax;
+
+                                        TREE.GroupByObject = GroupByObject;
+                                        TREE.ParentToObject = ParentToObject;
+                                        TREE.MoveWithObject = MoveWithObject;
+                                        TREE.AvoidOwnColl = AvoidOwnColl;
+
+                                        TEMP.transform.parent = GrassHolder.transform;
+
+                                        //Add to holder, in order to mass change properties
+                                        Grasses.Add(TREE);
+                                        GrassesType.Add(Grass_selector);
+
+                                        TEMP.name = "GrassPatch" + Grasses.Count.ToString();
+
+                                        TREE.Grass_Holder_Index = Grasses.Count - 1;//register id in grasses list								
+
                                     }
-
-                                    TREE.Max_interact_holder_items = Max_interactive_group_members;//Define max number of trees grouped in interactive batcher that opens up. 
-                                                                                                   //Increase to lower draw calls, decrease to lower spikes when group is opened for interaction
-                                    TREE.Max_trees_per_group = Max_static_group_members;
-
-                                    TREE.Interactive_tree = Interactive;
-                                    TREE.transform.localScale *= TREE.End_scale * Collider_scale;
-
-                                    if (Override_spread)
-                                    {
-                                        TREE.PosSpread = new Vector2(UnityEngine.Random.Range(Min_spread, Max_spread), UnityEngine.Random.Range(Min_spread, Max_spread));
-                                    }
-                                    if (Override_density)
-                                    {
-                                        TREE.Min_Max_Branching = new Vector2(Min_density, Max_density);
-                                    }
-                                    //TREE.PaintedOnOBJ = hit.transform.gameObject.transform; 
-                                    TREE.PaintedOnOBJ = mountains.transform; // xchange
-                                    TREE.GridOnNormal = GridOnNormal;
-                                    TREE.max_ray_dist = rayCastDist;
-                                    TREE.MinAvoidDist = MinAvoidDist;
-                                    TREE.MinScaleAvoidDist = MinScaleAvoidDist;
-                                    TREE.InteractionSpeed = InteractionSpeed;
-                                    TREE.InteractSpeedThres = InteractSpeedThres;
-
-                                    //v1.4
-                                    TREE.Interaction_thres = Interaction_thres;
-                                    TREE.Max_tree_dist = Max_tree_dist;//v1.4.6
-                                    TREE.Disable_after_growth = Disable_after_growth;//v1.5
-                                    TREE.WhenCombinerFull = WhenCombinerFull;//v1.5
-                                    TREE.Eliminate_original_mesh = Eliminate_original_mesh;//v1.5
-                                    TREE.Interaction_offset = Interaction_offset;
-
-                                    TREE.LOD_distance = LOD_distance;
-                                    TREE.LOD_distance1 = LOD_distance1;
-                                    TREE.LOD_distance2 = LOD_distance2;
-                                    TREE.Cutoff_distance = Cutoff_distance;
-
-                                    TREE.Tag_based = false;
-                                    TREE.GrassManager = this;
-                                    TREE.Type = Grass_selector + 1;
-                                    TREE.Start_tree_scale = TREE.End_scale / 4;
-
-                                    TREE.RandomRot = RandomRot;
-                                    TREE.RandRotMin = RandRotMin;
-                                    TREE.RandRotMax = RandRotMax;
-
-                                    TREE.GroupByObject = GroupByObject;
-                                    TREE.ParentToObject = ParentToObject;
-                                    TREE.MoveWithObject = MoveWithObject;
-                                    TREE.AvoidOwnColl = AvoidOwnColl;
-
-                                    TEMP.transform.parent = GrassHolder.transform;
-
-                                    //Add to holder, in order to mass change properties
-                                    Grasses.Add(TREE);
-                                    GrassesType.Add(Grass_selector);
-
-                                    TEMP.name = "GrassPatch" + Grasses.Count.ToString();
-
-                                    TREE.Grass_Holder_Index = Grasses.Count - 1;//register id in grasses list								
-
                                 }
-                            }
 
-                        }//END RAYCAST
+                            }//END RAYCAST
+                        } // END FOR LOOP
                     }//END MOUSE CLICK CHECK	
 
                     if (Input.GetMouseButtonDown(0)
