@@ -10,9 +10,9 @@ public class NavigationHover : MonoBehaviour
     private List<GameObject> towerList = new List<GameObject>();
     private bool activeReloading = false;
     private float reloadTime = 2.0f;
-    private GameObject enemy_hover_bullet;
     private Vector3 En_Bu_position;
-    public float bulletSpeed;
+    private float bulletSpeed = 30.0f;
+    private bool tangentForce = false;
 
     double height_target = 1.5d;
     double height_current;
@@ -31,7 +31,7 @@ public class NavigationHover : MonoBehaviour
     NavMeshPath navPath;
     Vector3 direction;
     Rigidbody rb;
-    private float homedistance=2.0f;
+    private float homedistance = 2.0f;
 
 
     // Use this for initialization
@@ -48,7 +48,7 @@ public class NavigationHover : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
 
-      //  bullet_prefab = Resources.Load("enemy_hover_bullet") as GameObject;
+        //  bullet_prefab = Resources.Load("enemy_hover_bullet") as GameObject;
 
         explosion_prefab = Resources.Load("bot_explosion") as GameObject;
     }
@@ -107,9 +107,16 @@ public class NavigationHover : MonoBehaviour
         direction = GetComponent<NavMeshAgent>().steeringTarget - transform.position;
         direction.Normalize();
 
+
+        if (distance < 2.8)
+        {
+            GetComponent<Rigidbody>().AddForce(direction * speed_factor * 2 + Vector3.Cross(direction, transform.up) * speed_factor * 2);
+        }
+
         GetComponent<Rigidbody>().AddForce(direction * speed_factor);
 
-        //gameObject.transform.LookAt(target_destination);
+        gameObject.transform.LookAt(target_destination);
+        gameObject.transform.Rotate(0.0f, 90.0f, 0.0f);
 
 
         print("basealive: " + GameManager.base_alive);
@@ -134,7 +141,6 @@ public class NavigationHover : MonoBehaviour
             if (towerList[currentTower] != null)
             {
                 print("there is a tower should be attacted");
-                enemyShoot();
             }
             else //current enemy is dead, search enemy list for a new target and enemies from the list if they are dead
             {
@@ -162,41 +168,37 @@ public class NavigationHover : MonoBehaviour
         }
 
     }
-    void enemyShoot(){
-        Vector3 targetDirection;
-        targetDirection = towerList[0].transform.position - En_Bu_position;
-        enemy_hover_bullet.GetComponent<Rigidbody>().AddForce(targetDirection * bulletSpeed);
-        print("----------------bullet shoot");
-        if (!activeReloading)
-        {
-            InvokeRepeating("spawnBullet", reloadTime, reloadTime);
-            activeReloading = true;
-        }
-    }
+
     void spawnBullet()
     {
+        GameObject enemy_hover_bullet;
         Vector3 add_En_Bu_position = new Vector3(0.0f, 0, 0.0f);
         En_Bu_position = gameObject.transform.position + add_En_Bu_position;
         Quaternion Bu_rotation = gameObject.transform.localRotation;
         enemy_hover_bullet = (GameObject)Instantiate(bullet_prefab, En_Bu_position, Bu_rotation);
+
+        Vector3 targetDirection;
+        targetDirection = towerList[0].transform.position - En_Bu_position;
+        enemy_hover_bullet.GetComponent<Rigidbody>().AddForce(targetDirection * bulletSpeed);
+        print("----------------bullet shoot");
     }
-    
+
     public static void setBase(GameObject b)
     {
         baseObject = b;
     }
-    // Update is called once per frame
 
     void hover()
     {
-        height_current  = gameObject.transform.position.y;//enemy height
-        height_error  = height_target - height_current;// buyongdong
-        height_integral  += height_error * Time.deltaTime;//buyongdong
-        height_derivative  = (height_error - height_error_pre) / Time.deltaTime;//buyongdong
+        height_current = gameObject.transform.position.y;//enemy height
+        height_error = height_target - height_current;// buyongdong
+        height_integral += height_error * Time.deltaTime;//buyongdong
+        height_derivative = (height_error - height_error_pre) / Time.deltaTime;//buyongdong
 
-        height_adjustment  = 1.0 * height_error + 0.0 * height_integral + 0.5 * height_derivative;//how to adjust?//调权重
+        height_adjustment = 1.0 * height_error + 0.0 * height_integral + 0.5 * height_derivative;//how to adjust?//调权重
 
-        gameObject .GetComponent<Rigidbody>().AddForce(Vector3.up * (float)height_adjustment);//add force to enemy to let it hover
-        height_error_pre  = height_error;
+        gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * (float)height_adjustment);//add force to enemy to let it hover
+        height_error_pre = height_error;
     }
 }
+

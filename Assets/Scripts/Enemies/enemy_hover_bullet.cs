@@ -7,8 +7,8 @@ public class enemy_hover_bullet : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-	
-	}
+        Destroy(gameObject, 3);
+    }
 
     void OnCollisionEnter(Collision coll)//bullet hits something, bullet disappears
     {
@@ -26,7 +26,7 @@ public class enemy_hover_bullet : MonoBehaviour {
 
     void Update()
     {
-        Destroy(gameObject, 3);
+
     }
 
 }
