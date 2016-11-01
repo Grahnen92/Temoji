@@ -1386,7 +1386,7 @@ public class InfiniGRASSManager : MonoBehaviour {
 				}//END PAINTING
 
                 // procedural grass painter
-                if (Grass_painting & Enable_real_time_paint && !originalGrassPainter) // xchange
+                if (Grass_painting & Enable_real_time_paint) // xchange
                     //if (Grass_painting & Enable_real_time_paint) // 
                     {
                       
@@ -1399,7 +1399,7 @@ public class InfiniGRASSManager : MonoBehaviour {
 
                         vertX += UnityEngine.Random.Range(5, 5);
                         if (vertX > surfaceCreator.resolution) {
-                            vertY += UnityEngine.Random.Range(5, 5);
+                            vertY += UnityEngine.Random.Range(7, 7);
                             vertX = 0;
                         }
                             
