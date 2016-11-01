@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class enemy_hover_bullet : MonoBehaviour {
+public class enemy_hover_bullet : MonoBehaviour
+{
 
     //public GameObject explosion_prefab;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         Destroy(gameObject, 1.5f);
     }
 

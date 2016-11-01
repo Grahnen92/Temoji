@@ -6,15 +6,16 @@ using System.Collections.Generic;
 public class NavigationHover : MonoBehaviour
 {
     public GameObject bullet_prefab;
+    public GameObject explosion_prefab;
+    public float speed_factor;
     private int currentTower = -1;
     private List<GameObject> towerList = new List<GameObject>();
     private bool activeReloading = false;
     private float reloadTime = 1.5f;
-    private Vector3 En_Bu_position;
     private float bulletSpeed = 30.0f;
     private bool tangentForce = false;
 
-    double height_target = 1.5d;
+    double height_target = 2.5d;
     double height_current;
     double height_error;
     double height_error_pre = 0.0;
@@ -22,9 +23,7 @@ public class NavigationHover : MonoBehaviour
     double height_derivative;
     double height_adjustment;
 
-    public GameObject explosion_prefab;
     public static GameObject baseObject;
-    public float speed_factor;
     public static Vector3 target_destination;
     public static Vector3 spawn_destination;
     NavMeshAgent nav;
@@ -37,7 +36,7 @@ public class NavigationHover : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        print("target_destination in naHo" + target_destination);
+        //print("target_destination in naHo" + target_destination);
         GetComponent<NavMeshAgent>().SetDestination(target_destination);
         //        GetComponent<NavMeshAgent>().avoidancePriority = (int)Random.value * 100;
         GetComponent<NavMeshAgent>().updatePosition = false;
@@ -55,7 +54,7 @@ public class NavigationHover : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        print("there is a trigger happened");
+        //print("there is a trigger happened");
         towerList.Add(col.gameObject);
         if (currentTower < 0)
             currentTower = towerList.Count - 1;
@@ -108,7 +107,7 @@ public class NavigationHover : MonoBehaviour
         direction.Normalize();
 
 
-        if (distance < 4)
+        if (distance < 10)
         {
             GetComponent<Rigidbody>().AddForce(direction * speed_factor * 2 + Vector3.Cross(direction, transform.up) * speed_factor * 2);
         }
@@ -119,7 +118,7 @@ public class NavigationHover : MonoBehaviour
         gameObject.transform.Rotate(0.0f, 90.0f, 0.0f);
 
 
-        print("basealive: " + GameManager.base_alive);
+        //print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
             GetComponent<NavMeshAgent>().SetDestination(spawn_destination);
@@ -140,7 +139,7 @@ public class NavigationHover : MonoBehaviour
             //check if the current enemy has died
             if (towerList[currentTower] != null)
             {
-                print("there is a tower should be attacted");
+                //sprint("there is a tower should be attacted");
             }
             else //current enemy is dead, search enemy list for a new target and enemies from the list if they are dead
             {
@@ -172,15 +171,17 @@ public class NavigationHover : MonoBehaviour
     void spawnBullet()
     {
         GameObject enemy_hover_bullet;
-        Vector3 add_En_Bu_position = new Vector3(0.0f, 0, 0.0f);
-        En_Bu_position = gameObject.transform.position + add_En_Bu_position;
+        Vector3 En_Bu_position;
+        //Vector3 add_En_Bu_position = new Vector3(0.0f, 0, 0.0f);
+        //En_Bu_position = gameObject.transform.position + add_En_Bu_position;
+        En_Bu_position = gameObject.transform.position;
         Quaternion Bu_rotation = gameObject.transform.localRotation;
         enemy_hover_bullet = (GameObject)Instantiate(bullet_prefab, En_Bu_position, Bu_rotation);
 
         Vector3 targetDirection;
         targetDirection = towerList[0].transform.position - En_Bu_position;
         enemy_hover_bullet.GetComponent<Rigidbody>().AddForce(targetDirection * bulletSpeed);
-        print("----------------bullet shoot");
+        //print("----------------bullet shoot");
     }
 
     public static void setBase(GameObject b)
