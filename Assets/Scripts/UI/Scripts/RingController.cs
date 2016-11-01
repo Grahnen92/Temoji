@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System;
 
-public class RingController : MonoBehaviour {
+public class RingController : NetworkBehaviour {
 
     public GameObject bullet;
     public float displacement;
@@ -37,6 +38,8 @@ public class RingController : MonoBehaviour {
         originalRight = rightShoulder.transform.localRotation;
         originalLeft = leftShoulder.transform.localRotation;
         head = GetComponent<Rigidbody>();
+
+        transform.position = NavigationRoll.target_destination + new Vector3(1.5f, 3f, 0f);
     }
 
 
@@ -45,9 +48,12 @@ public class RingController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        if (!isLocalPlayer)
+            return;
+
         if (Input.GetButton("Fire1"))
         {
-            fireCmd();
+            CmdFire();
         }
         else
         {
@@ -86,18 +92,20 @@ public class RingController : MonoBehaviour {
     double rot_adjustment;
 
     double hight_error;
-    double wanted_hight = 2.4;
+    double wanted_hight = 1.0;
     double hight_integral = 0.0;
     double hight_derivative;
     double previous_hight_error = 0.0;
-    double hight_adjustment = 1000.0;
-    double max_hight_adjustment;
+    double hight_adjustment;
+    double max_hight_adjustment = 1000.0;
 
     float curr_speed = 10f;
     Vector3 planar_velocity;
 
     void FixedUpdate()
     {
+        if (!isLocalPlayer)
+            return;
         // === Turn functions =====================================================================
         //mouse ray tracing =====================================================================
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -110,7 +118,7 @@ public class RingController : MonoBehaviour {
         curr_mouse_dir_noy.Normalize();
 
         //head turning =====================================================================
-        Vector3 curr_forward = transform.up;
+        Vector3 curr_forward = transform.forward;
         curr_forward.y = 0;
         curr_forward.Normalize();
 
@@ -121,11 +129,13 @@ public class RingController : MonoBehaviour {
         rot_integral = rot_integral + rot_error * Time.deltaTime;
         rot_derivative = (rot_error - prev_rot_error) / Time.deltaTime;
 
-        rot_adjustment = 0.07 * rot_error + 0.0 * rot_integral + 0.04 * rot_derivative;
+        rot_adjustment = 2.025 * rot_error + 0.0 * rot_integral + 0.25 * rot_derivative;
         prev_rot_error = rot_error;
         head.AddRelativeTorque(Vector3.forward * (float)rot_adjustment);
-        //head.AddRelativeTorque(Vector3.forward * -100);
+        //head.AddRelativeTorque(Vector3.forward * 100);
         Debug.Log(rot_adjustment);
+
+        //transform.LookAt(curr_mouse_dir_noy + Vector3.up * 0.24f);
 
         //Hovering ============================================================================
         RaycastHit hit;
@@ -141,7 +151,6 @@ public class RingController : MonoBehaviour {
             previous_hight_error = hight_error;
 
             head.AddForce(Vector3.up * (float)hight_adjustment);
-
         }
         else {
             previous_hight_error = 0.0;
@@ -165,9 +174,18 @@ public class RingController : MonoBehaviour {
         {
             head.AddForce(velocity_diff * diff_magnitude * diff_magnitude * Time.deltaTime * 60);
         }
+
+        //var x = Input.GetAxis("Horizontal") * Time.deltaTime * 3.0f;
+        //var z = Input.GetAxis("Vertical") * Time.deltaTime * 3.0f;
+
+        //transform.Translate(x, 0, z);
+
+        bodyRing1.transform.Rotate(moveV * 25 + moveH * 25, moveV * 50 + moveH * 50, moveV * 100 + moveH * 100);
+        bodyRing2.transform.Rotate(moveV * 100 + moveH * 100, moveH * 25 + moveV * 25, moveV * 50 + moveH * 50);
     }
 
-    void fireCmd()
+    [Command]
+    void CmdFire()
     {
         randPt = UnityEngine.Random.insideUnitCircle;
         // Speed up rings
@@ -178,6 +196,8 @@ public class RingController : MonoBehaviour {
         shot.transform.position = backInnerRing.transform.position + new Vector3(randPt.x, randPt.y, 0) * bulletRadius;
         shot.transform.forward = backInnerRing.transform.forward;
         shot.transform.LookAt(transform.Find("Target"));
+
+        NetworkServer.Spawn(shot);
     }
 
     float time = 0f;
