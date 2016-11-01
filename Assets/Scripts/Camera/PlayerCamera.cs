@@ -24,13 +24,18 @@ public class PlayerCamera : MonoBehaviour {
 
 
     void Start () {
-        player = GameObject.Find("final_prototype_head");
+        //player = GameObject.Find("final_prototype_head");
         distance = 10.0f;
         rb = GetComponent<Rigidbody> ();
         offset = new Vector3(0, 6, -5);
         offset.Normalize();
         offset *= distance;
         transform.position = player.transform.position + offset;
+    }
+
+    public void setCameraTarget(GameObject _target)
+    {
+        player = _target;
     }
 
 	void LateUpdate () {

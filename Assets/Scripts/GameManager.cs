@@ -20,7 +20,7 @@ public class RUIN
 
 public class GameManager : MonoBehaviour
 {
-
+    public GameObject mainCamera;
     public static GameObject groundObject;
     public GameObject targetObject;
     public GameObject playerObject;
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        mainCamera = GameObject.Find("Main Camera");
         theAirParticles = airParticles.GetComponent<ParticleSystem>();
         generateMap();
 
@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
         Vector3 spawn_pos_player = NavigationRoll.target_destination + new Vector3(3.0f, 3f, 0f);
 
         thePlayer = (GameObject)Instantiate(playerObject, spawn_pos_player, Quaternion.identity);
+        mainCamera.GetComponent<PlayerCamera>().setCameraTarget(thePlayer);
 
     }
 
