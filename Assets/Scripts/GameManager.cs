@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     public GameObject gateObject;
     public ParticleSystem airParticles;
     public static bool base_alive = false;
+    public Vector3 BasePosition;
+    public Vector3 GatePosition;
 
     private GameObject thePlayer;
     private ParticleSystem theAirParticles;
@@ -98,11 +100,14 @@ public class GameManager : MonoBehaviour
 
         float x = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
         float z = Random.Range((MAP_SIZE / 2 - BaseSize / 2) * -1, (MAP_SIZE / 2 - BaseSize / 2)) * allowed_spawn_area;
-        Vector3 position = new Vector3(x, BaseSize / 2, z);
-        GameObject hej = (GameObject)Instantiate(BasePrefab, position, Quaternion.identity);
+        Vector3 BasePosition = new Vector3(x, BaseSize, z);
+        GameObject hej = (GameObject)Instantiate(BasePrefab, BasePosition, Quaternion.identity);
         base_alive = true;
         NavigationRoll.setBase(hej);
-        return position;
+        NavigationHover.setBase(hej);
+
+        print("target_destination in initial" + BasePosition);
+        return BasePosition;
     }
 
     public Vector3 initialEntry(GameObject EntryPrefab, Vector3 basePosition, float r, float EntrySize)
@@ -163,7 +168,9 @@ public class GameManager : MonoBehaviour
     {
 
         // Generate Base
-        NavigationRoll.target_destination = initialBase(targetObject, 1);
+        BasePosition= initialBase(targetObject, 1);
+        //NavigationRoll.target_destination = BasePosition;
+        NavigationHover.target_destination = BasePosition;
 
         // Generate Gate
         NavigationRoll.spawn_destination = initialEntry(gateObject, NavigationRoll.target_destination, base_radius, ENTRY_SIZE);
