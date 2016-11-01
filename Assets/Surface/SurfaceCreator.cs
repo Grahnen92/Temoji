@@ -91,10 +91,11 @@ public class SurfaceCreator : MonoBehaviour {
                 float d1 = 0.332f;
                 float d2 = 0.43f;
                 float floorLevel = -0.0706f;
+                float groundDisplacement = 0.12f;
 
                 if (Mathf.Abs(vertices[v].x) < d1 && Mathf.Abs(vertices[v].z) < d1)
                 {
-                    vertices[v].y = floorLevel + sample*0.2f;
+                    vertices[v].y = floorLevel + sample* groundDisplacement;
 
                 }else if (Mathf.Abs(vertices[v].x) < d2 && Mathf.Abs(vertices[v].z) < d2)
                 {
@@ -120,12 +121,13 @@ public class SurfaceCreator : MonoBehaviour {
                         diff = height - k * realX / kFactor + mountainOffset;
                         vertices[v].y = sample - diff;
                     }
-                    //vertices[v].y = floorLevel + realX * sample / length;
+
+                    if(vertices[v].y < floorLevel + sample * groundDisplacement) vertices[v].y = floorLevel + sample * groundDisplacement; 
 
 
                 }
                 vertices[v].y += 1.5f / 150.0f;
-
+                
             }
         }
 		mesh.vertices = vertices;
@@ -178,5 +180,14 @@ public class SurfaceCreator : MonoBehaviour {
 		mesh.triangles = triangles;
         
 	}
-    
+
+    public Vector3 getVertex(int v)
+    {
+        return vertices[v];
+    }
+
+    public Vector3 getNormal(int v)
+    {
+        return mesh.normals[v];
+    }
 }
