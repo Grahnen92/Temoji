@@ -29,12 +29,12 @@ public class NavigationRoll : MonoBehaviour
     {
 
         //roller = transform.parent.GetChild(0).gameObject;
-        nav = GetComponent<NavMeshAgent>();
+        nav = transform.parent.gameObject.GetComponent<NavMeshAgent>();
 
        
-        GetComponent<NavMeshAgent>().avoidancePriority = (int)Random.value * 100;
-        GetComponent<NavMeshAgent>().updatePosition = false;
-        GetComponent<NavMeshAgent>().updateRotation = false;
+        transform.parent.gameObject.GetComponent<NavMeshAgent>().avoidancePriority = (int)Random.value * 100;
+        transform.parent.gameObject.GetComponent<NavMeshAgent>().updatePosition = false;
+        transform.parent.gameObject.GetComponent<NavMeshAgent>().updateRotation = false;
 
         navPath = new NavMeshPath();
         rb = GetComponent<Rigidbody>();
@@ -52,9 +52,9 @@ public class NavigationRoll : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetComponent<NavMeshAgent>().SetDestination(target_destination);
+        transform.parent.gameObject.GetComponent<NavMeshAgent>().SetDestination(target_destination);
         float distance = (target_destination - transform.position).magnitude - 3.43f;
-        GetComponent<NavMeshAgent>().nextPosition = transform.position;
+        transform.parent.gameObject.GetComponent<NavMeshAgent>().nextPosition = transform.position;
 
         //nav.CalculatePath(target_destination, navPath);
         //int i = 1;
@@ -67,7 +67,7 @@ public class NavigationRoll : MonoBehaviour
         //    }
         //    i++;
         //}
-        direction = GetComponent<NavMeshAgent>().steeringTarget - transform.position;
+        direction = transform.parent.gameObject.GetComponent<NavMeshAgent>().steeringTarget - transform.position;
         direction.Normalize();
 
         print("basealive: " + GameManager.base_alive);

@@ -41,7 +41,9 @@ public class GameManager : MonoBehaviour
     private int vertX;
     private int vertY;
 
-
+    private int groupSpawnInterval = 40;
+    private int enemiesPerGroup = 10;
+    private int enemyGroupCounter = 0;
 
     const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
@@ -58,7 +60,8 @@ public class GameManager : MonoBehaviour
 
         print("Welcome to this level.");
 
-        InvokeRepeating("spawnEnemy", 0, 10.0f);
+        InvokeRepeating("spawnEnemyGroup", 0, 40.0f);
+        
     }
 
     void spawnPlayer()
@@ -73,12 +76,24 @@ public class GameManager : MonoBehaviour
             mainCamera.GetComponent<PlayerCamera>().setCameraTarget(player);
     }
 
+    void spawnEnemyGroup()
+    {
+            InvokeRepeating("spawnEnemy", 0, 1.0f);
+    }
+
     void spawnEnemy()
     {
         Quaternion rotation = Quaternion.identity;
 
-        GameObject newEnemy = (GameObject)Instantiate(enemyPrefab, Gate.transform.position + new Vector3(0,1,0), rotation);
+        GameObject newEnemy = (GameObject)Instantiate(enemyPrefab, Gate.transform.position + new Vector3(0,0,0), rotation);
         newEnemy.GetComponentInChildren<NavigationRoll>().setBase(Base, Gate);
+        if(enemyGroupCounter > enemiesPerGroup)
+        {
+            CancelInvoke("spawnEnemy");
+            enemyGroupCounter = 0;
+        }
+        enemyGroupCounter++;
+
     }
 
     // Update is called once per frame
