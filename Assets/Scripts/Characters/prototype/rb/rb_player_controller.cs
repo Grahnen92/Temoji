@@ -85,6 +85,11 @@ using System;
 	public LayerMask mouse_mask = (1 << 1) | (1 << 10) | (1 << 13) | (1 << 14) | (1 << 18) | (1 << 21) | (1 << 4);
     public LayerMask hover_mask = (1 << 1) | (1 << 4);
 
+    //sounds
+    public AudioSource hoverSound;
+    public AudioSource chargingSound;
+    public AudioSource shootSound;
+
     void Start()
 	{
         mountains = GameObject.Find("Mountains");
@@ -126,10 +131,19 @@ using System;
             c.a = 0.5f;
             r.material.color = c;
         }
+
+        //sound init
+        chargingSound.volume = 0.0f;
+    }
+    void hoveringSound()
+    {
+        float speed = GetComponent<Rigidbody>().velocity.magnitude * 0.3f;
+        float pitch = Mathf.Max(0.8f, speed);
+        hoverSound.pitch = pitch;
     }
 
-	void Update(){
-
+    void Update(){
+        hoveringSound();
         //charing the weapon
         if (!weapon_charged)
         {
@@ -139,6 +153,8 @@ using System;
             {
                 weapon_charged = true;
             }
+
+            chargingSound.pitch = charge_timer * 1.5f;
         }
 
         // === Character input handling =====================================================================
@@ -150,7 +166,8 @@ using System;
             activateState(0);
         }
         else if (Input.GetButton("Fire2") && currentState == 0)
-        {           
+        {
+            chargingSound.volume = 1.0f;
             //var em = rwingParticles.emission;//.rate = chargeRatio * 500;
             //em.rate = chargeRatio * 500;
             //vacker - DO NOT BREAK LINE
@@ -174,6 +191,7 @@ using System;
         {
            // stopAim();
             deActivateState(0);
+            chargingSound.volume = 0.0f;
         }
 
         //RAISE SHIELD ===========================================================================================
@@ -468,6 +486,8 @@ using System;
     }
     void shoot()
     {
+        shootSound.Play();
+
         GetComponent<Rigidbody>().AddForce(rwing.transform.up * 200.0f);
         GameObject wing_projectile = Instantiate(wing_projectile_prefab) as GameObject;
         wing_projectile.transform.position = rwing.transform.position;

@@ -9,9 +9,12 @@ public class Enemy1_Combat : Combat
 
     //[SyncVar]
     // public int health = maxHealth;
+
+    public GameObject explosion_prefab;
     void Start()
     {
         health = maxHealth;
+        explosion_prefab = Resources.Load("bot_explosion") as GameObject;
     }
     
 
@@ -59,6 +62,10 @@ public class Enemy1_Combat : Combat
             tmpChildLeft.AddComponent<Rigidbody>();
             tmpChildLeft.layer = 22;
             tmpChildLeft.AddComponent<DestroyTimer>().destructionTime = 4.0f;
+
+            GameObject explosion = Instantiate(explosion_prefab) as GameObject;
+            explosion.transform.position = transform.position;
+            explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
 

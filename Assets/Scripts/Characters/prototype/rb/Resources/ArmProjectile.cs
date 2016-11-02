@@ -28,6 +28,8 @@ public class ArmProjectile : MonoBehaviour {
             if(hit.tag == "Stone")
             {
                 GameObject tmpMaterialPart = hit.transform.parent.gameObject;
+                tmpMaterialPart.transform.parent.gameObject.GetComponent<AudioSource>().Play();
+
                 tmpMaterialPart.AddComponent<Rigidbody>().mass = 4.0f;
                 tmpMaterialPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
                 tmpMaterialPart.layer = 12;
@@ -57,6 +59,7 @@ public class ArmProjectile : MonoBehaviour {
             else if(hit.tag == "Wood" && hit.transform.parent != null)
             {
                 GameObject tmpMaterialParent = hit.transform.parent.parent.gameObject;
+                tmpMaterialParent.GetComponent<AudioSource>().Play();
                 //for (int i = 0; i < tmpMaterialParent.transform.childCount; i++)
                 while (tmpMaterialParent.transform.childCount > 0)
                 {
@@ -73,7 +76,7 @@ public class ArmProjectile : MonoBehaviour {
                     tmpMaterialPart.transform.GetChild(0).gameObject.layer = 12;
                     tmpMaterialPart.transform.parent = null;
                 }
-                Destroy(tmpMaterialParent);
+                Destroy(tmpMaterialParent, 2.0f);
             }
             
         }
