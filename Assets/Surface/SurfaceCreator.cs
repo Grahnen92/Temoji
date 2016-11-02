@@ -56,7 +56,11 @@ public class SurfaceCreator : MonoBehaviour {
     }
 
     public void Refresh () {
-        
+        //offset = new Vector3(0.0f, 1.0f, 0.0f); //strength = 0.3
+        //offset = new Vector3(0.0f, 0.0f, 0.0f); //strength = 0.2
+        //offset = new Vector3(0.0f, -1.0f, -1.0f); //strength = 0.3
+        offset = new Vector3(0.0f, 0.0f, 0.0f); //strength = 0.18
+
         if (resolution != currentResolution) {
 			CreateGrid();
 		}

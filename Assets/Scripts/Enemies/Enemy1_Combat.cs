@@ -28,6 +28,13 @@ public class Enemy1_Combat : Combat
             Destroy(gameObject);
             Debug.Log("Dead!");
 
+            GameObject explosion = Instantiate(explosion_prefab) as GameObject;
+            explosion.transform.position = transform.position;
+            explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
+            if (!transform.parent)
+                return;
+
             GameObject tmpParent = transform.parent.gameObject;
 
             //outer child right
@@ -63,9 +70,7 @@ public class Enemy1_Combat : Combat
             tmpChildLeft.layer = 22;
             tmpChildLeft.AddComponent<DestroyTimer>().destructionTime = 4.0f;
 
-            GameObject explosion = Instantiate(explosion_prefab) as GameObject;
-            explosion.transform.position = transform.position;
-            explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            
         }
 
 

@@ -12,7 +12,7 @@ public class NavigationHover : MonoBehaviour
     private List<GameObject> towerList = new List<GameObject>();
     private bool activeReloading = false;
     private float reloadTime = 1.5f;
-    private float bulletSpeed = 30.0f;
+    private float bulletSpeed = 50.0f;
     private bool tangentForce = false;
 
     double height_target = 2.5d;

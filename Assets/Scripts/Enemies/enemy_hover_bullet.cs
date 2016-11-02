@@ -16,6 +16,11 @@ public class enemy_hover_bullet : MonoBehaviour
     {
         print(coll.gameObject);
         Destroy(gameObject);
+
+        Combat tmpCombat = coll.gameObject.GetComponent<Combat>();
+
+        if (tmpCombat)
+            tmpCombat.TakeDamage(1);
         //explosion_prefab = Resources.Load("bot_explosion") as GameObject;
 
 
