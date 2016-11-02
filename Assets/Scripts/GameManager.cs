@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     private int vertY;
 
     private int groupSpawnInterval = 40;
-    private int enemiesPerGroup = 10;
+    private int enemiesPerGroup = 5;
     private int enemyGroupCounter = 0;
 
     const float MAP_SIZE = 100.0f;
@@ -87,25 +87,27 @@ public class GameManager : MonoBehaviour
         Quaternion rotation = Quaternion.identity;
 
         float tmpChance = Random.Range(0, 100);
-        
+        GameObject newEnemy;
+
+
         if (tmpChance >40)
         {
-            GameObject newEnemy = (GameObject)Instantiate(enemy1Prefab, Gate.transform.position + new Vector3(0, 0, 0), rotation);
+            newEnemy = (GameObject)Instantiate(enemy1Prefab, Gate.transform.position + new Vector3(0, 0, 0), rotation);
             newEnemy.GetComponentInChildren<NavigationRoll>().setBase(Base, Gate);
         }
         else
         {
-            GameObject newEnemy = (GameObject)Instantiate(enemy2Prefab, Gate.transform.position + new Vector3(0, 0, 0), rotation);
-            newEnemy.GetComponentInChildren<NavigationRoll>().setBase(Base, Gate);
+            newEnemy = (GameObject)Instantiate(enemy2Prefab, Gate.transform.position + new Vector3(0, 0, 0), rotation);
+            newEnemy.GetComponentInChildren<NavigationHover>().setBase(Base, Gate);
         }
 
-        
-        if(enemyGroupCounter > enemiesPerGroup)
+        enemyGroupCounter++;
+        if (enemyGroupCounter >= enemiesPerGroup)
         {
             CancelInvoke("spawnEnemy");
             enemyGroupCounter = 0;
         }
-        enemyGroupCounter++;
+        
 
     }
 
