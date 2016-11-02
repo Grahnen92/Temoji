@@ -27,7 +27,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject playerPrefab;
     private GameObject player;
-    public GameObject enemyPrefab;
+    public GameObject enemy1Prefab;
+    public GameObject enemy2Prefab;
     public GameObject rock1Prefab;
     public GameObject treePrefab;
     public GameObject gatePrefab;
@@ -85,8 +86,20 @@ public class GameManager : MonoBehaviour
     {
         Quaternion rotation = Quaternion.identity;
 
-        GameObject newEnemy = (GameObject)Instantiate(enemyPrefab, Gate.transform.position + new Vector3(0,0,0), rotation);
-        newEnemy.GetComponentInChildren<NavigationRoll>().setBase(Base, Gate);
+        float tmpChance = Random.Range(0, 100);
+        
+        if (tmpChance >40)
+        {
+            GameObject newEnemy = (GameObject)Instantiate(enemy1Prefab, Gate.transform.position + new Vector3(0, 0, 0), rotation);
+            newEnemy.GetComponentInChildren<NavigationRoll>().setBase(Base, Gate);
+        }
+        else
+        {
+            GameObject newEnemy = (GameObject)Instantiate(enemy2Prefab, Gate.transform.position + new Vector3(0, 0, 0), rotation);
+            newEnemy.GetComponentInChildren<NavigationRoll>().setBase(Base, Gate);
+        }
+
+        
         if(enemyGroupCounter > enemiesPerGroup)
         {
             CancelInvoke("spawnEnemy");
