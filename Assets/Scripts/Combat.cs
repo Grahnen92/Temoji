@@ -24,5 +24,5 @@ public class Combat : NetworkBehaviour {
 	
 	}
 
-    public virtual void TakeDamage(int amount) { }
+    public virtual void TakeDamage(float amount) { }
 }

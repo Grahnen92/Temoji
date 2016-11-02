@@ -12,7 +12,7 @@ public class Tower_Combat : Combat {
         health = maxHealth;
     }
 
-    public override void TakeDamage(int amount)
+    public override void TakeDamage(float amount)
     {
 
         health -= amount;

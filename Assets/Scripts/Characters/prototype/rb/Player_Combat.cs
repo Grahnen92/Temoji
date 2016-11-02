@@ -35,7 +35,7 @@ public class Player_Combat : Combat
        // head_damaged_mat = Resources.Load("head_damaged", typeof(Material)) as Material;
     }
 
-    public override void TakeDamage(int amount)
+    public override void TakeDamage(float amount)
     {
         // if (!isServer)
         //    return;

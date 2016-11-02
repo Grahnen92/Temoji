@@ -18,7 +18,7 @@ public class Enemy1_Combat : Combat
     }
     
 
-    public override void TakeDamage(int amount)
+    public override void TakeDamage(float amount)
     {
 
         health -= amount;

@@ -16,7 +16,7 @@ public class Base_Combat : Combat {
         em.rate = 0.0f;
     }
 
-    public override void TakeDamage(int amount)
+    public override void TakeDamage(float amount)
     {
 
         health -= amount;

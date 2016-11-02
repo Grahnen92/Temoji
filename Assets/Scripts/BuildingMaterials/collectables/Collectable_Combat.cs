@@ -12,7 +12,7 @@ public class Collectable_Combat : Combat
     //[SyncVar]
     //public int health = maxHealth;
 
-    public override void TakeDamage(int amount)
+    public override void TakeDamage(float amount)
     {
         //if (!isServer)
         //  return;
@@ -42,7 +42,7 @@ public class Collectable_Combat : Combat
         }
     }
 
-    public void TakeDamage(int amount, Vector3 collisionPoint)
+    public void TakeDamage(float amount, Vector3 collisionPoint)
     {
         //if (!isServer)
         //  return;

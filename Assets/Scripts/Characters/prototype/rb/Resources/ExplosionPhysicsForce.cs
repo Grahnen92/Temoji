@@ -57,7 +57,7 @@ namespace UnityStandardAssets.Effects
                 if (tmpCombatScript)
                 {
                     print("hej combat script");
-                    tmpCombatScript.TakeDamage((int)(x / dmgScaled));
+                    tmpCombatScript.TakeDamage((x / dmgScaled));
                 }
               
                 //rb.gameObject.GetComponent<Combat>().TakeDamage(50);

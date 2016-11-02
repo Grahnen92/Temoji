@@ -33,16 +33,12 @@ public class GameManager : MonoBehaviour
     public GameObject treePrefab;
     public GameObject gatePrefab;
     private GameObject Gate;
-    public ParticleSystem airParticles;
     public static bool base_alive = false;
-
-    
-    private ParticleSystem theAirParticles;
 
     private int vertX;
     private int vertY;
 
-    private int groupSpawnInterval = 40;
+    private int groupSpawnInterval = 30;
     private int enemiesPerGroup = 5;
     private int enemyGroupCounter = 0;
 
@@ -53,7 +49,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         mainCamera = GameObject.Find("Main Camera");
-        theAirParticles = airParticles.GetComponent<ParticleSystem>();
         generateMap();
         spawnPlayer();
         
@@ -61,7 +56,7 @@ public class GameManager : MonoBehaviour
 
         print("Welcome to this level.");
 
-        InvokeRepeating("spawnEnemyGroup", 0, 40.0f);
+        InvokeRepeating("spawnEnemyGroup", groupSpawnInterval, groupSpawnInterval);
         
     }
 
@@ -71,10 +66,12 @@ public class GameManager : MonoBehaviour
         Vector3 spawn_pos_player = Base.transform.position + new Vector3(5.0f, 3f, 0f);
 
         player = (GameObject)Instantiate(playerPrefab, spawn_pos_player, Quaternion.identity);
-        if(player.name == "rb_character_prototype(Clone)")
+        if(player.name == "rb_character_prototype(Clone)" || player.name == "ball_prototype(Clone)")
             mainCamera.GetComponent<PlayerCamera>().setCameraTarget(player.transform.GetChild(0).gameObject); // TODO: Fix ugly fix
         else
             mainCamera.GetComponent<PlayerCamera>().setCameraTarget(player);
+
+
     }
 
     void spawnEnemyGroup()
@@ -118,8 +115,6 @@ public class GameManager : MonoBehaviour
         {
             CancelInvoke();
         }
-        theAirParticles.transform.position = player.transform.position + new Vector3(0,2,0);
-
     }
 
     private void initialBase(float BaseSize)

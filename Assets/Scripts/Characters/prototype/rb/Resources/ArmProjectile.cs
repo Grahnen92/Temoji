@@ -46,7 +46,7 @@ public class ArmProjectile : MonoBehaviour {
                 //if (tmpTopPart.transform.parent.childCount < 2 && tmpT    §opPart.ToString() == "shard1")
                 {
                     tmpTopPart.AddComponent<Rigidbody>().mass = 4.0f; ;
-                    tmpTopPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
+                    tmpTopPart.AddComponent<DestroyTimer>().destructionTime = 60.0f;
                     tmpTopPart.layer = 12;
                     //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)
                     //{
@@ -67,7 +67,7 @@ public class ArmProjectile : MonoBehaviour {
                     Rigidbody tmpRB = tmpMaterialPart.AddComponent<Rigidbody>();
                     tmpRB.drag = 1f;
                     tmpRB.angularDrag = 1f;
-                    tmpMaterialPart.AddComponent<DestroyTimer>().destructionTime = 30.0f;
+                    tmpMaterialPart.AddComponent<DestroyTimer>().destructionTime = 60.0f;
                     tmpMaterialPart.layer = 12;
                     //for (int i = 0; i < tmpMaterialPart.transform.childCount; i++)
                     //{

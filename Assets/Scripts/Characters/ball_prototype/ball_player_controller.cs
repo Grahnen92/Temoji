@@ -42,7 +42,7 @@ public class ball_player_controller : MonoBehaviour {
 	{
 		rb_head = GetComponent<Rigidbody> ();
 		flail_frame = GameObject.Find("flail_frame");
-		ball_prototype = GameObject.Find("ball_prototype");
+		ball_prototype = GameObject.Find("main_frame");
 
 		scoop_prefab = Resources.Load ("scoop_prefab") as GameObject;
 
