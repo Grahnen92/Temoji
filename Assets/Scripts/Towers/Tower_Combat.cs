@@ -32,7 +32,5 @@ public class Tower_Combat : Combat {
 
             
         }
-
-        print("took damage");
     }
 }

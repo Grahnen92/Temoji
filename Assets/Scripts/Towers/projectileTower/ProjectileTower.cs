@@ -187,6 +187,7 @@ public class ProjectileTower : MonoBehaviour {
         Vector3 shootVec = enemyList[currentEnemy].transform.position - bulletList[0].transform.position + enemyList[currentEnemy].GetComponent<Rigidbody>().velocity;
         bulletList[0].GetComponent<Rigidbody>().AddForce(shootVec * 100.0f);
         bulletList[0].GetComponent<TowerProjectile>().setArmed(true);
+        Destroy(bulletList[0], 10);
         bulletList.RemoveAt(0);
         resetPid();
         if (!activeReloading)

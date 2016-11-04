@@ -6,7 +6,6 @@ public class damaging_Bullet : MonoBehaviour {
 
     void OnCollisionEnter(Collision coll)//bullet hits something, bullet disappears
     {
-        print(coll.gameObject);
         Destroy(gameObject);
     }
 }

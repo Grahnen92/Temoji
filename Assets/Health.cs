@@ -23,7 +23,6 @@ public class Health : MonoBehaviour {
 
         if (health <= 0.0f)
         {
-            print("I died.");
             Destroy(gameObject);
         }
     }

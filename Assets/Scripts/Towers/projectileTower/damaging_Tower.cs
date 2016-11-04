@@ -47,8 +47,6 @@ public class damaging_Tower : MonoBehaviour {
     void OnTriggerEnter(Collider col)
     {
         enemyList.Add(col.gameObject);
-        /*print("enemyEnter: " + col.gameObject);
-        print("enemyCount after Enter: " + enemyList.Count);*/
 
         //ENTER
         //SituationA(1 enemy): if enemy[0] enter, LET "spawnBullet" invoked, aS=true;
@@ -76,7 +74,6 @@ public class damaging_Tower : MonoBehaviour {
 
     void OnTriggerExit(Collider col)
     {
-        /*print("enemyExit: " + col.gameObject);*/
 
         //EXIT
         //SituationA(1 enemy): if enemy[0] out, remove it from list, LET "spawnBullet" cancleInvoked, aS=false

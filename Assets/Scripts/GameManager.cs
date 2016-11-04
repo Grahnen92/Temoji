@@ -51,10 +51,6 @@ public class GameManager : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera");
         generateMap();
         spawnPlayer();
-        
-       
-
-        print("Welcome to this level.");
 
         InvokeRepeating("spawnEnemyGroup", groupSpawnInterval, groupSpawnInterval);
         
@@ -115,6 +111,8 @@ public class GameManager : MonoBehaviour
         {
             CancelInvoke();
         }
+
+
     }
 
     private void initialBase(float BaseSize)

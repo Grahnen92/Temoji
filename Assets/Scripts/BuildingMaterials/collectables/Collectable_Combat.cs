@@ -16,7 +16,6 @@ public class Collectable_Combat : Combat
     {
         //if (!isServer)
         //  return;
-        //        print("take damage amount======" + amount);
         health -= amount;
 
         if (health <= 0)
@@ -46,7 +45,6 @@ public class Collectable_Combat : Combat
     {
         //if (!isServer)
         //  return;
-        //        print("take damage amount======" + amount);
         health -= amount;
 
 

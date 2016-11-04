@@ -46,6 +46,7 @@ using System;
 	private float curr_speed;
 	private Vector3 planar_velocity;
 
+    private RaycastHit mouse_hit;
     private Vector3 curr_mouse_dir;
     private Vector3 curr_mouse_dir_noy;
     private Vector3 curr_mouse_hit;
@@ -89,6 +90,9 @@ using System;
     public AudioSource hoverSound;
     public AudioSource chargingSound;
     public AudioSource shootSound;
+
+    //ui
+    private bool uiActive = false;
 
     void Start()
 	{
@@ -158,6 +162,67 @@ using System;
         }
 
         // === Character input handling =====================================================================
+        //open menu
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if(uiActive == false)
+            {
+                if(Application.loadedLevelName == "testScene")
+                {
+                    transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().enabled = true;
+                    transform.GetChild(0).transform.GetChild(0).GetComponent<BoxCollider>().enabled = true;
+
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<Renderer>().enabled = true;
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<BoxCollider>().enabled = true;
+
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<Renderer>().enabled = true;
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<BoxCollider>().enabled = true;
+                }
+                else
+                {
+                    transform.GetChild(0).transform.GetChild(1).GetComponent<Renderer>().enabled = true;
+                    transform.GetChild(0).transform.GetChild(1).GetComponent<BoxCollider>().enabled = true;
+
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<Renderer>().enabled = true;
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<BoxCollider>().enabled = true;
+
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<Renderer>().enabled = true;
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<BoxCollider>().enabled = true;
+                }
+                
+                uiActive = true;
+            }
+            else
+            {
+                if (Application.loadedLevelName == "testScene")
+                {
+                    transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().enabled = false;
+                    transform.GetChild(0).transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
+
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<Renderer>().enabled = false;
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<BoxCollider>().enabled = false;
+
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<Renderer>().enabled = false;
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<BoxCollider>().enabled = false;
+
+                }
+                else
+                {
+                    transform.GetChild(0).transform.GetChild(1).GetComponent<Renderer>().enabled = false;
+                    transform.GetChild(0).transform.GetChild(1).GetComponent<BoxCollider>().enabled = false;
+
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<Renderer>().enabled = false;
+                    transform.GetChild(0).transform.GetChild(2).GetComponent<BoxCollider>().enabled = false;
+
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<Renderer>().enabled = false;
+                    transform.GetChild(0).transform.GetChild(3).GetComponent<BoxCollider>().enabled = false;
+
+                }
+                uiActive = false;
+            }
+            
+        }
+
 
         //AIM ===========================================================================================
         if (Input.GetButtonDown("Fire2"))
@@ -199,6 +264,29 @@ using System;
         {
             //raiseShield();
             activateState(1);
+
+            if (uiActive)
+            {
+                if(mouse_hit.collider.name == "pause")
+                {
+                    if (Time.timeScale == 1)
+                        Time.timeScale = 0;
+                    else
+                        Time.timeScale = 1;
+
+                }else if (mouse_hit.collider.name == "main_menu")
+                {
+                    Application.LoadLevel("start_scene");
+                }
+                else if (mouse_hit.collider.name == "exit")
+                {
+                    Application.Quit();
+                }
+                else if (mouse_hit.collider.name == "start_game")
+                {
+                    Application.LoadLevel("testScene");
+                }
+            }
 
         }
         else if (Input.GetButton("Fire1")) {
@@ -248,7 +336,6 @@ using System;
         // === Turn functions =====================================================================
         //mouse ray tracing =====================================================================
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit mouse_hit;
         //Physics.Raycast (ray, out mouse_hit, 100, mouse_mask);
         Physics.SphereCast(ray, 0.05f, out mouse_hit, 100, mouse_mask);
         curr_mouse_hit = mouse_hit.point;
@@ -297,7 +384,6 @@ using System;
             wings_closed_timer += Time.fixedDeltaTime;
             if (wings_closed_timer > WINGS_CLOSED)
             {
-                print("go higher..");
                 wanted_hight = 2.4;
                 wings_closed_timer = 0.0f;
                 wings_closed_recently = false;
@@ -360,6 +446,11 @@ using System;
            // rwing.transform.LookAt(tmp_mouse);
            // rwing.transform.Rotate(-90, 0, 0);
         }
+
+        if (uiActive)
+        {
+            transform.GetChild(0).eulerAngles = new Vector3(90, 0, 0);
+        }
 	}
 
     // Character state handling ==================================================================
@@ -403,7 +494,6 @@ using System;
     {
         public override void activate()
         {
-            print("aim active");
             playerController.startAim();
             active = true;
 
@@ -411,7 +501,6 @@ using System;
 
         public override void deActivate()
         {
-            print("aim inactive");
             playerController.stopAim();
             active = false;
         }
@@ -421,14 +510,12 @@ using System;
     {
         public override void activate()
         {
-            print("shield active");
             playerController.raiseShield();
             active = true;
         }
 
         public override void deActivate()
         {
-            print("shield inactive");
             playerController.lowerShield();
             active = false;
         }
@@ -438,14 +525,12 @@ using System;
     {
         public override void activate()
         {
-            print("wings active");
             playerController.openWings();
             active = true;
         }
 
         public override void deActivate()
         {
-            print("wings inactive");
             playerController.closeWings();
             active = false;
         }
@@ -534,7 +619,7 @@ using System;
         Destroy(rwing.GetComponent<HingeJoint>());
         //Destroy (rwing.GetComponent<Rigidbody> ());
         rwing.transform.localEulerAngles = new Vector3(0, 50, 0);
-        rwing.transform.localPosition = new Vector3(0.9f, 0.6f, 0.48f);
+        rwing.transform.localPosition = new Vector3(0.9f, 0.7f, 0.48f);
         // Rigidbody tmp_rb = rwing.AddComponent<Rigidbody>();
         // tmp_rb.angularDrag = 30;
         FixedJoint tmp_hj = rwing.AddComponent<FixedJoint>();
@@ -545,7 +630,7 @@ using System;
         Destroy(lwing.GetComponent<HingeJoint>());
         //Destroy (lwing.GetComponent<Rigidbody> ());
         lwing.transform.localEulerAngles = new Vector3(0, -50, 0);
-        lwing.transform.localPosition = new Vector3(-0.9f, 0.6f, 0.48f);
+        lwing.transform.localPosition = new Vector3(-0.9f, 0.7f, 0.48f);
         // tmp_rb = rwing.AddComponent<Rigidbody>();
         // tmp_rb.angularDrag = 30;
         tmp_hj = lwing.AddComponent<FixedJoint>();
@@ -555,7 +640,7 @@ using System;
         Destroy(fwing.GetComponent<HingeJoint>());
         //Destroy (fwing.GetComponent<Rigidbody> ());
         fwing.transform.localEulerAngles = new Vector3(0, 0, 0);
-        fwing.transform.localPosition = new Vector3(0, 0.6f, 0.9f);
+        fwing.transform.localPosition = new Vector3(0, 0.7f, 0.9f);
         // tmp_rb = rwing.AddComponent<Rigidbody>();
         // tmp_rb.angularDrag = 30;
         tmp_hj = fwing.AddComponent<FixedJoint>();
@@ -620,5 +705,24 @@ using System;
         bwing.GetComponent<Rigidbody>().mass = 1;
     }
 
-   
+    void activatePlayingMenu()
+    {
+
+    }
+    void deActivatePlayingMenu()
+    {
+
+    }
+
+    void activateStartingMenu()
+    {
+
+    }
+
+    void deActivateStartingMenu()
+    {
+
+    }
+
+
 }

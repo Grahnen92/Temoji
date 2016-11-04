@@ -188,7 +188,6 @@ public class player_controller : MonoBehaviour {
 		//if(Input.GetButton("Jump"))
 		if (Input.GetButtonDown ("Jump") ) 
 		{
-			print("yo");
 			rb_head.AddForce(0.0f, 100000.0f * Time.deltaTime, 0.0f);
 		}
 

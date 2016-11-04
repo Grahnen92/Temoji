@@ -45,8 +45,6 @@ public class SlowingTower: MonoBehaviour
         //{
         //    cRB.drag += slowAmount;
         //}
-
-        print("hej!");
     }
 
     void OnTriggerExit(Collider col)
@@ -71,7 +69,6 @@ public class SlowingTower: MonoBehaviour
         //{
          //   cRB.drag -= slowAmount;
         //}
-        print("hejdå!");
     }
 
     public void Death()

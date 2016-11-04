@@ -14,13 +14,12 @@ public class enemy_hover_bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision coll)//bullet hits something, bullet disappears
     {
-        print(coll.gameObject);
         Destroy(gameObject);
 
         Combat tmpCombat = coll.gameObject.GetComponent<Combat>();
 
         if (tmpCombat)
-            tmpCombat.TakeDamage(0.1f);
+            tmpCombat.TakeDamage(3.0f);
         //explosion_prefab = Resources.Load("bot_explosion") as GameObject;
 
 

@@ -41,22 +41,11 @@ namespace UnityStandardAssets.Effects
                 float dmgScaled = Mathf.Max((dist / r), 0.2f);
                 dmgScaled = dmgScaled * dmgScaled;
 
-               if(rb.gameObject.tag == "Collectable")
-                {
-                    print("============");
-                    print("dist = " + dist);
-                    print("radius = " + r);
-                    print("dmg = " + (3.0f / dmgScaled));
-                    print("tag = " + rb.gameObject.tag);
-                    print("============");
-                }
-
                // rb.gameObject.GetComponent<Combat>().TakeDamage((int)(3.0f/ dmgScaled));
                 Combat tmpCombatScript = rb.gameObject.GetComponent<Combat>();
                
                 if (tmpCombatScript)
                 {
-                    print("hej combat script");
                     tmpCombatScript.TakeDamage((x / dmgScaled));
                 }
               

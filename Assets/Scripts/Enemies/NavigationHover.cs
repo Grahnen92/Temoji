@@ -15,7 +15,7 @@ public class NavigationHover : MonoBehaviour
     private float bulletSpeed = 50.0f;
     private bool tangentForce = false;
 
-    double height_target = 2.5d;
+    double height_target = 2.2d;
     double height_current;
     double height_error;
     double height_error_pre = 0.0;
@@ -36,7 +36,6 @@ public class NavigationHover : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //print("target_destination in naHo" + target_destination);
         GetComponent<NavMeshAgent>().SetDestination(target_destination);
         //        GetComponent<NavMeshAgent>().avoidancePriority = (int)Random.value * 100;
         GetComponent<NavMeshAgent>().updatePosition = false;
@@ -54,7 +53,6 @@ public class NavigationHover : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        //print("there is a trigger happened");
         towerList.Add(col.gameObject);
         if (currentTower < 0)
             currentTower = towerList.Count - 1;
@@ -67,7 +65,6 @@ public class NavigationHover : MonoBehaviour
 
     void OnTriggerExit(Collider col)
     {
-        print("exit the collision ");
 
         int tmpIndex = towerList.IndexOf(col.gameObject);
         towerList.RemoveAt(tmpIndex);
@@ -117,8 +114,6 @@ public class NavigationHover : MonoBehaviour
         gameObject.transform.LookAt(target_destination);
         gameObject.transform.Rotate(0.0f, 90.0f, 0.0f);
 
-
-        //print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
             
@@ -131,7 +126,6 @@ public class NavigationHover : MonoBehaviour
         }
 
         hover();
-        print(gameObject.GetComponent<Rigidbody>().velocity.magnitude);
         //stuck();
 
         //check if there is an enemy to attack
@@ -140,7 +134,6 @@ public class NavigationHover : MonoBehaviour
             //check if the current enemy has died
             if (towerList[currentTower] != null)
             {
-                //sprint("there is a tower should be attacted");
             }
             else //current enemy is dead, search enemy list for a new target and enemies from the list if they are dead
             {
@@ -182,7 +175,6 @@ public class NavigationHover : MonoBehaviour
         Vector3 targetDirection;
         targetDirection = towerList[0].transform.position - En_Bu_position;
         enemy_hover_bullet.GetComponent<Rigidbody>().AddForce(targetDirection * bulletSpeed);
-        //print("----------------bullet shoot");
     }
 
     public void setBase(GameObject b, GameObject g)

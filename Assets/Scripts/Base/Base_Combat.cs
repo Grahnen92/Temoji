@@ -72,7 +72,5 @@ public class Base_Combat : Combat {
         var em = ps.emission;//.rate = chargeRatio * 500;
         em.rate = healthNorm * 35;
 
-
-        print("took damage");
     }
 }

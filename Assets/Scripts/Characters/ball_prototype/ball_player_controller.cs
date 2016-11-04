@@ -102,9 +102,6 @@ public class ball_player_controller : MonoBehaviour {
 			flail.GetComponent<SpringJoint> ().connectedAnchor = Vector3.zero;
 			flail.GetComponent<SpringJoint> ().spring = 100;
 			flail.GetComponent<SpringJoint> ().maxDistance = flail_to_body.magnitude;
-
-
-			//print(flail_to_body.magnitude);
 		}
 
 		//shoot and lock

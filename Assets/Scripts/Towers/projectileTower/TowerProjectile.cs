@@ -17,6 +17,7 @@ public class TowerProjectile : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        
         rb = GetComponent<Rigidbody>();
         explosion_prefab = Resources.Load("Energy_explosion") as GameObject;
     }

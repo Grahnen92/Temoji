@@ -24,6 +24,15 @@ public class NavigationRoll : MonoBehaviour
     private float body_rot_error, body_rot_integral, 
         body_rot_derivative, body_rot_adjustment, prev_body_rot_error;
 
+
+    void OnTriggerEnter(Collider col)
+    {
+
+    }
+
+    void OnTriggerExit(Collider col)
+    {
+    }
     // Use this for initialization
     void Start()
     {
@@ -70,10 +79,9 @@ public class NavigationRoll : MonoBehaviour
         direction = transform.parent.gameObject.GetComponent<NavMeshAgent>().steeringTarget - transform.position;
         direction.Normalize();
 
-        print("basealive: " + GameManager.base_alive);
         if (!GameManager.base_alive)
         {
-            GetComponent<NavMeshAgent>().SetDestination(spawn_destination);
+            transform.parent.gameObject.GetComponent<NavMeshAgent>().SetDestination(spawn_destination);
 
             if (distance <= attack_distance)
             {
@@ -120,7 +128,6 @@ public class NavigationRoll : MonoBehaviour
 
         Destroy(gameObject);
         // Attack target
-        print("Attack target!");
         Base_Combat base_combat = baseObject.GetComponent<Base_Combat>();
        // base_combat.TakeDamage(10);
         GameObject explosion = Instantiate(explosion_prefab) as GameObject;
@@ -167,13 +174,11 @@ public class NavigationRoll : MonoBehaviour
 
     void suicide()
     {
-        print("Commit Suicide!");
         Destroy(gameObject);
     }
 
     void stuck()
     {
-        print(gameObject+" is stuck");
         Destroy(gameObject);
     }
 }

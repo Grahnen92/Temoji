@@ -22,8 +22,8 @@ public class Player_Combat : Combat
     void Start()
     {
         head = GameObject.Find("final_prototype_head");
-        smoke = transform.GetChild(3).gameObject.GetComponent<ParticleSystem>();
-        sparks = transform.GetChild(4).gameObject.GetComponent<ParticleSystem>();
+        smoke = transform.GetChild(1).gameObject.GetComponent<ParticleSystem>();
+        sparks = transform.GetChild(2).gameObject.GetComponent<ParticleSystem>();
         health = maxHealth;
 
         rWing = GameObject.Find("final_prototype_rwing");
@@ -39,7 +39,6 @@ public class Player_Combat : Combat
     {
         // if (!isServer)
         //    return;
-        print(health);
         health -= amount;
         if (health <= 0)
         {
@@ -47,9 +46,9 @@ public class Player_Combat : Combat
             Debug.Log("Player Dead!");
             Destroy(head.transform.parent.GetChild(1).gameObject, 0.1f);
             head.transform.parent.GetChild(1).GetChild(0).parent = null;
-            head.transform.parent.GetChild(1).GetChild(1).parent = null;
-            head.transform.parent.GetChild(1).GetChild(2).parent = null;
-            head.transform.parent.GetChild(1).GetChild(3).parent = null;
+            head.transform.parent.GetChild(1).GetChild(0).parent = null;
+            head.transform.parent.GetChild(1).GetChild(0).parent = null;
+            head.transform.parent.GetChild(1).GetChild(0).parent = null;
             
         }
 
@@ -72,12 +71,12 @@ public class Player_Combat : Combat
             fWing.GetComponent<Renderer>().material = head_damaged_mat;
             bWing.GetComponent<Renderer>().material = head_damaged_mat;
         }
-
-        print("player took damage");
     }
 
     void Update()
     {
-        health += 2 * Time.deltaTime;
+        float tmpHealth = health + 1 * Time.deltaTime;
+        if (tmpHealth < maxHealth)
+            health = tmpHealth;
     }
 }

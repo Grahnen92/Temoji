@@ -37,7 +37,7 @@ public class TowerSelector : MonoBehaviour
     public GameObject uiRing;
 
     // Key to press that will show the holograms
-    public KeyCode startBuildKey = KeyCode.F;
+    public KeyCode startBuildKey = KeyCode.R;
 
     // Key to press for selecting towers
     public KeyCode tower1Key = KeyCode.Alpha1;
@@ -81,12 +81,10 @@ public class TowerSelector : MonoBehaviour
             //    tmp_color = r.material.color;
             //    tmp_color.a = transparency;
             //}
-            print("hi stone");
         }
         else if (col.tag == "Wood")
         {
             wood.Add(col.gameObject);
-            print("hi wood");
         }
         else
         {
@@ -102,12 +100,10 @@ public class TowerSelector : MonoBehaviour
         if (col.tag == "Stone")
         {
             stone.Remove(col.gameObject);
-            print("by stone");
         }
         else if (col.tag == "Wood")
         {
             wood.Remove(col.gameObject);
-            print("by Wood");
         }
         else
         {
@@ -120,7 +116,7 @@ public class TowerSelector : MonoBehaviour
     void Start()
     {
         // Add additional lines here if adding additional models
-
+        
         for (int i = 0; i < nrOfModels; i++)
         {
             activeModels[i] = 0;
@@ -149,9 +145,6 @@ public class TowerSelector : MonoBehaviour
             Vector3 tmpVec = new Vector3(Mathf.Cos((2.0f * Mathf.PI / modelList.Count) * i), 0.0f, Mathf.Sin((2.0f * Mathf.PI / modelList.Count) * i)) * 2;
             modInst.transform.position = spawnPt.position + tmpVec;
 
-            print(tmpVec);
-            print((Mathf.PI / modelList.Count) * i);
-
             // Making object invisible and transparent
             var renderers = modInst.GetComponentsInChildren<Renderer>();
             foreach (var r in renderers)
@@ -169,14 +162,14 @@ public class TowerSelector : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(startBuildKey))
+        if (Input.GetButtonDown("towerUI"))
         {
             if (!showing)
                 showHolograms();
             else
                 hideHolograms();
         }
-        else if (Input.GetKeyUp(startBuildKey))
+        else if (Input.GetButtonUp("towerUI"))
         {
             if (!showing)
                 showHolograms();
@@ -201,7 +194,6 @@ public class TowerSelector : MonoBehaviour
                     //tmp_pos += tmpGO.transform.position;
                     stone.RemoveAt(0);
                     Destroy(tmpGO.transform.parent.gameObject);
-                    print("starting to build tower");
                     GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
                     //tmp_pos.y = 2.0f;
                     //tmp_pos = tmp_pos / 2.0f;
@@ -222,7 +214,6 @@ public class TowerSelector : MonoBehaviour
                     //tmp_pos += tmpGO.transform.position;
                     stone.RemoveAt(0);
                     Destroy(tmpGO.transform.parent.gameObject);
-                    print("starting to build tower");
                     GameObject towerBuilderInstance = Instantiate(tower_builder) as GameObject;
                     //tmp_pos.y = 2.0f;
                     //tmp_pos = tmp_pos / 2.0f;
@@ -252,7 +243,6 @@ public class TowerSelector : MonoBehaviour
 
     void checkActiveTowersAfterAdd()
     {
-        print("hi check add");
         if (wood.Count > 0 && stone.Count > 0)
         {
             if (activeModels[1] == 0)
@@ -285,7 +275,6 @@ public class TowerSelector : MonoBehaviour
 
     void checkActiveTowersAfterRemove()
     {
-        print("hi check remove");
         if (wood.Count < 1 || stone.Count < 1)
         {
             if (activeModels[1] == 1)
@@ -349,7 +338,6 @@ public class TowerSelector : MonoBehaviour
         //{
         //    r.enabled = true;
         //}
-        print("show model" + model);
         var renderers = modInstances[model].GetComponentsInChildren<Renderer>();
         Color tmp_color;
         foreach (var r in renderers)
