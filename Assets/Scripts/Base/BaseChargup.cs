@@ -26,6 +26,7 @@ public class BaseChargup : MonoBehaviour {
         if (charge_timer > CHARGE_TIME)
         {
             print("YOU WON THE GAME!");
+            GameManager.game_won = true;
             Application.Quit();
         }
         else

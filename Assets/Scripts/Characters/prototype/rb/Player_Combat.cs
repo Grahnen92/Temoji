@@ -44,11 +44,8 @@ public class Player_Combat : Combat
         {
             health = 0;
             Debug.Log("Player Dead!");
-            Destroy(head.transform.parent.GetChild(1).gameObject, 0.1f);
-            head.transform.parent.GetChild(1).GetChild(0).parent = null;
-            head.transform.parent.GetChild(1).GetChild(0).parent = null;
-            head.transform.parent.GetChild(1).GetChild(0).parent = null;
-            head.transform.parent.GetChild(1).GetChild(0).parent = null;
+            GameManager.game_lost = true;
+            killPlayer();
             
         }
 
@@ -78,5 +75,15 @@ public class Player_Combat : Combat
         float tmpHealth = health + 1 * Time.deltaTime;
         if (tmpHealth < maxHealth)
             health = tmpHealth;
+    }
+
+    public void killPlayer()
+    {
+        
+        head.transform.parent.GetChild(1).GetChild(0).parent = null;
+        head.transform.parent.GetChild(1).GetChild(0).parent = null;
+        head.transform.parent.GetChild(1).GetChild(0).parent = null;
+        head.transform.parent.GetChild(1).GetChild(0).parent = null;
+        Destroy(head.transform.parent.GetChild(1).gameObject, 0.1f);
     }
 }

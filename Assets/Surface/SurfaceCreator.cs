@@ -59,7 +59,9 @@ public class SurfaceCreator : MonoBehaviour {
         //offset = new Vector3(0.0f, 1.0f, 0.0f); //strength = 0.3
         //offset = new Vector3(0.0f, 0.0f, 0.0f); //strength = 0.2
         //offset = new Vector3(0.0f, -1.0f, -1.0f); //strength = 0.3
-        offset = new Vector3(0.0f, 0.0f, 0.0f); //strength = 0.18
+        //offset = new Vector3(0.0f, 0.0f, 0.0f); //strength = 0.18
+        offset = new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+        strength = Random.Range(0.1f, 0.3f);
 
         if (resolution != currentResolution) {
 			CreateGrid();

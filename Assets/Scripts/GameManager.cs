@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     public GameObject gatePrefab;
     private GameObject Gate;
     public static bool base_alive = false;
+    public static bool game_won = false;
+    public static bool game_lost = false;
 
     private int vertX;
     private int vertY;
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
     const float MAP_SIZE = 100.0f;
     const int ENTRY_SIZE = 1;
     float base_radius = 5;
+    
     // Use this for initialization
     void Start()
     {
@@ -107,12 +110,19 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!base_alive)
+        if (game_lost)
         {
+            game_lost = false;
             CancelInvoke();
+            InvokeRepeating("quitLevel", 10.0f, 1.0f);
+            GameObject.Find("Main Camera").transform.GetChild(0).gameObject.GetComponent<Renderer>().enabled = true;
         }
-
-
+        if (game_won)
+        {
+            game_won = false;
+            InvokeRepeating("quitLevel", 10.0f, 1.0f);
+            GameObject.Find("Main Camera").transform.GetChild(1).gameObject.GetComponent<Renderer>().enabled = true;
+        }
     }
 
     private void initialBase(float BaseSize)
@@ -265,6 +275,11 @@ public class GameManager : MonoBehaviour
         //rotation.y = Random.value * 6.3f;
         //Instantiate(rock1Object, position, rotation);
         
+    }
+
+    public void quitLevel()
+    {
+        Application.LoadLevel("start_scene");
     }
 
 }

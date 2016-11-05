@@ -22,10 +22,12 @@ public class Base_Combat : Combat {
         health -= amount;
         if (health <= 0)
         {
-            health = 0;
             Debug.Log("Dead!");
             GameManager.base_alive = false;
+            GameManager.game_lost = true;
+            GameObject.Find("final_prototype_head").GetComponent<Player_Combat>().killPlayer();
             Destroy(gameObject);
+
         }
         if (health <= 3.0f * maxHealth / 4.0f)
         {
@@ -73,4 +75,6 @@ public class Base_Combat : Combat {
         em.rate = healthNorm * 35;
 
     }
+
+
 }

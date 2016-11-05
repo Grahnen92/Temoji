@@ -705,24 +705,5 @@ using System;
         bwing.GetComponent<Rigidbody>().mass = 1;
     }
 
-    void activatePlayingMenu()
-    {
-
-    }
-    void deActivatePlayingMenu()
-    {
-
-    }
-
-    void activateStartingMenu()
-    {
-
-    }
-
-    void deActivateStartingMenu()
-    {
-
-    }
-
-
+    
 }
