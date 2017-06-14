@@ -13,6 +13,7 @@ public class ArmProjectile : MonoBehaviour {
     }
 	void OnCollisionEnter(Collision collision)
 	{
+        collision.rigidbody.gameObject.GetComponent<Rigidbody>().gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up);
         explosion = Instantiate(explosion_prefab) as GameObject;
         explosion.transform.position = transform.position;
         explosion.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
